@@ -665,38 +665,6 @@ public class ItemManager {
                     e.printStackTrace();
                 }
             }
-            if (fConfig.getConfigurationSection("items") != null) {
-                // Needs an upgrade
-                Plugin.logger.info("Upgrading config.yaml");
-                currentPos = fConfig.getInt("pos", 0);
-                ConfigurationSection section = fConfig.getConfigurationSection("items");
-                for (String key : section.getKeys(false)) {
-                    RPGItem item = new RPGItem(section.getConfigurationSection(key));
-                    itemById.put(item.getID(), item);
-                    itemByName.put(item.getName(), item);
-                }
-
-                fConfig.set("items", null);
-                fConfig.set("pos", null);
-
-                itemStorage.set("items", null);
-                itemStorage.set("pos", currentPos);
-                ConfigurationSection newSection = itemStorage.createSection("items");
-                for (RPGItem item : itemById.valueCollection()) {
-                    ConfigurationSection itemSection = newSection.getConfigurationSection(item.getName());
-                    if (itemSection == null) {
-                        itemSection = newSection.createSection(item.getName());
-                    }
-                    item.save(itemSection);
-                }
-
-                plugin.saveConfig();
-                try {
-                    itemStorage.save(new File(plugin.getDataFolder(), "items.yml"));
-                } catch (IOException e) {
-                    Plugin.logger.info("Upgrade failed");
-                }
-            }
             currentPos = itemStorage.getInt("pos", 0);
             ConfigurationSection section = itemStorage.getConfigurationSection("items");
             for (String key : section.getKeys(false)) {
