@@ -359,7 +359,7 @@ abstract public class Commands {
                     e.printStackTrace();
                 }
             } else { // Const
-                arguments.add(new ArgumentConst(a.toUpperCase()));
+                arguments.add(new ArgumentConst(a));
             }
             if (pos == -1) {
                 break;
