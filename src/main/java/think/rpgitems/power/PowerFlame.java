@@ -14,7 +14,7 @@ import think.rpgitems.item.RPGItem;
 
 public class PowerFlame extends Power {
 
-    int burnTime = 20;
+    private int burnTime = 20;
 
     @Override
     public void hit(Player player, LivingEntity e) {

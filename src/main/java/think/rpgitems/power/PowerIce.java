@@ -5,7 +5,6 @@ import java.util.Random;
 
 import gnu.trove.map.hash.TObjectLongHashMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -29,7 +28,7 @@ import think.rpgitems.item.RPGItem;
 
 public class PowerIce extends Power {
 
-    long cd = 20;
+    private long cd = 20;
 
     @Override
     public void rightClick(final Player player) {
@@ -144,18 +143,22 @@ public class PowerIce extends Power {
         return true;
     }
 
+    @Override
     public String displayText() {
         return ChatColor.GREEN + String.format(Locale.get("POWER_ICE"), (double) cd / 20d);
     }
 
+    @Override
     public String getName() {
         return "ice";
     }
 
+    @Override
     public void init(ConfigurationSection s) {
         cd = s.getLong("cooldown", 20);
     }
 
+    @Override
     public void save(ConfigurationSection s) {
         s.set("cooldown", cd);
     }

@@ -14,11 +14,11 @@ import think.rpgitems.item.RPGItem;
 
 public class PowerCommand extends Power {
 
-    String command = "";
-    String display = "Runs command";
-    String permission = "";
-    boolean isRight = true;
-    long cd = 20;
+    private String command = "";
+    private String display = "Runs command";
+    private String permission = "";
+    private boolean isRight = true;
+    private long cd = 20;
 
     @Override
     public void rightClick(Player player) {
@@ -64,14 +64,17 @@ public class PowerCommand extends Power {
         }
     }
 
+    @Override
     public String displayText() {
         return ChatColor.GREEN + display;
     }
 
+    @Override
     public String getName() {
         return "command";
     }
 
+    @Override
     public void init(ConfigurationSection s) {
         cd = s.getLong("cooldown", 20);
         command = s.getString("command", "");
@@ -80,6 +83,7 @@ public class PowerCommand extends Power {
         permission = s.getString("permission", "");
     }
 
+    @Override
     public void save(ConfigurationSection s) {
         s.set("cooldown", cd);
         s.set("command", command);
@@ -89,7 +93,6 @@ public class PowerCommand extends Power {
     }
 
     static {
-
         Commands.add("rpgitem $n[] power command $COOLDOWN:i[] $o[left,right] $DISPLAY:s[] $COMMAND:s[]", new Commands() {
 
             @Override

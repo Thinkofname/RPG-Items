@@ -16,7 +16,7 @@ import think.rpgitems.item.RPGItem;
 
 public class PowerTNTCannon extends Power {
 
-    long cd = 20;
+    private long cd = 20;
 
     @Override
     public void rightClick(Player player) {
@@ -38,18 +38,22 @@ public class PowerTNTCannon extends Power {
         }
     }
 
+    @Override
     public String displayText() {
         return ChatColor.GREEN + String.format(Locale.get("POWER_TNTCANNON"), (double) cd / 20d);
     }
 
+    @Override
     public String getName() {
         return "tntcannon";
     }
 
+    @Override
     public void init(ConfigurationSection s) {
         cd = s.getLong("cooldown", 20);
     }
 
+    @Override
     public void save(ConfigurationSection s) {
         s.set("cooldown", cd);
     }

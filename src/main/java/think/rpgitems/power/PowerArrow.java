@@ -21,8 +21,6 @@ public class PowerArrow extends Power {
 
     private long cd = 20;
 
-    // static PowerArrowRunnable task = new PowerArrowRunnable();
-
     @Override
     public void rightClick(Player player) {
         long cooldown;
@@ -38,28 +36,27 @@ public class PowerArrow extends Power {
             player.playSound(player.getLocation(), Sound.SHOOT_ARROW, 1.0f, 1.0f);
             Arrow arrow = player.launchProjectile(Arrow.class);
             Events.removeArrows.put(arrow.getEntityId(), (byte) 1);
-            /*
-             * if (!task.isRunning) { task = new PowerArrowRunnable();
-             * task.runTaskTimer(Plugin.plugin, 0, 2); }
-             * task.arrows.add(player.launchProjectile(Arrow.class));
-             */
         } else {
             player.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_COOLDOWN"), ((double) (cooldown - System.currentTimeMillis() / 50)) / 20d));
         }
     }
 
+    @Override
     public String displayText() {
         return ChatColor.GREEN + String.format(Locale.get("POWER_ARROW"), (double) cd / 20d);
     }
 
+    @Override
     public String getName() {
         return "arrow";
     }
 
+    @Override
     public void init(ConfigurationSection s) {
         cd = s.getLong("cooldown", 20);
     }
 
+    @Override
     public void save(ConfigurationSection s) {
         s.set("cooldown", cd);
     }

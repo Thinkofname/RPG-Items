@@ -30,9 +30,9 @@ import think.rpgitems.support.WorldGuard;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
 public class ItemManager {
-    static TIntObjectHashMap<RPGItem> itemById = new TIntObjectHashMap<RPGItem>();
+    private static TIntObjectHashMap<RPGItem> itemById = new TIntObjectHashMap<RPGItem>();
     public static HashMap<String, RPGItem> itemByName = new HashMap<String, RPGItem>();
-    static int currentPos = 0;
+    private static int currentPos = 0;
 
     static {
         Commands.add("rpgitem list", new Commands() {
@@ -624,18 +624,14 @@ public class ItemManager {
             try {
                 p.newInstance();
             } catch (InstantiationException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (IllegalAccessException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
     }
 
     public static void load(Plugin plugin) {
-        FileConfiguration fConfig = plugin.getConfig();
-        // File iFile = new File(plugin.getDataFolder(), "items.yml");
         try {
             FileInputStream in = null;
             YamlConfiguration itemStorage = null;
@@ -648,20 +644,16 @@ public class ItemManager {
                 String str = new String(data, "UTF-8");
                 itemStorage.loadFromString(str);
             } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (InvalidConfigurationException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } finally {
                 try {
                     if (in != null)
                         in.close();
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -680,8 +672,6 @@ public class ItemManager {
     }
 
     public static void save(Plugin plugin) {
-        // FileConfiguration fConfig = plugin.getConfig();
-        // plugin.saveConfig();
 
         YamlConfiguration itemStorage = new YamlConfiguration();
 
@@ -702,20 +692,16 @@ public class ItemManager {
             out = new FileOutputStream(f);
             out.write(itemStorage.saveToString().getBytes("UTF-8"));
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } finally {
             try {
                 if (out != null)
                     out.close();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }

@@ -210,29 +210,6 @@ abstract public class Commands {
                 search.append(term).append(' ');
             }
             searchHelp(sender, search.toString());
-            // Print usage
-            // sender.sendMessage(String.format(ChatColor.GREEN + "Command usage for: /%s (%s)",
-            // comName, Plugin.plugin.getDescription().getVersion()));
-            // for (CommandDef c : command) {
-            // StringBuilder buf = new StringBuilder();
-            // buf.append(ChatColor.GREEN).append('/').append(comName);
-            // for (CommandArgument a : c.arguments) {
-            // buf.append(' ');
-            // if (a.name.length() != 0) {
-            // buf.append(ChatColor.RED);
-            // buf.append(a.name).append(':');
-            // }
-            // buf.append(a.isConst() ? ChatColor.GREEN : ChatColor.GOLD);
-            // buf.append(a.printable());
-            // }
-            // sender.sendMessage(buf.toString());
-            // String note = c.command.getNote();
-            // if (note != null) {
-            // sender.sendMessage(ChatColor.GREEN + "-" + note);
-            // }
-            // }
-            // sender.sendMessage(ChatColor.GREEN +
-            // "More detailed help on bukkitdev page or /rpgitem help [terms]");
         }
     }
 

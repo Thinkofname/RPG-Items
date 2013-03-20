@@ -27,13 +27,11 @@ public class PowerConsume extends Power {
 
     @Override
     public void init(ConfigurationSection s) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void save(ConfigurationSection s) {
-        // TODO Auto-generated method stub
 
     }
 

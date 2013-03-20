@@ -31,22 +31,22 @@ import think.rpgitems.power.Power;
 public class RPGItem {
     public ItemStack item;
     public ItemMeta meta;
-    int id;
-    String name;
-    String encodedID;
+    private int id;
+    private String name;
+    private String encodedID;
 
-    String displayName;
-    Quality quality = Quality.TRASH;
-    int damageMin = 0, damageMax = 3;
-    int armour = 0;
-    String loreText = "";
-    String type = Plugin.plugin.getConfig().getString("defaults.sword", "Sword");
-    String hand = Plugin.plugin.getConfig().getString("defaults.hand", "One handed");
+    private String displayName;
+    private Quality quality = Quality.TRASH;
+    private int damageMin = 0, damageMax = 3;
+    private int armour = 0;
+    private String loreText = "";
+    private String type = Plugin.plugin.getConfig().getString("defaults.sword", "Sword");
+    private String hand = Plugin.plugin.getConfig().getString("defaults.hand", "One handed");
     public boolean ignoreWorldGuard = false;
 
     public List<String> description = new ArrayList<String>();
 
-    ArrayList<Power> powers = new ArrayList<Power>();
+    public ArrayList<Power> powers = new ArrayList<Power>();
 
     public RPGItem(String name, int id) {
         this.name = name;
@@ -59,6 +59,7 @@ public class RPGItem {
         rebuild();
     }
 
+    @SuppressWarnings("unchecked")
     public RPGItem(ConfigurationSection s) {
 
         name = s.getString("name");
@@ -120,6 +121,10 @@ public class RPGItem {
         if (power != null) {
             for (String key : power.getKeys(false)) {
                 try {
+                    if (!Power.powers.containsKey(key)) {
+                        //Invalid power 
+                        continue;
+                    }
                     Power pow = Power.powers.get(key).newInstance();
                     pow.init(power.getConfigurationSection(key));
                     pow.item = this;
@@ -444,7 +449,7 @@ public class RPGItem {
         return encodedID;
     }
 
-    String getMCEncodedID(int id) {
+    private String getMCEncodedID(int id) {
         String hex = String.format("%08x", id);
         StringBuilder out = new StringBuilder();
         for (char h : hex.toCharArray()) {
@@ -454,7 +459,7 @@ public class RPGItem {
         return out.toString();
     }
 
-    static int getStringWidth(String str) {
+    private static int getStringWidth(String str) {
         int width = 0;
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
@@ -466,7 +471,7 @@ public class RPGItem {
         return width;
     }
 
-    static int getStringWidthBold(String str) {
+    private static int getStringWidthBold(String str) {
         int width = 0;
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
@@ -481,18 +486,13 @@ public class RPGItem {
     public void save(ConfigurationSection s) {
         s.set("name", name);
         s.set("id", id);
-        // s.set("display_bin", displayName.replaceAll("" + ChatColor.COLOR_CHAR,
-        // "&").getBytes("UTF-8"));
         s.set("display", displayName.replaceAll("" + ChatColor.COLOR_CHAR, "&"));
         s.set("quality", quality.toString());
         s.set("damageMin", damageMin);
         s.set("damageMax", damageMax);
         s.set("armour", armour);
-        // s.set("type_bin", type.replaceAll("" + ChatColor.COLOR_CHAR, "&").getBytes("UTF-8"));
         s.set("type", type.replaceAll("" + ChatColor.COLOR_CHAR, "&"));
-        // s.set("hand_bin", hand.replaceAll("" + ChatColor.COLOR_CHAR, "&").getBytes("UTF-8"));
         s.set("hand", hand.replaceAll("" + ChatColor.COLOR_CHAR, "&"));
-        // s.set("lore_bin", loreText.replaceAll("" + ChatColor.COLOR_CHAR, "&").getBytes("UTF-8"));
         s.set("lore", loreText.replaceAll("" + ChatColor.COLOR_CHAR, "&"));
         ArrayList<String> descriptionConv = new ArrayList<String>(description);
         for (int i = 0; i < descriptionConv.size(); i++) {

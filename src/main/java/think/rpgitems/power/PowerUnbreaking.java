@@ -16,8 +16,8 @@ import think.rpgitems.item.RPGItem;
 
 public class PowerUnbreaking extends Power {
 
-    int level = 1;
-    Random random = new Random();
+    private int level = 1;
+    private Random random = new Random();
 
     @SuppressWarnings("deprecation")
     @Override
@@ -49,13 +49,6 @@ public class PowerUnbreaking extends Power {
     public String displayText() {
         return String.format(ChatColor.GREEN + Locale.get("POWER_UNBREAKING"), level);
     }
-
-    /*
-     * @Override public boolean init(CommandSender sender, String[] args) { if (args.length >= 4) {
-     * try { level = Integer.parseInt(args[3]); } catch (Exception e) {
-     * sender.sendMessage(ChatColor.RED + args[3] + " is not an number"); return false; } } return
-     * true; }
-     */
 
     static {
         Commands.add("rpgitem $n[] power unbreaking", new Commands() {

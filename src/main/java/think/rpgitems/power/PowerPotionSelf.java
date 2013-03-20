@@ -16,10 +16,10 @@ import think.rpgitems.item.RPGItem;
 
 public class PowerPotionSelf extends Power {
 
-    long cd = 20;
-    int amp = 3;
-    int time = 20;
-    PotionEffectType type = PotionEffectType.HEAL;
+    private long cd = 20;
+    private int amp = 3;
+    private int time = 20;
+    private PotionEffectType type = PotionEffectType.HEAL;
 
     @Override
     public void rightClick(Player player) {

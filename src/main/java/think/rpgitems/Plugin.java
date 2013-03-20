@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -141,7 +140,7 @@ public class Plugin extends JavaPlugin {
         }
     }
 
-    FileConfiguration config;
+    private FileConfiguration config;
 
     @Override
     public void reloadConfig() {
@@ -197,18 +196,6 @@ public class Plugin extends JavaPlugin {
             out.append(arg).append(' ');
         Commands.exec(sender, out.toString());
         return true;
-    }
-
-    public static String joinArgs(String[] args, int start, int length) {
-        StringBuilder out = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            if (i == length - 1) {
-                out.append(args[start + i]);
-            } else {
-                out.append(args[start + i]).append(' ');
-            }
-        }
-        return out.toString();
     }
 
     @Override

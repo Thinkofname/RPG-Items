@@ -18,11 +18,11 @@ import think.rpgitems.item.RPGItem;
 
 public class PowerPotionHit extends Power {
 
-    int chance = 20;
-    Random random = new Random();
-    PotionEffectType type = PotionEffectType.HARM;
-    int duration = 20;
-    int amplifier = 1;
+    private int chance = 20;
+    private Random random = new Random();
+    private PotionEffectType type = PotionEffectType.HARM;
+    private int duration = 20;
+    private int amplifier = 1;
 
     @Override
     public void hit(Player player, LivingEntity e) {

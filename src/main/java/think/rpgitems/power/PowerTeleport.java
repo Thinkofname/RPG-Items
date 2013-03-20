@@ -22,8 +22,8 @@ import think.rpgitems.item.RPGItem;
 
 public class PowerTeleport extends Power {
 
-    int distance = 5;
-    long cd = 20;
+    private int distance = 5;
+    private long cd = 20;
 
     @Override
     public void rightClick(Player player) {
@@ -41,8 +41,9 @@ public class PowerTeleport extends Power {
             World world = player.getWorld();
             Location start = player.getLocation();
             start.setY(start.getY() + 1.6);
-            Location current = new Location(world, 0, 0, 0);
+            //Location current = new Location(world, 0, 0, 0);
             Block lastSafe = world.getBlockAt(start);
+            //Keeping the old method because BlockIterator could get removed (irc)
             // double dir = Math.toRadians(start.getYaw()) + (Math.PI / 2d);
             // double dirY = Math.toRadians(start.getPitch()) + (Math.PI / 2d);
             BlockIterator bi = new BlockIterator(player, distance);

@@ -16,10 +16,10 @@ import think.rpgitems.item.RPGItem;
 
 public class PowerKnockup extends Power {
 
-    int chance = 20;
-    double power = 2;
+    private int chance = 20;
+    private double power = 2;
 
-    Random rand = new Random();
+    private Random rand = new Random();
 
     @Override
     public void hit(Player player, LivingEntity e) {

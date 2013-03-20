@@ -17,8 +17,8 @@ import think.rpgitems.item.RPGItem;
 
 public class PowerLightning extends Power {
 
-    int chance = 20;
-    Random random = new Random();
+    private int chance = 20;
+    private Random random = new Random();
 
     @Override
     public void hit(Player player, LivingEntity e) {

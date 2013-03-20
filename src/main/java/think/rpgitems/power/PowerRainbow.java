@@ -26,9 +26,9 @@ import think.rpgitems.item.RPGItem;
 
 public class PowerRainbow extends Power {
 
-    long cd = 20;
-    int count = 5;
-    Random random = new Random();
+    private long cd = 20;
+    private int count = 5;
+    private Random random = new Random();
 
     @Override
     public void rightClick(Player player) {

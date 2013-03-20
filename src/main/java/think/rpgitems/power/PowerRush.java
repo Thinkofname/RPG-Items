@@ -1,7 +1,6 @@
 package think.rpgitems.power;
 
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -12,9 +11,9 @@ import think.rpgitems.data.RPGValue;
 @Deprecated
 public class PowerRush extends Power {
 
-    long cd = 20;
-    int speed = 3;
-    int time = 20;
+    private long cd = 20;
+    private int speed = 3;
+    private int time = 20;
 
     @Override
     public void rightClick(Player player) {

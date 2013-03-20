@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -65,6 +64,4 @@ public abstract class Power {
         }
         return radiusEntities.toArray(new Entity[radiusEntities.size()]);
     }
-
-    // public abstract boolean init(CommandSender sender, String[] args);
 }
