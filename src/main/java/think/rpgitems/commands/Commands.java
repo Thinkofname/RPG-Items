@@ -153,7 +153,7 @@ abstract public class Commands {
                     outArgs.add(res);
                 } else {
                     ArgumentConst cst = (ArgumentConst) a;
-                    if (!Locale.get("COMMAND_CONST_" + cst.value).equals(args.get(i))) {
+                    if (!cst.value.equals(args.get(i))) {
                         continue comLoop;
                     }
                 }
@@ -196,7 +196,7 @@ abstract public class Commands {
                         // outArgs.add(res);
                     } else {
                         ArgumentConst cst = (ArgumentConst) a;
-                        if (!Locale.get("COMMAND_CONST_" + cst.value).equals(args.get(i))) {
+                        if (!cst.value.equals(args.get(i))) {
                             continue comLoop;
                         } else {
                             consts.add(cst.value);
@@ -291,7 +291,7 @@ abstract public class Commands {
                         }
                     } else {
                         ArgumentConst cst = (ArgumentConst) a;
-                        if (!Locale.get("COMMAND_CONST_" + cst.value).equals(args.get(i))) {
+                        if (!cst.value.equals(args.get(i))) {
                             continue comLoop;
                         }
                     }
@@ -347,7 +347,7 @@ abstract public class Commands {
                 char t = a.charAt(1);
                 Class<? extends CommandArgument> cAT = argTypes.get(t);
                 if (cAT == null) {
-                    throw new RuntimeException("Invalid command argument type");
+                    throw new RuntimeException("Invalid command argument type " + t);
                 }
                 CommandArgument arg;
                 try {
@@ -817,7 +817,7 @@ class ArgumentConst extends CommandArgument {
     @Override
     public List<String> tabComplete(String in) {
         ArrayList<String> a = new ArrayList<String>();
-        String lValue = Locale.get("COMMAND_CONST_" + value);
+        String lValue = value;
         if (lValue.startsWith(in))
             a.add(lValue);
         return a;
@@ -825,7 +825,7 @@ class ArgumentConst extends CommandArgument {
 
     @Override
     public String printable() {
-        return Locale.get("COMMAND_CONST_" + value);
+        return value;
     }
 
     @Override
