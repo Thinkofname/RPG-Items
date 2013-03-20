@@ -66,21 +66,12 @@ public class Events implements Listener {
         if (shooter instanceof Player) {
             Player player = (Player) shooter;
             ItemStack item = player.getItemInHand();
-            if (!item.hasItemMeta())
+            RPGItem rItem = ItemManager.toRPGItem(item);
+            if (rItem == null)
                 return;
-            ItemMeta meta = item.getItemMeta();
-            if (!meta.hasDisplayName())
+            if (!WorldGuard.canPvP(player.getLocation()) && !rItem.ignoreWorldGuard)
                 return;
-            try {
-                int id = ItemManager.decodeId(meta.getDisplayName());
-                RPGItem rItem = ItemManager.getItemById(id);
-                if (rItem == null)
-                    return;
-                if (!WorldGuard.canPvP(player.getLocation()) && !rItem.ignoreWorldGuard)
-                    return;
-                rpgProjectiles.put(e.getEntity().getEntityId(), id);
-            } catch (Exception ex) {
-            }
+            rpgProjectiles.put(e.getEntity().getEntityId(), rItem.getID());
         }
     }
 
@@ -90,41 +81,26 @@ public class Events implements Listener {
         if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             ItemStack item = player.getItemInHand();
             if (item.getType() == Material.BOW || item.getType() == Material.SNOW_BALL || item.getType() == Material.EGG || item.getType() == Material.POTION)
+                return;       
+            
+            RPGItem rItem = ItemManager.toRPGItem(item);
+            if (rItem == null)
                 return;
-            if (!item.hasItemMeta())
+            if (!WorldGuard.canPvP(player.getLocation()) && !rItem.ignoreWorldGuard)
                 return;
-            ItemMeta meta = item.getItemMeta();
-            if (!meta.hasDisplayName())
-                return;
-            try {
-                int id = ItemManager.decodeId(meta.getDisplayName());
-                RPGItem rItem = ItemManager.getItemById(id);
-                if (rItem == null)
-                    return;
-                if (!WorldGuard.canPvP(player.getLocation()) && !rItem.ignoreWorldGuard)
-                    return;
-                rItem.rightClick(player);
-            } catch (Exception ex) {
-            }
+            rItem.rightClick(player);            
         } else if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
+            
             ItemStack item = player.getItemInHand();
             if (item.getType() == Material.BOW || item.getType() == Material.SNOW_BALL || item.getType() == Material.EGG || item.getType() == Material.POTION)
                 return;
-            if (!item.hasItemMeta())
+       
+            RPGItem rItem = ItemManager.toRPGItem(item);
+            if (rItem == null)
                 return;
-            ItemMeta meta = item.getItemMeta();
-            if (!meta.hasDisplayName())
+            if (!WorldGuard.canPvP(player.getLocation()) && !rItem.ignoreWorldGuard)
                 return;
-            try {
-                int id = ItemManager.decodeId(meta.getDisplayName());
-                RPGItem rItem = ItemManager.getItemById(id);
-                if (rItem == null)
-                    return;
-                if (!WorldGuard.canPvP(player.getLocation()) && !rItem.ignoreWorldGuard)
-                    return;
-                rItem.leftClick(player);
-            } catch (Exception ex) {
-            }
+            rItem.leftClick(player);
         }
 
     }
@@ -134,19 +110,11 @@ public class Events implements Listener {
         ItemStack item = e.getPlayer().getItemInHand();
         if (item == null)
             return;
-        if (!item.hasItemMeta())
+    
+        RPGItem rItem = ItemManager.toRPGItem(item);
+        if (rItem == null)
             return;
-        ItemMeta meta = item.getItemMeta();
-        if (!meta.hasDisplayName())
-            return;
-        try {
-            int id = ItemManager.decodeId(meta.getDisplayName());
-            RPGItem rItem = ItemManager.getItemById(id);
-            if (rItem == null)
-                return;
-            e.setCancelled(true);
-        } catch (Exception ex) {
-        }
+        e.setCancelled(true);
     }
 
     @EventHandler
@@ -171,17 +139,14 @@ public class Events implements Listener {
     @EventHandler
     public void onPlayerPickup(PlayerPickupItemEvent e) {
         ItemStack item = e.getItem().getItemStack();
-        try {
-            int id = ItemManager.decodeId(item.getItemMeta().getDisplayName());
-            RPGItem rItem = ItemManager.getItemById(id);
-            item.setType(rItem.item.getType());
-            if (!(rItem.meta instanceof LeatherArmorMeta))
-                item.setDurability(rItem.item.getDurability());
-            item.setItemMeta(rItem.meta);
-            e.getItem().setItemStack(item);
-        } catch (Exception ex) {
-
-        }
+        RPGItem rItem = ItemManager.toRPGItem(item);
+        if (rItem == null)
+            return;
+        item.setType(rItem.item.getType());
+        if (!(rItem.meta instanceof LeatherArmorMeta))
+            item.setDurability(rItem.item.getDurability());
+        item.setItemMeta(rItem.meta);
+        e.getItem().setItemStack(item);
 
     }
 
@@ -190,16 +155,13 @@ public class Events implements Listener {
         Inventory in = e.getInventory();
         for (int i = 0; i < in.getSize(); i++) {
             ItemStack item = in.getItem(i);
-            try {
-                int id = ItemManager.decodeId(item.getItemMeta().getDisplayName());
-                RPGItem rItem = ItemManager.getItemById(id);
-                item.setType(rItem.item.getType());
-                if (!(rItem.meta instanceof LeatherArmorMeta))
-                    item.setDurability(rItem.item.getDurability());
-                item.setItemMeta(rItem.meta);
-            } catch (Exception ex) {
-
-            }
+            RPGItem rItem = ItemManager.toRPGItem(item);
+            if (rItem == null)
+                return;
+            item.setType(rItem.item.getType());
+            if (!(rItem.meta instanceof LeatherArmorMeta))
+                item.setDurability(rItem.item.getDurability());
+            item.setItemMeta(rItem.meta);
         }
     }
 
@@ -213,26 +175,16 @@ public class Events implements Listener {
             ItemStack item = player.getItemInHand();
             if (item.getType() == Material.BOW || item.getType() == Material.SNOW_BALL || item.getType() == Material.EGG || item.getType() == Material.POTION)
                 return;
-            if (!item.hasItemMeta())
+            
+            RPGItem rItem = ItemManager.toRPGItem(item);
+            if (rItem == null)
                 return;
-            ItemMeta meta = item.getItemMeta();
-            if (!meta.hasDisplayName())
+            if (!WorldGuard.canPvP(player.getLocation()) && !rItem.ignoreWorldGuard)
                 return;
-            try {
-                int id = ItemManager.decodeId(meta.getDisplayName());
-                RPGItem rItem = ItemManager.getItemById(id);
-                if (rItem == null)
-                    return;
-                if (!WorldGuard.canPvP(player.getLocation()) && !rItem.ignoreWorldGuard)
-                    return;
-                damage = rItem.getDamageMin() != rItem.getDamageMax() ? (rItem.getDamageMin() + random.nextInt(rItem.getDamageMax() - rItem.getDamageMin())) : rItem.getDamageMin();
-                if (e.getEntity() instanceof LivingEntity) {
-                    LivingEntity le = (LivingEntity) e.getEntity();
-                    rItem.hit(player, le);
-                }
-
-            } catch (Exception ex) {
-
+            damage = rItem.getDamageMin() != rItem.getDamageMax() ? (rItem.getDamageMin() + random.nextInt(rItem.getDamageMax() - rItem.getDamageMin())) : rItem.getDamageMin();
+            if (e.getEntity() instanceof LivingEntity) {
+                LivingEntity le = (LivingEntity) e.getEntity();
+                rItem.hit(player, le);
             }
         } else if (e.getDamager() instanceof Projectile) {
             Projectile entity = (Projectile) e.getDamager();
@@ -252,18 +204,13 @@ public class Events implements Listener {
             if (e.isCancelled() || !WorldGuard.canPvP(p.getLocation()))
                 return;
             for (ItemStack pArmour : p.getInventory().getArmorContents()) {
-                try {
-                    int pId = ItemManager.decodeId(pArmour.getItemMeta().getDisplayName());
-                    RPGItem pRItem = ItemManager.getItemById(pId);
-                    if (pRItem == null)
-                        continue;
-                    if (!WorldGuard.canPvP(p.getLocation()) && !pRItem.ignoreWorldGuard)
-                        return;
-                    if (pRItem.getArmour() > 0) {
-                        damage -= Math.round(((double) damage) * (((double) pRItem.getArmour()) / 100d));
-                    }
-                } catch (Exception e2) {
-
+                RPGItem pRItem = ItemManager.toRPGItem(pArmour);
+                if (pRItem == null)
+                    continue;
+                if (!WorldGuard.canPvP(p.getLocation()) && !pRItem.ignoreWorldGuard)
+                    return;
+                if (pRItem.getArmour() > 0) {
+                    damage -= Math.round(((double) damage) * (((double) pRItem.getArmour()) / 100d));
                 }
             }
         }

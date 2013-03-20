@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -18,7 +19,9 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.mcstats.Metrics;
 import org.mcstats.Metrics.Graph;
 
@@ -27,6 +30,7 @@ import think.rpgitems.config.ConfigUpdater;
 import think.rpgitems.data.Font;
 import think.rpgitems.data.Locale;
 import think.rpgitems.item.ItemManager;
+import think.rpgitems.item.RPGItem;
 import think.rpgitems.power.Power;
 import think.rpgitems.power.PowerArrow;
 import think.rpgitems.power.PowerCommand;
@@ -45,6 +49,8 @@ import think.rpgitems.power.PowerTNTCannon;
 import think.rpgitems.power.PowerTeleport;
 import think.rpgitems.power.PowerUnbreakable;
 import think.rpgitems.power.PowerUnbreaking;
+import think.rpgitems.stat.Stat;
+import think.rpgitems.stat.StatPotion;
 import think.rpgitems.support.WorldGuard;
 
 public class Plugin extends JavaPlugin {
@@ -75,6 +81,7 @@ public class Plugin extends JavaPlugin {
         Power.powers.put("unbreakable", PowerUnbreakable.class);
         Power.powers.put("unbreaking", PowerUnbreaking.class);
         Power.powers.put("rumble", PowerRumble.class);
+        Stat.stats.put("potion", StatPotion.class);
         Locale.init(this);
     }
 
@@ -109,11 +116,43 @@ public class Plugin extends JavaPlugin {
                 });
             }
             metrics.addGraph(graph);
+            Graph graphStats = metrics.createGraph("Stat usage");
+            for (String statName : Stat.stats.keySet()) {
+                graphStats.addPlotter(new Metrics.Plotter(statName) {
+
+                    @Override
+                    public int getValue() {
+                        return Stat.statUsage.get(getColumnName());
+                    }
+                });
+            }
+            metrics.addGraph(graphStats);
             metrics.start();
         } catch (Exception e) {
         }
 
-        // Commands.generateHelp();
+        (new BukkitRunnable() {
+            
+            public void run() {
+                List<World> worlds = Bukkit.getWorlds();
+                for (World world : worlds) {
+                    List<Player> players = world.getPlayers();
+                    for (Player player : players) {
+                        ItemStack heldItem = player.getInventory().getItemInHand();
+                        RPGItem heldRPGItem = ItemManager.toRPGItem(heldItem);
+                        if (heldRPGItem != null)
+                            heldRPGItem.tick(player);
+                        ItemStack[] armour = player.getInventory().getArmorContents();
+                        for (ItemStack item : armour) {
+                            RPGItem rpgItem = ItemManager.toRPGItem(item);
+                            if (rpgItem != null)
+                                rpgItem.tick(player);
+                        }
+                    }
+                }
+                
+            }
+        }).runTaskTimer(this, 1, 2);
     }
 
     @Override

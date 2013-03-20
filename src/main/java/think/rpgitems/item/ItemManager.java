@@ -19,12 +19,15 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import think.rpgitems.Plugin;
 import think.rpgitems.commands.Commands;
 import think.rpgitems.data.Locale;
 import think.rpgitems.power.Power;
+import think.rpgitems.stat.Stat;
 import think.rpgitems.support.WorldGuard;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
@@ -619,10 +622,19 @@ public class ItemManager {
             }
 
         });
-        // Kinda of a hack to cause the static blocks of the powers to load
+        // Kinda of a hack to cause the static blocks of the powers/stats to load
         for (Class<? extends Power> p : Power.powers.values()) {
             try {
                 p.newInstance();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        for (Class<? extends Stat> s : Stat.stats.values()) {
+            try {
+                s.newInstance();
             } catch (InstantiationException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {
@@ -666,6 +678,9 @@ public class ItemManager {
                 for (Power power : item.powers) {
                     Power.powerUsage.put(power.getName(), Power.powerUsage.get(power.getName()) + 1);
                 }
+                for (Stat stat : item.stats) {
+                    Stat.statUsage.put(stat.getName(), Stat.statUsage.get(stat.getName()) + 1);
+                }
             }
         } catch (Exception e) {
         }
@@ -704,6 +719,21 @@ public class ItemManager {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+    
+    public static RPGItem toRPGItem(ItemStack item) {
+        if (!item.hasItemMeta())
+            return null;
+        ItemMeta meta = item.getItemMeta();
+        if (!meta.hasDisplayName())
+            return null;
+        try {
+            int id = ItemManager.decodeId(meta.getDisplayName());
+            RPGItem rItem = ItemManager.getItemById(id);
+            return rItem;
+        } catch (Exception e) {
+            return null;
         }
     }
 
