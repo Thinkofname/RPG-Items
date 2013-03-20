@@ -1,0 +1,413 @@
+COMMAND_CONST_ADD = "add"
+
+COMMAND_CONST_ARMOUR = "armour"
+
+COMMAND_CONST_ARROW = "arrow"
+
+COMMAND_CONST_COMMAND = "command"
+
+COMMAND_CONST_CONSUME = "consume"
+
+COMMAND_CONST_CREATE = "create"
+
+COMMAND_CONST_DAMAGE = "damage"
+
+COMMAND_CONST_DESCRIPTION = "description"
+
+COMMAND_CONST_DISPLAY = "display"
+
+COMMAND_CONST_FIREBALL = "fireball"
+
+COMMAND_CONST_FLAME = "flame"
+
+COMMAND_CONST_GIVE = "give"
+
+COMMAND_CONST_HAND = "hand"
+
+COMMAND_CONST_HELP = "help"
+
+COMMAND_CONST_HEX = "hex"
+
+COMMAND_CONST_ICE = "ice"
+
+COMMAND_CONST_ITEM = "item"
+
+COMMAND_CONST_KNOCKUP = "knockup"
+
+COMMAND_CONST_LIGHTNING = "lightning"
+
+COMMAND_CONST_LIST = "list"
+
+COMMAND_CONST_LORE = "lore"
+
+COMMAND_CONST_POTIONHIT = "potionhit"
+
+COMMAND_CONST_POTIONSELF = "potionself"
+
+COMMAND_CONST_POWER = "power"
+
+COMMAND_CONST_QUALITY = "quality"
+
+COMMAND_CONST_RAINBOW = "rainbow"
+
+COMMAND_CONST_REMOVE = "remove"
+
+COMMAND_CONST_REMOVEPOWER = "removepower"
+
+COMMAND_CONST_RUMBLE = "rumble"
+
+COMMAND_CONST_SET = "set"
+
+COMMAND_CONST_TELEPORT = "teleport"
+
+COMMAND_CONST_TNTCANNON = "tntcannon"
+
+COMMAND_CONST_TYPE = "type"
+
+COMMAND_CONST_UNBREAKABLE = "unbreakable"
+
+COMMAND_CONST_UNBREAKING = "unbreaking"
+
+COMMAND_CONST_WORLDGUARD = "worldguard"
+
+COMMAND_INFO_AMPLIFIER = "Amplifier"
+
+COMMAND_INFO_ARMOUR = "Armour"
+
+COMMAND_INFO_BURNTIME = "Burntime"
+
+COMMAND_INFO_CHANCE = "Chance"
+
+COMMAND_INFO_COMMAND = "Command"
+
+COMMAND_INFO_COOLDOWN = "Cooldown"
+
+COMMAND_INFO_COUNT = "Count"
+
+COMMAND_INFO_DAMAGE = "Damage"
+
+COMMAND_INFO_DATA = "Data"
+
+COMMAND_INFO_DESCRIPTIONLINE = "DescriptionLine"
+
+COMMAND_INFO_DETAILS = "Details"
+
+COMMAND_INFO_DISPLAY = "Display"
+
+COMMAND_INFO_DISTANCE = "Distance"
+
+COMMAND_INFO_DOUBLE = "[Double]"
+
+COMMAND_INFO_DOUBLE_LIMIT = "[Double(%d-%d)]"
+
+COMMAND_INFO_DURATION = "Duration"
+
+COMMAND_INFO_EFFECT = "Effect"
+
+COMMAND_INFO_HAND = "Hand"
+
+COMMAND_INFO_HEXCOLOUR = "HexColour"
+
+COMMAND_INFO_INTEGER = "[Integer]"
+
+COMMAND_INFO_INTEGER_LIMIT = "[Integer(%d-%d)]"
+
+COMMAND_INFO_ITEM = "[Item]"
+
+COMMAND_INFO_ITEMID = "ItemID"
+
+COMMAND_INFO_LEVEL = "Level"
+
+COMMAND_INFO_LINENO = "LineNo"
+
+COMMAND_INFO_LORE = "Lore"
+
+COMMAND_INFO_MATERIAL = "[Material]"
+
+COMMAND_INFO_MAX = "Max"
+
+COMMAND_INFO_MIN = "Min"
+
+COMMAND_INFO_NAME = "Name"
+
+COMMAND_INFO_PERMISSION = "Permission"
+
+COMMAND_INFO_PLAYER = "[Player]"
+
+COMMAND_INFO_POWER = "Power"
+
+COMMAND_INFO_QUALITY = "Quality"
+
+COMMAND_INFO_STRING = "[String]"
+
+COMMAND_INFO_STRING_LIMIT = "[String(Max:%d)]"
+
+COMMAND_INFO_TERMS = "Terms"
+
+COMMAND_INFO_TYPE = "Type"
+
+COMMAND_RPGITEM_ARMOUR = "Shows the item @[Item]#'s current armour"
+
+COMMAND_RPGITEM_ARMOUR_SET = "Sets the item @[Item]#'s armour to @[Armour]#"
+
+COMMAND_RPGITEM_ARROW = "Adds the arrow power to @[Item]# with a default cooldown of 20 ticks (1 second). The arrow power will fire an arrow on right click"
+
+COMMAND_RPGITEM_ARROW_FULL = "Adds the arrow power to @[Item]# with a cooldown of @[Cooldown]# ticks. The arrow power will fire an arrow on right click"
+
+COMMAND_RPGITEM_COMMAND = "Adds the command power to @[Item]# with a cooldown of @[Cooldown]# ticks. The tooltip will display @[Display]#. The item will run @[Command]# on @[left,right]# click. **Note**: If you want spaces in @[Display]# or @[Command]# then surround the string with ` e.g: `/say Hello`"
+
+COMMAND_RPGITEM_COMMAND_FULL = "Adds the command power to @[Item]# with a cooldown of @[Cooldown]# ticks. The tooltip will display @[Display]#. The item will run @[Command]# on @[left,right]# click giving the permission @[Permission]# just for the use of the command. **Note**: If you want spaces in @[Display]#, @[Command]# or @[Permission]# then surround the string with ` e.g: `/say Hello`"
+
+COMMAND_RPGITEM_COMMAND_OLD = "Runs the command on @[left/right]# click. @[Detials]# is a | seperated list of @[display Text]# | @[command]# | @[permission]#. The tool-tip displays @[display Text]#. display Text and command must be separated a | symbol. If permission is provided the player will be given the permission just for the use of the item and then it will be removed"
+
+COMMAND_RPGITEM_CONSUME = "Adds the consume power to @[Item]#. The consume power will remove the item on right click."
+
+COMMAND_RPGITEM_CREATE = "Create an item with the name @[Name]#. The @[Name]# is what you use to identify the item for later commands e.g: Give. @[Name]# is not the name of the item on the tool-tip, that is set with Display instead."
+
+COMMAND_RPGITEM_DAMAGE = "Shows the item @[Item]#'s current damage"
+
+COMMAND_RPGITEM_DAMAGE_SET = "Sets the item @[Item]#'s damage to @[Damage]#"
+
+COMMAND_RPGITEM_DAMAGE_SET_RANAGE = "Sets the item @[Item]#'s damage to do random damage between @[Min]# and @[Max]#"
+
+COMMAND_RPGITEM_DESCRIPTION_ADD = "Adds the line @[DescriptionLine]# to the item @[Item]#"
+
+COMMAND_RPGITEM_DESCRIPTION_REMOVE = "Removes the line @[LineNo]# on the item @[Item]#"
+
+COMMAND_RPGITEM_DESCRIPTION_SET = "Sets the line @[LineNo]# to @[DescriptionLine]# on the item @[Item]#"
+
+COMMAND_RPGITEM_DISPLAY = "Shows the item @[Item]#'s current display name"
+
+COMMAND_RPGITEM_DISPLAY_SET = "Sets the item @[Item]#'s display name to @[Display]#"
+
+COMMAND_RPGITEM_ERROR_COMMAND = "Error: %s"
+
+COMMAND_RPGITEM_FIREBALL = "Adds the fireball power to @[Item]# with a default cooldown of 20 ticks (1 second). The fireball power will fire an fireball on right click"
+
+COMMAND_RPGITEM_FIREBALL_FULL = "Adds the fireball power to @[Item]# with a cooldown of @[Cooldown]# ticks. The fireball power will fire an fireball on right click"
+
+COMMAND_RPGITEM_FLAME = "Adds the flame power to @[Item]# with a default burntime of 20 ticks (1 second). The flame power will set the target on fire on hit"
+
+COMMAND_RPGITEM_FLAME_FULL = "Adds the flame power to @[Item]# with a burntime of @[Burntime]# ticks. The flame power will set the target on fire on hit"
+
+COMMAND_RPGITEM_GIVE = "Gives the item @[Item]# to the user of the command"
+
+COMMAND_RPGITEM_GIVE_PLAYER = "Gives the item @[Item]# to the player @[Player]#"
+
+COMMAND_RPGITEM_GIVE_PLAYER_COUNT = "Gives @[Count]# of the item @[Item]# to the player @[Player]#"
+
+COMMAND_RPGITEM_HAND = "Shows the item @[Item]#'s current hand"
+
+COMMAND_RPGITEM_HAND_SET = "Sets the item @[Item]#'s hand to @[Hand]#"
+
+COMMAND_RPGITEM_HELP = "Shows commands and help for commands that contain the search terms @[Terms]#"
+
+COMMAND_RPGITEM_ICE = "Adds the ice power to @[Item]# with a default cooldown of 20 ticks (1 second). The ice power will fire an ice block on right click which will then create a box of ice on impact, the ice will slowly remove itself"
+
+COMMAND_RPGITEM_ICE_FULL = "Adds the ice power to @[Item]# with a cooldown of @[Cooldown]# ticks. The ice power will fire an ice block on right click which will then create a box of ice on impact, the ice will slowly remove itself"
+
+COMMAND_RPGITEM_ITEM = "Shows the item @[Item]#'s current item"
+
+COMMAND_RPGITEM_ITEM_SET = "Sets the item @[Item]#'s item to @[Material]#"
+
+COMMAND_RPGITEM_ITEM_SET_DATA = "Sets the item @[Item]#'s item to @[Material]# : @[Data]#"
+
+COMMAND_RPGITEM_ITEM_SET_DATA_HEX = "Sets the item @[Item]#'s item to @[Material]# : @[Data]#, where @[Data]# is a hex number"
+
+COMMAND_RPGITEM_ITEM_SET_ID = "Sets the item @[Item]#'s item to @[ItemID]#"
+
+COMMAND_RPGITEM_ITEM_SET_ID_DATA = "Sets the item @[Item]#'s item to @[ItemID]# : @[Data]#"
+
+COMMAND_RPGITEM_ITEM_WORLDGUARD = "Toggles worldguard override on the @[Item]#"
+
+COMMAND_RPGITEM_KNOCKUP = "Adds the knockup power to @[Item]# with a default chance of 1/20 and a power of 2. The knockup power will send the hit target flying"
+
+COMMAND_RPGITEM_KNOCKUP_FULL = "Adds the knockup power to @[Item]# with a chance of 1/@[Chance]# and a power of @[Power]#. The knockup power will send the hit target flying"
+
+COMMAND_RPGITEM_LIGHTNING = "Adds the lightning power to @[Item]# with a default chance of 1/20. The lightning power will strike the hit target with lightning"
+
+COMMAND_RPGITEM_LIGHTNING_FULL = "Adds the lightning power to @[Item]# with a chance of 1/@[Chance]#. The lightning power will strike the hit target with lightning"
+
+COMMAND_RPGITEM_LIST = "Shows a list of all created items"
+
+COMMAND_RPGITEM_LORE = "Shows the item @[Item]#'s current lore"
+
+COMMAND_RPGITEM_LORE_SET = "Sets the item @[Item]#'s lore to @[Lore]#"
+
+COMMAND_RPGITEM_POTIONHIT = "Adds the potionhit power to @[Item]# with a chance of hitting 1/@[Chance]#. On hit it will apply @[Effect]# for @[Duration]# ticks at power @[Amplifier]#. Valid potion effects: "
+
+COMMAND_RPGITEM_POTIONSELF = "Adds the potionself power to @[Item]# with a cooldown of @[Cooldown]#. On right click it will apply @[Effect]# for @[Duration]# ticks at power @[Amplifier]#. Valid potion effects: "
+
+COMMAND_RPGITEM_PRINT = "Prints item @[Item]#'s tool-tip to chat"
+
+COMMAND_RPGITEM_QUALITY = "Shows the item @[Item]#'s current quality"
+
+COMMAND_RPGITEM_QUALITY_SET = "Sets the item @[Item]#'s quality to @[Quality]#. You can select from: %s"
+
+COMMAND_RPGITEM_RAINBOW = "Adds the rainbow power to @[Item]# with a default cooldown of 20 ticks (1 second) and a block count of 5. The rainbow power will fire blocks of coloured wool on right click, the wool will remove itself."
+
+COMMAND_RPGITEM_RAINBOW_FULL = "Adds the rainbow power to @[Item]# with a cooldown of @[Cooldown]# ticks and a block count of @[Count]#. The rainbow power will fire blocks of coloured wool on right click, the wool will remove itself."
+
+COMMAND_RPGITEM_REMOVE = "Remove the item @[Item]# from the system. This does not currently remove the item from players' inventories but all powers and damage will stop working on them."
+
+COMMAND_RPGITEM_REMOVEPOWER = "Removes power @[Power]# from item @[Item]#"
+
+COMMAND_RPGITEM_RUMBLE = "Adds the runble power to @[Item]# with a cooldown of @[Cooldown]# ticks and a power of @[Power]#, the wave will travel @[Distance]# blocks. The rumble power sends a shockwave through the ground and sends any hit entities flying"
+
+COMMAND_RPGITEM_TELEPORT = "Adds the teleport power to @[Item]# with a default cooldown of 20 ticks (1 second) and teleport distance of 5 blocks. The teleport will teleport you in the direction your looking in"
+
+COMMAND_RPGITEM_TELEPORT_FULL = "Adds the teleport power to @[Item]# with a cooldown of @[Cooldown]# ticks (1 second) and teleport distance of @[Distance]# blocks. The teleport will teleport you in the direction your looking in"
+
+COMMAND_RPGITEM_TNTCANNON = "Adds the tntcannon power to @[Item]# with a default cooldown of 20 ticks (1 second). The tntcannon power will fire active tnt on right click."
+
+COMMAND_RPGITEM_TNTCANNON_FULL = "Adds the tntcannon power to @[Item]# with a cooldown of @[Cooldown]# ticks. The tntcannon power will fire active tnt on right click."
+
+COMMAND_RPGITEM_TYPE = "Shows the item @[Item]#'s current type"
+
+COMMAND_RPGITEM_TYPE_SET = "Sets the item @[Item]#'s type to @[Type]#"
+
+COMMAND_RPGITEM_UNBREAKABLE = "Adds the unbreakable power to @[Item]#. The unbreakable power prevents the item from breaking"
+
+COMMAND_RPGITEM_UNBREAKING = "Adds the unbreaking power to @[Item]# with a default level of 1. The unbreaking power works similar to normal unbreaking"
+
+COMMAND_RPGITEM_UNBREAKING_FULL = "Adds the unbreaking power to @[Item]# with a level of @[Level]#. The unbreaking power works similar to normal unbreaking"
+
+COMMAND_RPGITEM_WORLDGUARD = "Toggles world guard support. Currently if enabled it prevents RPG Items from being used in no-pvp area"
+
+MESSAGE_ARMOUR_GET = "Item '%s' armour is '%d%%'"
+
+MESSAGE_ARMOUR_SET = "Item '%s' armour set to '%d%%'"
+
+MESSAGE_COMMAND_INFO = "More detailed help on bukkitdev page or /rpgitem help [terms]"
+
+MESSAGE_COMMAND_USAGE = "Command usage for: /%s (%s)"
+
+MESSAGE_COOLDOWN = "You must wait %.1f seconds"
+
+MESSAGE_CREATE_FAIL = "An item with that name already exists"
+
+MESSAGE_CREATE_OK = "Item '%s' created"
+
+MESSAGE_DAMAGE_GET = "Item '%s' damage is %d-%d"
+
+MESSAGE_DAMAGE_SET = "Item '%s' damage set to %d"
+
+MESSAGE_DAMAGE_SET_RANGE = "Item '%s' damage set to %d-%d"
+
+MESSAGE_DESCRIPTION_CHANGE = "Changed line"
+
+MESSAGE_DESCRIPTION_OK = "Added line"
+
+MESSAGE_DESCRIPTION_OUT_OF_RANGE = "Line %d is out of range"
+
+MESSAGE_DESCRIPTION_REMOVE = "Removed line"
+
+MESSAGE_DISPLAY_GET = "Item '%s' display name is '%s'"
+
+MESSAGE_DISPLAY_SET = "Item '%s' display name set to '%s'"
+
+MESSAGE_ERROR_COMMAND = "Error: %s"
+
+MESSAGE_ERROR_COMMAND_FORMAT = "Display text and command must be seperated by a |"
+
+MESSAGE_ERROR_DOUBLE_FORMAT = "'%s' is not a double"
+
+MESSAGE_ERROR_DOUBLE_LIMIT = "Number must be between %.2f and %.2f"
+
+MESSAGE_ERROR_EFFECT = "%s is not a valid effect"
+
+MESSAGE_ERROR_INTEGER_FORMAT = "'%s' is not a integer"
+
+MESSAGE_ERROR_INTEGER_LIMIT = "Number must be between %d and %d"
+
+MESSAGE_ERROR_ITEM = "Unknown item '%s'"
+
+MESSAGE_ERROR_MATERIAL = "Unknown material '%s'"
+
+MESSAGE_ERROR_OPTION = "Invalid option '%s'"
+
+MESSAGE_ERROR_PERMISSION = "You do not have permission"
+
+MESSAGE_ERROR_PLAYER = "Cannot find player %s"
+
+MESSAGE_ERROR_STRING_LENGTH = "'%s' in longer than max length %d"
+
+MESSAGE_ERROR_UNKNOWN_COMMAND = "Error: Unknown command %s"
+
+MESSAGE_GIVE_CONSOLE = "Cannot give console items"
+
+MESSAGE_HAND_GET = "Item '%s' hand is '%s'"
+
+MESSAGE_HAND_SET = "Item '%s' hand set to '%s'"
+
+MESSAGE_HELP_FOR = "Showing help for '%s'"
+
+MESSAGE_ITEM_CANT_FIND = "Cannot find item"
+
+MESSAGE_ITEM_GET = "Item '%s' item is '%s'"
+
+MESSAGE_ITEM_SET = "Item '%s' item set to '%s:%d'"
+
+MESSAGE_LORE_GET = "Item '%s' lore is '%s'"
+
+MESSAGE_LORE_SET = "Item '%s' lore set to '%s'"
+
+MESSAGE_POWER_OK = "Power added"
+
+MESSAGE_POWER_REMOVED = "Power %s removed"
+
+MESSAGE_POWER_UNKNOWN = "Unknown power %s"
+
+MESSAGE_QUALITY_GET = "Item '%s' quality is '%s'"
+
+MESSAGE_QUALITY_NOTE = "Qualities: "
+
+MESSAGE_QUALITY_SET = "Item '%s' quality set to '%s'"
+
+MESSAGE_REMOVE_OK = "Item '%s' removed"
+
+MESSAGE_TOO_FAR = "It landed too far away..."
+
+MESSAGE_TYPE_GET = "Item '%s' type is '%s'"
+
+MESSAGE_TYPE_SET = "Item '%s' type set to '%s'"
+
+MESSAGE_WORLDGUARD_DISABLE = "World Guard support disabled"
+
+MESSAGE_WORLDGUARD_ENABLE = "World Guard support enabled"
+
+MESSAGE_WORLDGUARD_ERROR = "No World Guard plugin found"
+
+MESSAGE_WORLDGUARD_OVERRIDE_ACTIVE = "Worldguard override active"
+
+MESSAGE_WORLDGUARD_OVERRIDE_DISABLED = "Worldguard override disabled"
+
+POWER_ARROW = "Shoots an arrow. (%.1fs cooldown)"
+
+POWER_CONSUME = "Consumed on use"
+
+POWER_FIREBALL = "Shoots a fireball (%.1fs cooldown)"
+
+POWER_FLAME = "Burns target for %.1f seconds"
+
+POWER_ICE = "Shoots Ice (%.1fs cooldown)"
+
+POWER_KNOCKUP = "%d%% chance to send target flying"
+
+POWER_LIGHTNING = "%d%% chance to shock on hit"
+
+POWER_POTIONHIT = "%d%% chance to apply %s"
+
+POWER_POTIONSELF = "Grants %s %d for %.1fs"
+
+POWER_RAINBOW = "Shoots %d multicoloured wool (%.1fs cooldown)"
+
+POWER_RUMBLE = "Sends out a shockwave. (%.1fs cooldown)"
+
+POWER_TELEPORT = "Teleports %d blocks (%.1fs cooldown)"
+
+POWER_TNTCANNON = "Shoots TNT (%.1fs cooldown)"
+
+POWER_UNBREAKABLE = "Never breaks"
+
+POWER_UNBREAKING = "Unbreaking %d"
