@@ -723,6 +723,8 @@ public class ItemManager {
     }
     
     public static RPGItem toRPGItem(ItemStack item) {
+        if (item == null)
+            return null;
         if (!item.hasItemMeta())
             return null;
         ItemMeta meta = item.getItemMeta();
