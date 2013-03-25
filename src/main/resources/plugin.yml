@@ -1,6 +1,6 @@
 name: RPG Items
 main: think.rpgitems.Plugin
-version: 1.8
+version: 2.0
 dev-url: http://dev.bukkit.org/server-mods/rpg-items/
 softdepend: [WorldGuard]
 commands:
