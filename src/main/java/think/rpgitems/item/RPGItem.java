@@ -1,12 +1,25 @@
+/*
+ *  This file is part of RPG Items.
+ *
+ *  RPG Items is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  RPG Items is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with RPG Items.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package think.rpgitems.item;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.CharSet;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,17 +27,14 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.map.MinecraftFont;
 
 import think.rpgitems.Plugin;
-import think.rpgitems.commands.Commands;
 import think.rpgitems.data.Font;
 import think.rpgitems.power.Power;
 import think.rpgitems.stat.Stat;
@@ -124,7 +134,7 @@ public class RPGItem {
             for (String key : power.getKeys(false)) {
                 try {
                     if (!Power.powers.containsKey(key)) {
-                        //Invalid power 
+                        // Invalid power
                         continue;
                     }
                     Power pow = Power.powers.get(key).newInstance();
@@ -303,7 +313,7 @@ public class RPGItem {
         if (update)
             rebuild();
     }
-    
+
     public void addStat(Stat stat) {
         stats.add(stat);
         Stat.statUsage.put(stat.getName(), Stat.statUsage.get(stat.getName()));

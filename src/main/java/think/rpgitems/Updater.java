@@ -29,18 +29,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 /**
  * Check dev.bukkit.org to find updates for a given plugin, and download the updates if needed.
  * <p>
- * <b>VERY, VERY IMPORTANT</b>: Because there are no standards for adding auto-update toggles in
- * your plugin's config, this system provides NO CHECK WITH YOUR CONFIG to make sure the user has
- * allowed auto-updating. <br>
- * It is a <b>BUKKIT POLICY</b> that you include a boolean value in your config that prevents the
- * auto-updater from running <b>AT ALL</b>. <br>
- * If you fail to include this option in your config, your plugin will be <b>REJECTED</b> when you
- * attempt to submit it to dev.bukkit.org.
+ * <b>VERY, VERY IMPORTANT</b>: Because there are no standards for adding auto-update toggles in your plugin's config, this system provides NO CHECK WITH YOUR CONFIG to make sure the user has allowed auto-updating. <br>
+ * It is a <b>BUKKIT POLICY</b> that you include a boolean value in your config that prevents the auto-updater from running <b>AT ALL</b>. <br>
+ * If you fail to include this option in your config, your plugin will be <b>REJECTED</b> when you attempt to submit it to dev.bukkit.org.
  * <p>
- * An example of a good configuration option would be something similar to 'auto-update: true' - if
- * this value is set to false you may NOT run the auto-updater. <br>
- * If you are unsure about these rules, please read the plugin submission guidelines:
- * http://goo.gl/8iU5l
+ * An example of a good configuration option would be something similar to 'auto-update: true' - if this value is set to false you may NOT run the auto-updater. <br>
+ * If you are unsure about these rules, please read the plugin submission guidelines: http://goo.gl/8iU5l
  * 
  * @author H31IX
  */
@@ -108,8 +102,7 @@ public class Updater {
      */
     public enum UpdateResult {
         /**
-         * The updater found an update, and has readied it to be loaded the next time the server
-         * restarts/reloads.
+         * The updater found an update, and has readied it to be loaded the next time the server restarts/reloads.
          */
         SUCCESS,
         /**
@@ -125,8 +118,7 @@ public class Updater {
          */
         FAIL_DBO,
         /**
-         * When running the version check, the file on DBO did not contain the a version in the
-         * format 'vVersion' such as 'v1.0'.
+         * When running the version check, the file on DBO did not contain the a version in the format 'vVersion' such as 'v1.0'.
          */
         FAIL_NOVERSION,
         /**
@@ -134,8 +126,7 @@ public class Updater {
          */
         FAIL_BADSLUG,
         /**
-         * The updater found an update, but because of the UpdateType being set to NO_DOWNLOAD, it
-         * wasn't downloaded.
+         * The updater found an update, but because of the UpdateType being set to NO_DOWNLOAD, it wasn't downloaded.
          */
         UPDATE_AVAILABLE
     }
@@ -153,8 +144,7 @@ public class Updater {
          */
         NO_VERSION_CHECK,
         /**
-         * Get information about the version and the download size, but don't actually download
-         * anything.
+         * Get information about the version and the download size, but don't actually download anything.
          */
         NO_DOWNLOAD
     }
@@ -167,8 +157,7 @@ public class Updater {
      * @param slug
      * The dev.bukkit.org slug of the project (http://dev.bukkit.org/server-mods/SLUG_IS_HERE)
      * @param file
-     * The file that the plugin is running from, get this by doing this.getFile() from within your
-     * main class.
+     * The file that the plugin is running from, get this by doing this.getFile() from within your main class.
      * @param type
      * Specify the type of update this will be. See {@link UpdateType}
      * @param announce
@@ -203,8 +192,7 @@ public class Updater {
     }
 
     /**
-     * Get the total bytes of the file (can only be used after running a version check or a normal
-     * run).
+     * Get the total bytes of the file (can only be used after running a version check or a normal run).
      */
     public long getFileSize() {
         waitForThread();
@@ -220,8 +208,7 @@ public class Updater {
     }
 
     /**
-     * As the result of Updater output depends on the thread's completion, it is necessary to wait
-     * for the thread to finish before alloowing anyone to check the result.
+     * As the result of Updater output depends on the thread's completion, it is necessary to wait for the thread to finish before alloowing anyone to check the result.
      */
     public void waitForThread() {
         if (thread.isAlive()) {
@@ -379,8 +366,7 @@ public class Updater {
     }
 
     /**
-     * Check if the name of a jar is one of the plugins currently installed, used for extracting the
-     * correct files out of a zip.
+     * Check if the name of a jar is one of the plugins currently installed, used for extracting the correct files out of a zip.
      */
     public boolean pluginFile(String name) {
         for (File file : new File("plugins").listFiles()) {
@@ -436,8 +422,7 @@ public class Updater {
     }
 
     /**
-     * Check to see if the program should continue by evaluation whether the plugin is already
-     * updated, or shouldn't be updated
+     * Check to see if the program should continue by evaluation whether the plugin is already updated, or shouldn't be updated
      */
     private boolean versionCheck(String title) {
         if (type != UpdateType.NO_VERSION_CHECK) {
@@ -492,8 +477,7 @@ public class Updater {
     }
 
     /**
-     * Evaluate whether the version number is marked showing that it should not be updated by this
-     * program
+     * Evaluate whether the version number is marked showing that it should not be updated by this program
      */
     private boolean hasTag(String version) {
         for (String string : noUpdateTag) {

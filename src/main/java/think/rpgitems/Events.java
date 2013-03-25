@@ -1,3 +1,19 @@
+/*
+ *  This file is part of RPG Items.
+ *
+ *  RPG Items is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  RPG Items is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with RPG Items.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package think.rpgitems;
 
 import gnu.trove.map.hash.TIntByteHashMap;
@@ -81,20 +97,20 @@ public class Events implements Listener {
         if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             ItemStack item = player.getItemInHand();
             if (item.getType() == Material.BOW || item.getType() == Material.SNOW_BALL || item.getType() == Material.EGG || item.getType() == Material.POTION)
-                return;       
-            
+                return;
+
             RPGItem rItem = ItemManager.toRPGItem(item);
             if (rItem == null)
                 return;
             if (!WorldGuard.canPvP(player.getLocation()) && !rItem.ignoreWorldGuard)
                 return;
-            rItem.rightClick(player);            
+            rItem.rightClick(player);
         } else if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
-            
+
             ItemStack item = player.getItemInHand();
             if (item.getType() == Material.BOW || item.getType() == Material.SNOW_BALL || item.getType() == Material.EGG || item.getType() == Material.POTION)
                 return;
-       
+
             RPGItem rItem = ItemManager.toRPGItem(item);
             if (rItem == null)
                 return;
@@ -110,7 +126,7 @@ public class Events implements Listener {
         ItemStack item = e.getPlayer().getItemInHand();
         if (item == null)
             return;
-    
+
         RPGItem rItem = ItemManager.toRPGItem(item);
         if (rItem == null)
             return;
@@ -127,8 +143,8 @@ public class Events implements Listener {
                 int id = ItemManager.decodeId(item.getItemMeta().getDisplayName());
                 RPGItem rItem = ItemManager.getItemById(id);
                 item.setType(rItem.item.getType());
-//                if (!(rItem.meta instanceof LeatherArmorMeta))
-//                    item.setDurability(rItem.item.getDurability());
+                // if (!(rItem.meta instanceof LeatherArmorMeta))
+                // item.setDurability(rItem.item.getDurability());
                 item.setItemMeta(rItem.meta);
             } catch (Exception ex) {
 
@@ -175,7 +191,7 @@ public class Events implements Listener {
             ItemStack item = player.getItemInHand();
             if (item.getType() == Material.BOW || item.getType() == Material.SNOW_BALL || item.getType() == Material.EGG || item.getType() == Material.POTION)
                 return;
-            
+
             RPGItem rItem = ItemManager.toRPGItem(item);
             if (rItem == null)
                 return;

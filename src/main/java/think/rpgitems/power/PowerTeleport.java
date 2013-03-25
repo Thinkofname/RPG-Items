@@ -1,3 +1,19 @@
+/*
+ *  This file is part of RPG Items.
+ *
+ *  RPG Items is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  RPG Items is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with RPG Items.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package think.rpgitems.power;
 
 import org.bukkit.ChatColor;
@@ -41,9 +57,9 @@ public class PowerTeleport extends Power {
             World world = player.getWorld();
             Location start = player.getLocation();
             start.setY(start.getY() + 1.6);
-            //Location current = new Location(world, 0, 0, 0);
+            // Location current = new Location(world, 0, 0, 0);
             Block lastSafe = world.getBlockAt(start);
-            //Keeping the old method because BlockIterator could get removed (irc)
+            // Keeping the old method because BlockIterator could get removed (irc)
             // double dir = Math.toRadians(start.getYaw()) + (Math.PI / 2d);
             // double dirY = Math.toRadians(start.getPitch()) + (Math.PI / 2d);
             BlockIterator bi = new BlockIterator(player, distance);
