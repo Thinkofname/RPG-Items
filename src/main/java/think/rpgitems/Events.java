@@ -127,8 +127,8 @@ public class Events implements Listener {
                 int id = ItemManager.decodeId(item.getItemMeta().getDisplayName());
                 RPGItem rItem = ItemManager.getItemById(id);
                 item.setType(rItem.item.getType());
-                if (!(rItem.meta instanceof LeatherArmorMeta))
-                    item.setDurability(rItem.item.getDurability());
+//                if (!(rItem.meta instanceof LeatherArmorMeta))
+//                    item.setDurability(rItem.item.getDurability());
                 item.setItemMeta(rItem.meta);
             } catch (Exception ex) {
 
