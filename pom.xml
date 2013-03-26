@@ -34,11 +34,17 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-	        <groupId>org.mcstats.bukkit</groupId>
-	        <artifactId>metrics</artifactId>
-	        <version>R6</version>
-	        <scope>compile</scope>
-	    </dependency>
+			<groupId>org.mcstats.bukkit</groupId>
+			<artifactId>metrics</artifactId>
+			<version>R6</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+		    <groupId>com.sk89q</groupId>
+		    <artifactId>worldguard</artifactId>
+		    <version>5.7.4-SNAPSHOT</version>
+		    <scope>runtime</scope>
+		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>
@@ -46,9 +52,13 @@
 			<url>http://repo.bukkit.org/content/groups/public/</url>
 		</repository>
 		<repository>
-        <id>Plugin Metrics</id>
-        <url>http://repo.mcstats.org/content/repositories/public</url>
-    </repository>
+			<id>Plugin Metrics</id>
+			<url>http://repo.mcstats.org/content/repositories/public</url>
+		</repository>
+		<repository>
+			<id>sk89q-repo</id>
+			<url>http://maven.sk89q.com/repo/</url>
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
@@ -148,14 +158,11 @@
 						</goals>
 						<configuration>
 							<artifactSet>
-								<!--<excludes>
-									<exclude>junit:junit</exclude>
-									<exclude>*:craftbukkit</exclude>
-									<exclude>*:bukkit</exclude>
-								</excludes>-->
+								<!--<excludes> <exclude>junit:junit</exclude> <exclude>*:craftbukkit</exclude> 
+									<exclude>*:bukkit</exclude> </excludes> -->
 								<includes>
-								    <include>*:trove4j</include>
-								    <include>*:metrics</include>
+									<include>*:trove4j</include>
+									<include>*:metrics</include>
 								</includes>
 							</artifactSet>
 							<minimizeJar>true</minimizeJar>
