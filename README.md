@@ -1,3 +1,3 @@
 RPG-Items
 =========
-Requires WorldEdit and WorldGuard
+Feel free to submit a pull request if you add/fix stuff
