@@ -169,6 +169,7 @@ public class Plugin extends JavaPlugin {
 
             }
         }).runTaskTimer(this, 1, 2);
+        Commands.register(new Handler());
     }
 
     @Override

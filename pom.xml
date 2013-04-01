@@ -43,7 +43,6 @@
 		    <groupId>com.sk89q</groupId>
 		    <artifactId>worldguard</artifactId>
 		    <version>5.7.4-SNAPSHOT</version>
-		    <scope>runtime</scope>
 		</dependency>
 	</dependencies>
 	<repositories>

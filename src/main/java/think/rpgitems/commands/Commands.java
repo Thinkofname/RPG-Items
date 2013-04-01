@@ -24,6 +24,8 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -58,6 +60,8 @@ abstract public class Commands {
         argTypes.put('n', ArgumentItem.class);
         argTypes.put('m', ArgumentMaterial.class);
     }
+    
+    public static void add(String a, Commands b) {}
 
     public static void exec(CommandSender sender, String com) {
         com = com.trim();
@@ -81,7 +85,18 @@ abstract public class Commands {
         if (pos == -1) {
             for (CommandDef c : command) {
                 if (c.arguments.length == 0) {
-                    c.command.command(sender, null);
+                    try {
+                        c.method.invoke(c.handler, sender);
+                    } catch (IllegalAccessException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (IllegalArgumentException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                     return;
                 }
             }
@@ -100,10 +115,10 @@ abstract public class Commands {
                     buf.append(a.printable());
                 }
                 sender.sendMessage(buf.toString());
-                String note = c.command.getNote();
+                /*String note = c.command.getNote();
                 if (note != null) {
                     sender.sendMessage(ChatColor.GREEN + "- " + note);
-                }
+                }*/
             }
             sender.sendMessage(ChatColor.GREEN + Locale.get("MESSAGE_COMMAND_INFO"));
             return;
@@ -148,6 +163,7 @@ abstract public class Commands {
                 }
             }
             ArrayList<Object> outArgs = new ArrayList<Object>();
+            outArgs.add(sender);
             for (int i = 0; i < c.arguments.length; i++) {
                 CommandArgument a = c.arguments[i];
                 if (!a.isConst()) {
@@ -174,7 +190,18 @@ abstract public class Commands {
                     }
                 }
             }
-            c.command.command(sender, outArgs.toArray());
+            try {
+                c.method.invoke(c.handler, outArgs.toArray());
+            } catch (IllegalAccessException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IllegalArgumentException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             return;
         }
 
@@ -318,8 +345,24 @@ abstract public class Commands {
         }
         return outList;
     }
-
-    public static void add(String com, Commands callback) {
+    
+    public static void register(CommandHandler handler) {
+        Method[] methods = handler.getClass().getMethods();
+        for (Method method : methods) {
+            Class<?>[] params = method.getParameterTypes();
+            CommandString comString = method.getAnnotation(CommandString.class);
+            if (comString == null) {
+                System.out.println("No commandString for " + method.getName());
+                continue;
+            }
+            if (params.length == 0 || !params[0].isAssignableFrom(CommandSender.class)) {
+                throw new RuntimeException("First argument must be CommandSender @ " + method.getName());
+            }
+            add(comString.value(), method, handler);
+        }
+    }
+    
+    private static void add(String com, Method method, CommandHandler handler) {
         com = com.trim();
         int pos = com.indexOf(' ');
         String comName;
@@ -331,7 +374,14 @@ abstract public class Commands {
 
         CommandDef def = new CommandDef();
         def.commandString = com;
-        def.command = callback;
+        def.method = method;
+        def.handler = handler;
+        Class<?>[] params = method.getParameterTypes();
+        if (method.isAnnotationPresent(CommandDocumentation.class)) {
+            def.documentation = method.getAnnotation(CommandDocumentation.class).value();
+        } else {
+            def.documentation = "";
+        }
         if (!commands.containsKey(comName)) {
             commands.put(comName, new ArrayList<CommandDef>());
         }
@@ -342,6 +392,7 @@ abstract public class Commands {
         }
         com = com.substring(pos + 1);
         ArrayList<CommandArgument> arguments = new ArrayList<CommandArgument>();
+        int realArgumentsCount = 0;
         while (true) {
             pos = com.indexOf(' ');
             String a;
@@ -366,9 +417,13 @@ abstract public class Commands {
                 CommandArgument arg;
                 try {
                     arg = cAT.newInstance();
+                    if (!params[realArgumentsCount + 1].isAssignableFrom(arg.getType())) {
+                        throw new RuntimeException("Type mismatch for " + method.getName());
+                    }
                     arg.init(a.substring(3, a.length() - 1));
                     arg.name = name;
                     arguments.add(arg);
+                    realArgumentsCount++;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -379,13 +434,15 @@ abstract public class Commands {
                 break;
             }
         }
-
+        if (params.length != realArgumentsCount + 1) {
+            throw new RuntimeException("Argument count mis-match for " + method.getName());
+        }
         def.arguments = new CommandArgument[arguments.size()];
         arguments.toArray(def.arguments);
     }
 
     static {
-        add("rpgitem help $TERMS:s[]", new Commands() {
+        /*TODO:add("rpgitem help $TERMS:s[]", new Commands() {
 
             @Override
             public String getDocs() {
@@ -396,7 +453,7 @@ abstract public class Commands {
             public void command(CommandSender sender, Object[] args) {
                 searchHelp(sender, (String) args[0]);
             }
-        });
+        });*/
     }
 
     public static void searchHelp(CommandSender sender, String terms) {
@@ -427,7 +484,7 @@ abstract public class Commands {
                         buf.append(a.printable());
                     }
                     sender.sendMessage(buf.toString());
-                    String docStr = c.command.getDocs().replaceAll("@", "" + ChatColor.BLUE).replaceAll("#", "" + ChatColor.WHITE);
+                    String docStr = c.documentation.replaceAll("@", "" + ChatColor.BLUE).replaceAll("#", "" + ChatColor.WHITE);
                     StringBuilder docBuf = new StringBuilder();
                     char[] chars = docStr.toCharArray();
                     docBuf.append(ChatColor.WHITE);
@@ -528,7 +585,7 @@ abstract public class Commands {
                         buf.append("<</color>> ");
                     }
                     buf.append("**===\n");
-                    String docStr = c.command.getDocs().replaceAll("@", "<<color 0000ff>>").replaceAll("#", "<</color>>");
+                    String docStr = c.documentation.replaceAll("@", "<<color 0000ff>>").replaceAll("#", "<</color>>");
                     StringBuilder docBuf = new StringBuilder();
                     char[] chars = docStr.toCharArray();
                     for (int i = 0; i < chars.length; i++) {
@@ -631,8 +688,10 @@ abstract public class Commands {
 
 class CommandDef {
     public String commandString;
-    public Commands command;
+    public CommandHandler handler;
+    public Method method;
     public CommandArgument[] arguments;
+    public String documentation;
 }
 
 abstract class CommandArgument {
@@ -644,6 +703,8 @@ abstract class CommandArgument {
 
     public abstract String printable();
 
+    public abstract Class<?> getType();
+    
     public String name = "";
 
     public boolean isConst() {
@@ -716,6 +777,11 @@ class ArgumentInteger extends CommandArgument {
         return Locale.get("COMMAND_INFO_INTEGER");
     }
 
+    @Override
+    public Class<?> getType() {
+        return int.class;
+    }
+
 }
 
 class ArgumentDouble extends CommandArgument {
@@ -774,6 +840,11 @@ class ArgumentDouble extends CommandArgument {
         return Locale.get("COMMAND_INFO_DOUBLE");
     }
 
+    @Override
+    public Class<?> getType() {
+        return double.class;
+    }
+
 }
 
 class ArgumentString extends CommandArgument {
@@ -806,6 +877,11 @@ class ArgumentString extends CommandArgument {
         if (maxLength != 0)
             return String.format(Locale.get("COMMAND_INFO_STRING_LIMIT"), maxLength);
         return Locale.get("COMMAND_INFO_STRING");
+    }
+
+    @Override
+    public Class<?> getType() {
+        return String.class;
     }
 
 }
@@ -846,6 +922,11 @@ class ArgumentConst extends CommandArgument {
     public boolean isConst() {
         return true;
     }
+
+    @Override
+    public Class<?> getType() {
+        return null;
+    }
 }
 
 class ArgumentPlayer extends CommandArgument {
@@ -875,6 +956,11 @@ class ArgumentPlayer extends CommandArgument {
     @Override
     public String printable() {
         return Locale.get("COMMAND_INFO_PLAYER");
+    }
+
+    @Override
+    public Class<?> getType() {
+        return Player.class;
     }
 
 }
@@ -934,6 +1020,11 @@ class ArgumentOption extends CommandArgument {
         }
     }
 
+    @Override
+    public Class<?> getType() {
+        return String.class;
+    }
+
 }
 
 class ArgumentItem extends CommandArgument {
@@ -966,6 +1057,11 @@ class ArgumentItem extends CommandArgument {
     @Override
     public String printable() {
         return Locale.get("COMMAND_INFO_ITEM");
+    }
+
+    @Override
+    public Class<?> getType() {
+        return RPGItem.class;
     }
 
 }
@@ -1001,6 +1097,11 @@ class ArgumentMaterial extends CommandArgument {
     @Override
     public String printable() {
         return Locale.get("COMMAND_INFO_MATERIAL");
+    }
+
+    @Override
+    public Class<?> getType() {
+        return Material.class;
     }
 
 }

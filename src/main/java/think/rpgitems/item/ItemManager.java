@@ -53,7 +53,7 @@ public class ItemManager {
     public static HashMap<String, RPGItem> itemByName = new HashMap<String, RPGItem>();
     private static int currentPos = 0;
 
-    static {
+    /*static {
         Commands.add("rpgitem list", new Commands() {
 
             @Override
@@ -657,7 +657,7 @@ public class ItemManager {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 
     public static void load(Plugin plugin) {
         try {
