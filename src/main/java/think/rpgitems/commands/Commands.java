@@ -352,7 +352,6 @@ abstract public class Commands {
             Class<?>[] params = method.getParameterTypes();
             CommandString comString = method.getAnnotation(CommandString.class);
             if (comString == null) {
-                System.out.println("No commandString for " + method.getName());
                 continue;
             }
             if (params.length == 0 || !params[0].isAssignableFrom(CommandSender.class)) {
@@ -379,6 +378,9 @@ abstract public class Commands {
         Class<?>[] params = method.getParameterTypes();
         if (method.isAnnotationPresent(CommandDocumentation.class)) {
             def.documentation = method.getAnnotation(CommandDocumentation.class).value();
+            if (def.documentation.charAt(0) == '$') {
+                def.documentation = Locale.get(def.documentation.substring(1));
+            }
         } else {
             def.documentation = "";
         }
