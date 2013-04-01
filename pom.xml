@@ -4,7 +4,7 @@
 
 	<groupId>think</groupId>
 	<artifactId>rpgitems</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>2.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>rpgitems</name>
@@ -202,7 +202,7 @@
 							<tasks>
 								<copy
 									file="${project.build.directory}/${project.build.finalName}.jar"
-									tofile="${basedir}/server/plugins/update/${project.build.finalName}.jar" />
+									tofile="${basedir}/server/plugins/update/rpgitems.jar" />
 							</tasks>
 						</configuration>
 						<goals>

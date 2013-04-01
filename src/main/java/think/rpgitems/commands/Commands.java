@@ -444,18 +444,14 @@ abstract public class Commands {
     }
 
     static {
-        /*TODO:add("rpgitem help $TERMS:s[]", new Commands() {
-
-            @Override
-            public String getDocs() {
-                return Locale.get("COMMAND_RPGITEM_HELP");
+        register(new CommandHandler() {
+            
+            @CommandString("rpgitem help $TERMS:s[]")
+            @CommandDocumentation("$COMMAND_RPGITEM_HELP")
+            public void help(CommandSender sender, String query) {
+                searchHelp(sender, query);                
             }
-
-            @Override
-            public void command(CommandSender sender, Object[] args) {
-                searchHelp(sender, (String) args[0]);
-            }
-        });*/
+        });
     }
 
     public static void searchHelp(CommandSender sender, String terms) {
