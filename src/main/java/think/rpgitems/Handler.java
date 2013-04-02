@@ -1,8 +1,11 @@
 package think.rpgitems;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import think.rpgitems.commands.CommandDocumentation;
 import think.rpgitems.commands.CommandGroup;
@@ -12,6 +15,7 @@ import think.rpgitems.data.Locale;
 import think.rpgitems.item.ItemManager;
 import think.rpgitems.item.Quality;
 import think.rpgitems.item.RPGItem;
+import think.rpgitems.power.Power;
 import think.rpgitems.support.WorldGuard;
 
 public class Handler implements CommandHandler {
@@ -218,5 +222,161 @@ public class Handler implements CommandHandler {
         item.setLore(lore);
         sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_LORE_SET"), item.getName(), item.getLore()));
         ItemManager.save(Plugin.plugin);
+    }
+    
+    @CommandString("rpgitem $n[] item")
+    @CommandDocumentation("$COMMAND_RPGITEM_ITEM")
+    @CommandGroup("item_item")
+    public void getItemItem(CommandSender sender, RPGItem item) {
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_ITEM_GET"), item.getName(), item.getItem().toString()));
+    }
+    
+    @CommandString("rpgitem $n[] item $m[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_ITEM_SET")
+    @CommandGroup("item_item")
+    public void setItemItem(CommandSender sender, RPGItem item, Material material) {
+        item.setItem(material);
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_ITEM_SET"), item.getName(), item.getItem(), item.item.getDurability()));
+        ItemManager.save(Plugin.plugin);
+    }
+    
+    @CommandString("rpgitem $n[] item $m[] $DATA:i[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_ITEM_SET_DATA")
+    @CommandGroup("item_item")
+    public void setItemItem(CommandSender sender, RPGItem item, Material material, int data) {
+        item.setItem(material, false);
+        item.meta = item.item.getItemMeta();
+        if (item.meta instanceof LeatherArmorMeta) {
+            ((LeatherArmorMeta) item.meta).setColor(Color.fromRGB(data));
+        } else {
+            item.setDataValue((short) data);
+        }
+        item.rebuild();
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_ITEM_SET"), item.getName(), item.getItem(), item.item.getDurability()));
+        ItemManager.save(Plugin.plugin);
+    }
+    
+    @CommandString("rpgitem $n[] item $m[] hex $HEXCOLOUR:s[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_ITEM_SET_DATA_HEX")
+    @CommandGroup("item_item")
+    public void setItemItem(CommandSender sender, RPGItem item, Material material, String hexColour) {
+        int dam;
+        try {
+            dam = Integer.parseInt((String) hexColour, 16);
+        } catch (NumberFormatException e) {
+            sender.sendMessage(ChatColor.RED + "Failed to parse " + hexColour);
+            return;
+        }
+        item.setItem(material, false);
+        item.meta = item.item.getItemMeta();
+        if (item.meta instanceof LeatherArmorMeta) {
+            ((LeatherArmorMeta) item.meta).setColor(Color.fromRGB(dam));
+        } else {
+            item.setDataValue((short) dam);
+        }
+        item.rebuild();
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_ITEM_SET"), item.getName(), item.getItem(), item.item.getDurability()));
+        ItemManager.save(Plugin.plugin);
+    }
+    
+    @CommandString("rpgitem $n[] item $ITEMID:i[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_ITEM_SET_ID")
+    @CommandGroup("item_item")
+    public void setItemItem(CommandSender sender, RPGItem item, int id) {
+        Material mat = Material.getMaterial(id);
+        if (mat == null) {
+            sender.sendMessage(ChatColor.RED + "Cannot find item");
+            return;
+        }
+        item.setItem(mat);
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_ITEM_SET"), item.getName(), item.getItem(), item.item.getDurability()));
+        ItemManager.save(Plugin.plugin);
+    }
+    
+    @CommandString("rpgitem $n[] item $ITEMID:i[] $DATA:i[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_ITEM_SET_ID_DATA")
+    @CommandGroup("item_item")
+    public void setItemItem(CommandSender sender, RPGItem item, int id, int data) {
+        Material mat = Material.getMaterial(id);
+        if (mat == null) {
+            sender.sendMessage(ChatColor.RED + Locale.get("MESSAGE_ITEM_CANT_FIND"));
+            return;
+        }
+        item.setItem(mat, false);
+        item.meta = item.item.getItemMeta();
+        if (item.meta instanceof LeatherArmorMeta) {
+            ((LeatherArmorMeta) item.meta).setColor(Color.fromRGB(data));
+        } else {
+            item.setDataValue((short) data);
+        }
+        item.rebuild();
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_ITEM_SET"), item.getName(), item.getItem(), item.item.getDurability()));
+        ItemManager.save(Plugin.plugin);
+    }
+    
+    @CommandString("rpgitem $n[] removepower $POWER:s[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_REMOVEPOWER")
+    @CommandGroup("item_removepower")
+    public void itemRemovePower(CommandSender sender, RPGItem item, String power) {
+        if (item.removePower(power)) {
+            Power.powerUsage.put(power, Power.powerUsage.get(power) - 1);
+            sender.sendMessage(ChatColor.GREEN + String.format(Locale.get("MESSAGE_POWER_REMOVED"), power));
+            ItemManager.save(Plugin.plugin);
+        } else {
+            sender.sendMessage(ChatColor.RED + String.format(Locale.get("MESSAGE_POWER_UNKNOWN"), power));
+        }
+    }
+    
+    @CommandString("rpgitem $n[] description add $DESCRIPTIONLINE:s[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_DESCRIPTION_ADD")
+    @CommandGroup("item_description")
+    public void itemAddDescription(CommandSender sender, RPGItem item, String line) {
+        item.addDescription(ChatColor.WHITE + line);
+        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_DESCRIPTION_OK"));
+        ItemManager.save(Plugin.plugin);
+    }
+    
+    @CommandString("rpgitem $n[] description set $LINENO:i[] $DESCRIPTIONLINE:s[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_DESCRIPTION_SET")
+    @CommandGroup("item_description")
+    public void itemSetDescription(CommandSender sender, RPGItem item, int lineNo, String line) {
+        if (lineNo < 0 || lineNo >= item.description.size()) {
+            sender.sendMessage(ChatColor.RED + String.format(Locale.get("MESSAGE_DESCRIPTION_OUT_OF_RANGE"), line));
+            return;
+        }
+        item.description.set(lineNo, ChatColor.translateAlternateColorCodes('&', ChatColor.WHITE + line));
+        item.rebuild();
+        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_DESCRIPTION_CHANGE"));
+        ItemManager.save(Plugin.plugin);
+    }
+    
+    @CommandString("rpgitem $n[] description remove $LINENO:i[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_DESCRIPTION_REMOVE")
+    @CommandGroup("item_description")
+    public void itemRemoveDescription(CommandSender sender, RPGItem item, int lineNo) {
+        if (lineNo < 0 || lineNo >= item.description.size()) {
+            sender.sendMessage(ChatColor.RED + String.format(Locale.get("MESSAGE_DESCRIPTION_OUT_OF_RANGE"), lineNo));
+            return;
+        }
+        item.description.remove(lineNo);
+        item.rebuild();
+        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_DESCRIPTION_REMOVE"));
+        ItemManager.save(Plugin.plugin);
+    }
+    
+    @CommandString("rpgitem $n[] worldguard")
+    @CommandDocumentation("$COMMAND_RPGITEM_ITEM_WORLDGUARD")
+    @CommandGroup("item_worldguard")
+    public void itemToggleWorldGuard(CommandSender sender, RPGItem item) {
+        if (!WorldGuard.isEnabled()) {
+            sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_WORLDGUARD_ERROR"));
+            return;
+        }
+        item.ignoreWorldGuard = !item.ignoreWorldGuard;
+        if (item.ignoreWorldGuard) {
+            sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_WORLDGUARD_OVERRIDE_ACTIVE"));
+        } else {
+            sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_WORLDGUARD_OVERRIDE_DISABLED"));
+        }
     }
 }
