@@ -137,4 +137,86 @@ public class Handler implements CommandHandler {
     public void getItemDamage(CommandSender sender, RPGItem item) {
         sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_DAMAGE_GET"), item.getName(), item.getDamageMin(), item.getDamageMax()));
     }
+    
+    @CommandString("rpgitem $n[] damage $DAMAGE:i[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_DAMAGE_SET")
+    @CommandGroup("item_damage")
+    public void setItemDamage(CommandSender sender, RPGItem item, int damage) {
+        item.setDamage(damage, damage);
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_DAMAGE_SET"), item.getName(), item.getDamageMin()));
+        ItemManager.save(Plugin.plugin);
+    }
+    
+    @CommandString("rpgitem $n[] damage $MIN:i[] $MAX:i[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_DAMAGE_SET_RANAGE")
+    @CommandGroup("item_damage")
+    public void setItemDamage(CommandSender sender, RPGItem item, int min, int max) {
+        item.setDamage(min, max);
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_DAMAGE_SET_RANGE"), item.getName(), item.getDamageMin(), item.getDamageMax()));
+        ItemManager.save(Plugin.plugin);
+    }
+    
+    @CommandString("rpgitem $n[] armour")
+    @CommandDocumentation("$COMMAND_RPGITEM_ARMOUR")
+    @CommandGroup("item_armour")
+    public void getItemArmour(CommandSender sender, RPGItem item) {
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_ARMOUR_GET"), item.getName(), item.getArmour()));        
+    }
+    
+    @CommandString("rpgitem $n[] armour $ARMOUR:i[0,100]")
+    @CommandDocumentation("$COMMAND_RPGITEM_ARMOUR_SET")
+    @CommandGroup("item_armour")
+    public void setItemArmour(CommandSender sender, RPGItem item, int armour) {
+        item.setArmour(armour);
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_ARMOUR_SET"), item.getName(), item.getArmour()));
+        ItemManager.save(Plugin.plugin);
+    }
+    
+    @CommandString("rpgitem $n[] type")
+    @CommandDocumentation("$COMMAND_RPGITEM_TYPE")
+    @CommandGroup("item_type")
+    public void getItemType(CommandSender sender, RPGItem item) {
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_TYPE_GET"), item.getName(), item.getType()));        
+    }
+    
+    @CommandString("rpgitem $n[] type $TYPE:s[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_TYPE_SET")
+    @CommandGroup("item_type")
+    public void setItemType(CommandSender sender, RPGItem item, String type) {
+        item.setType(type);
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_TYPE_SET"), item.getName(), item.getType()));
+        ItemManager.save(Plugin.plugin);
+    }
+    
+    @CommandString("rpgitem $n[] hand")
+    @CommandDocumentation("$COMMAND_RPGITEM_HAND")
+    @CommandGroup("item_hand")
+    public void getItemHand(CommandSender sender, RPGItem item) {
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_HAND_GET"), item.getName(), item.getHand()));        
+    }
+    
+    @CommandString("rpgitem $n[] hand $HAND:s[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_HAND_SET")
+    @CommandGroup("item_hand")
+    public void setItemHand(CommandSender sender, RPGItem item, String hand) {
+        item.setHand(hand);
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_HAND_SET"), item.getName(), item.getHand()));
+        ItemManager.save(Plugin.plugin);        
+    }
+    
+    @CommandString("rpgitem $n[] lore")
+    @CommandDocumentation("$COMMAND_RPGITEM_LORE")
+    @CommandGroup("item_lore")
+    public void getItemLore(CommandSender sender, RPGItem item) {
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_LORE_GET"), item.getName(), item.getLore()));        
+    }
+    
+    @CommandString("rpgitem $n[] lore $LORE:s[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_LORE_SET")
+    @CommandGroup("item_lore")
+    public void setItemLore(CommandSender sender, RPGItem item, String lore) {
+        item.setLore(lore);
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_LORE_SET"), item.getName(), item.getLore()));
+        ItemManager.save(Plugin.plugin);
+    }
 }

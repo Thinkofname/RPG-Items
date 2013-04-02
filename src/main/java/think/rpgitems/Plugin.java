@@ -237,7 +237,6 @@ public class Plugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        Bukkit.getScheduler().cancelAllTasks();
     }
 
     @Override
