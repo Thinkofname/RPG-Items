@@ -242,7 +242,7 @@ COMMAND_RPGITEM_PRINT = "Prints item @[Item]#'s tool-tip to chat"
 
 COMMAND_RPGITEM_QUALITY = "Shows the item @[Item]#'s current quality"
 
-COMMAND_RPGITEM_QUALITY_SET = "Sets the item @[Item]#'s quality to @[Quality]#. You can select from: %s"
+COMMAND_RPGITEM_QUALITY_SET = "Sets the item @[Item]#'s quality to @[Quality]#."
 
 COMMAND_RPGITEM_RAINBOW = "Adds the rainbow power to @[Item]# with a default cooldown of 20 ticks (1 second) and a block count of 5. The rainbow power will fire blocks of coloured wool on right click, the wool will remove itself."
 

@@ -9,6 +9,7 @@ import think.rpgitems.commands.CommandHandler;
 import think.rpgitems.commands.CommandString;
 import think.rpgitems.data.Locale;
 import think.rpgitems.item.ItemManager;
+import think.rpgitems.item.Quality;
 import think.rpgitems.item.RPGItem;
 import think.rpgitems.support.WorldGuard;
 
@@ -88,5 +89,39 @@ public class Handler implements CommandHandler {
         ItemManager.remove(item);
         sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_REMOVE_OK"), item.getName()));
         ItemManager.save(Plugin.plugin);
+    }
+    
+    @CommandString("rpgitem $n[] display")
+    @CommandDocumentation("$COMMAND_RPGITEM_DISPLAY")
+    public void getItemDisplay(CommandSender sender, RPGItem item) {
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_DISPLAY_GET"), item.getName(), item.getDisplay()));
+    }
+    
+    @CommandString("rpgitem $n[] display $DISPLAY:s[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_DISPLAY_SET")
+    public void setItemDisplay(CommandSender sender, RPGItem item, String display) {
+        item.setDisplay(display);
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_DISPLAY_SET"), item.getName(), item.getDisplay()));
+        ItemManager.save(Plugin.plugin);
+    }
+    
+    @CommandString("rpgitem $n[] quality")
+    @CommandDocumentation("$COMMAND_RPGITEM_QUALITY")
+    public void getItemQuality(CommandSender sender, RPGItem item) {
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_QUALITY_GET"), item.getName(), item.getQuality().toString().toLowerCase()));
+    }
+    
+    @CommandString("rpgitem $n[] quality $QUALITY:o[trash,common,uncommon,rare,epic,legendary]")
+    @CommandDocumentation("$COMMAND_RPGITEM_QUALITY_SET")
+    public void setItemQuality(CommandSender sender, RPGItem item, String quality) {
+        item.setQuality(Quality.valueOf(quality.toUpperCase()));
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_QUALITY_SET"), item.getName(), item.getQuality().toString().toLowerCase()));
+        ItemManager.save(Plugin.plugin);
+    }
+    
+    @CommandString("rpgitem $n[] damage")
+    @CommandDocumentation("$COMMAND_RPGITEM_DAMAGE")
+    public void getItemDamage(CommandSender sender, RPGItem item) {
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_DAMAGE_GET"), item.getName(), item.getDamageMin(), item.getDamageMax()));
     }
 }

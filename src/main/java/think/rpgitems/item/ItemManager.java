@@ -221,7 +221,7 @@ public class ItemManager {
                 sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_QUALITY_GET"), item.getName(), item.getQuality().toString().toLowerCase()));
             }
         });
-        Commands.add("rpgitem $n[] quality $QUALITY:o[@trash,common,uncommon,rare,epic,legendary]", new Commands() {
+        Commands.add("rpgitem $n[] quality $QUALITY:o[trash,common,uncommon,rare,epic,legendary]", new Commands() {
             @Override
             public String getDocs() {
                 StringBuilder out = new StringBuilder();

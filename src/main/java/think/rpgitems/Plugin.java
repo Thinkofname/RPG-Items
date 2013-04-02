@@ -69,6 +69,7 @@ import think.rpgitems.stat.Stat;
 import think.rpgitems.stat.StatPotion;
 import think.rpgitems.support.WorldGuard;
 
+@SuppressWarnings("deprecation")
 public class Plugin extends JavaPlugin {
 
     public static Logger logger = Logger.getLogger("RPGItems");
