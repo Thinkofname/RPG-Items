@@ -67,4 +67,26 @@ public class Handler implements CommandHandler {
             sender.sendMessage(ChatColor.RED + Locale.get("MESSAGE_GIVE_CONSOLE"));
         }
     }
+    
+    @CommandString("rpgitem $n[] give $p[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_GIVE_PLAYER")
+    public void giveItemPlayer(CommandSender sender, RPGItem item, Player player) {
+        item.give(player);
+    }
+    
+    @CommandString("rpgitem $n[] give $p[] $COUNT:i[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_GIVE_PLAYER_COUNT")
+    public void giveItemPlayerCount(CommandSender sender, RPGItem item, Player player, int count) {
+        for (int i = 0; i < count; i++) {
+            item.give(player);
+        }
+    }
+    
+    @CommandString("rpgitem $n[] remove")
+    @CommandDocumentation("$COMMAND_RPGITEM_REMOVE")
+    public void removeItem(CommandSender sender, RPGItem item) {
+        ItemManager.remove(item);
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_REMOVE_OK"), item.getName()));
+        ItemManager.save(Plugin.plugin);
+    }
 }
