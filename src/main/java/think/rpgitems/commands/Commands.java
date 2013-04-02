@@ -29,6 +29,8 @@ import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -359,6 +361,10 @@ abstract public class Commands {
             }
             add(comString.value(), method, handler);
         }
+        Collection<ArrayList<CommandDef>> coms = commands.values();
+        for (ArrayList<CommandDef> c : coms) {
+            Collections.sort(c);
+        }
     }
     
     private static void add(String com, Method method, CommandHandler handler) {
@@ -383,6 +389,11 @@ abstract public class Commands {
             }
         } else {
             def.documentation = "";
+        }
+        if (method.isAnnotationPresent(CommandGroup.class)) {
+            def.sortKey = method.getAnnotation(CommandGroup.class).value();
+        } else {
+            def.sortKey = "";
         }
         if (!commands.containsKey(comName)) {
             commands.put(comName, new ArrayList<CommandDef>());
@@ -684,12 +695,18 @@ abstract public class Commands {
     }
 }
 
-class CommandDef {
+class CommandDef implements Comparable<CommandDef> {
     public String commandString;
     public CommandHandler handler;
     public Method method;
     public CommandArgument[] arguments;
     public String documentation;
+    public String sortKey;
+    
+    @Override
+    public int compareTo(CommandDef o) {
+        return sortKey.compareToIgnoreCase(o.sortKey);
+    }
 }
 
 abstract class CommandArgument {
