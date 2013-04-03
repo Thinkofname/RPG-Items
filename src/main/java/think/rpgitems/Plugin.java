@@ -134,6 +134,7 @@ public class Plugin extends JavaPlugin {
         } catch (Exception e) {
         }
         Commands.register(new Handler());
+        Commands.register(new PowerHandler());
     }
 
     @Override

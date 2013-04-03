@@ -35,7 +35,7 @@ import think.rpgitems.item.RPGItem;
 
 public class PowerArrow extends Power {
 
-    private long cd = 20;
+    public long cooldownTime = 20;
 
     @Override
     public void rightClick(Player player) {
@@ -48,7 +48,7 @@ public class PowerArrow extends Power {
             cooldown = value.asLong();
         }
         if (cooldown <= System.currentTimeMillis() / 50) {
-            value.set(System.currentTimeMillis() / 50 + cd);
+            value.set(System.currentTimeMillis() / 50 + cooldownTime);
             player.playSound(player.getLocation(), Sound.SHOOT_ARROW, 1.0f, 1.0f);
             Arrow arrow = player.launchProjectile(Arrow.class);
             Events.removeArrows.put(arrow.getEntityId(), (byte) 1);
@@ -59,7 +59,7 @@ public class PowerArrow extends Power {
 
     @Override
     public String displayText() {
-        return ChatColor.GREEN + String.format(Locale.get("POWER_ARROW"), (double) cd / 20d);
+        return ChatColor.GREEN + String.format(Locale.get("POWER_ARROW"), (double) cooldownTime / 20d);
     }
 
     @Override
@@ -69,50 +69,11 @@ public class PowerArrow extends Power {
 
     @Override
     public void init(ConfigurationSection s) {
-        cd = s.getLong("cooldown", 20);
+        cooldownTime = s.getLong("cooldown", 20);
     }
 
     @Override
     public void save(ConfigurationSection s) {
-        s.set("cooldown", cd);
-    }
-
-    static {
-        Commands.add("rpgitem $n[] power arrow", new Commands() {
-
-            @Override
-            public String getDocs() {
-                return Locale.get("COMMAND_RPGITEM_ARROW");
-            }
-
-            @Override
-            public void command(CommandSender sender, Object[] args) {
-                RPGItem item = (RPGItem) args[0];
-                PowerArrow pow = new PowerArrow();
-                pow.cd = 20;
-                pow.item = item;
-                item.addPower(pow);
-                ItemManager.save(Plugin.plugin);
-                sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
-            }
-        });
-        Commands.add("rpgitem $n[] power arrow $COOLDOWN:i[]", new Commands() {
-
-            @Override
-            public String getDocs() {
-                return Locale.get("COMMAND_RPGITEM_ARROW_FULL");
-            }
-
-            @Override
-            public void command(CommandSender sender, Object[] args) {
-                RPGItem item = (RPGItem) args[0];
-                PowerArrow pow = new PowerArrow();
-                pow.item = item;
-                pow.cd = (Integer) args[1];
-                item.addPower(pow);
-                ItemManager.save(Plugin.plugin);
-                sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
-            }
-        });
+        s.set("cooldown", cooldownTime);
     }
 }
