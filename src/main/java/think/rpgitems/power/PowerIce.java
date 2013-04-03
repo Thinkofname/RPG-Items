@@ -28,7 +28,6 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
@@ -36,15 +35,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import think.rpgitems.Plugin;
-import think.rpgitems.commands.Commands;
 import think.rpgitems.data.Locale;
 import think.rpgitems.data.RPGValue;
-import think.rpgitems.item.ItemManager;
-import think.rpgitems.item.RPGItem;
 
 public class PowerIce extends Power {
 
-    private long cd = 20;
+    public long cooldownTime = 20;
 
     @Override
     public void rightClick(final Player player) {
@@ -57,7 +53,7 @@ public class PowerIce extends Power {
             cooldown = value.asLong();
         }
         if (cooldown <= System.currentTimeMillis() / 50) {
-            value.set(System.currentTimeMillis() / 50 + cd);
+            value.set(System.currentTimeMillis() / 50 + cooldownTime);
             player.playSound(player.getLocation(), Sound.FIZZ, 1.0f, 0.1f);
             final FallingBlock block = player.getWorld().spawnFallingBlock(player.getLocation().add(0, 1.8, 0), Material.ICE, (byte) 0);
             block.setVelocity(player.getLocation().getDirection().multiply(2d));
@@ -161,7 +157,7 @@ public class PowerIce extends Power {
 
     @Override
     public String displayText() {
-        return ChatColor.GREEN + String.format(Locale.get("POWER_ICE"), (double) cd / 20d);
+        return ChatColor.GREEN + String.format(Locale.get("POWER_ICE"), (double) cooldownTime / 20d);
     }
 
     @Override
@@ -171,50 +167,11 @@ public class PowerIce extends Power {
 
     @Override
     public void init(ConfigurationSection s) {
-        cd = s.getLong("cooldown", 20);
+        cooldownTime = s.getLong("cooldown", 20);
     }
 
     @Override
     public void save(ConfigurationSection s) {
-        s.set("cooldown", cd);
-    }
-
-    static {
-        Commands.add("rpgitem $n[] power ice", new Commands() {
-
-            @Override
-            public String getDocs() {
-                return Locale.get("COMMAND_RPGITEM_ICE");
-            }
-
-            @Override
-            public void command(CommandSender sender, Object[] args) {
-                RPGItem item = (RPGItem) args[0];
-                PowerIce pow = new PowerIce();
-                pow.cd = 20;
-                pow.item = item;
-                item.addPower(pow);
-                ItemManager.save(Plugin.plugin);
-                sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
-            }
-        });
-        Commands.add("rpgitem $n[] power ice $COOLDOWN:i[]", new Commands() {
-
-            @Override
-            public String getDocs() {
-                return Locale.get("COMMAND_RPGITEM_ICE_FULL");
-            }
-
-            @Override
-            public void command(CommandSender sender, Object[] args) {
-                RPGItem item = (RPGItem) args[0];
-                PowerIce pow = new PowerIce();
-                pow.item = item;
-                pow.cd = (Integer) args[1];
-                item.addPower(pow);
-                ItemManager.save(Plugin.plugin);
-                sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
-            }
-        });
+        s.set("cooldown", cooldownTime);
     }
 }
