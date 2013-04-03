@@ -21,12 +21,10 @@ import gnu.trove.map.hash.TCharObjectHashMap;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,7 +44,6 @@ import org.bukkit.entity.Player;
 import think.rpgitems.Plugin;
 import think.rpgitems.data.Locale;
 import think.rpgitems.item.ItemManager;
-import think.rpgitems.item.Quality;
 import think.rpgitems.item.RPGItem;
 
 abstract public class Commands {

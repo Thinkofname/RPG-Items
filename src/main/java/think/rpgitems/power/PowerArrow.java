@@ -18,20 +18,13 @@ package think.rpgitems.power;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.WitherSkull;
 
 import think.rpgitems.Events;
-import think.rpgitems.Plugin;
-import think.rpgitems.commands.Commands;
 import think.rpgitems.data.Locale;
 import think.rpgitems.data.RPGValue;
-import think.rpgitems.item.ItemManager;
-import think.rpgitems.item.RPGItem;
 
 public class PowerArrow extends Power {
 

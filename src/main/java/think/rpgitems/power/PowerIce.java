@@ -16,10 +16,10 @@
  */
 package think.rpgitems.power;
 
+import gnu.trove.map.hash.TObjectLongHashMap;
+
 import java.util.List;
 import java.util.Random;
-
-import gnu.trove.map.hash.TObjectLongHashMap;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
