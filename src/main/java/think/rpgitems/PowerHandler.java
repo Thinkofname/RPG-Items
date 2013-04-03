@@ -12,6 +12,7 @@ import think.rpgitems.item.ItemManager;
 import think.rpgitems.item.RPGItem;
 import think.rpgitems.power.PowerArrow;
 import think.rpgitems.power.PowerCommand;
+import think.rpgitems.power.PowerConsume;
 
 public class PowerHandler implements CommandHandler{
     
@@ -110,5 +111,16 @@ public class PowerHandler implements CommandHandler{
         item.rebuild();
         ItemManager.save(Plugin.plugin);
         sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));        
+    }
+    
+    @CommandString("rpgitem $n[] power consume")
+    @CommandDocumentation("$COMMAND_RPGITEM_CONSUME")
+    @CommandGroup("item_power_consume")
+    public void consume(CommandSender sender, RPGItem item) {
+        PowerConsume pow = new PowerConsume();
+        pow.item = item;
+        item.addPower(pow);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
     }
 }
