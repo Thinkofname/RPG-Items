@@ -37,7 +37,6 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import think.rpgitems.Plugin;
 import think.rpgitems.data.Font;
 import think.rpgitems.power.Power;
-import think.rpgitems.stat.Stat;
 
 public class RPGItem {
     public ItemStack item;
@@ -58,7 +57,6 @@ public class RPGItem {
     public List<String> description = new ArrayList<String>();
 
     public ArrayList<Power> powers = new ArrayList<Power>();
-    public ArrayList<Stat> stats = new ArrayList<Stat>();
 
     public RPGItem(String name, int id) {
         this.name = name;
@@ -312,12 +310,6 @@ public class RPGItem {
         Power.powerUsage.put(power.getName(), Power.powerUsage.get(power.getName()) + 1);
         if (update)
             rebuild();
-    }
-
-    public void addStat(Stat stat) {
-        stats.add(stat);
-        Stat.statUsage.put(stat.getName(), Stat.statUsage.get(stat.getName()));
-        rebuild();
     }
 
     public void addDescription(String str) {
@@ -639,12 +631,6 @@ public class RPGItem {
         }
         for (String s : lore) {
             sender.sendMessage(s);
-        }
-    }
-
-    public void tick(Player player) {
-        for (Stat stat : stats) {
-            stat.tick(player);
         }
     }
 }

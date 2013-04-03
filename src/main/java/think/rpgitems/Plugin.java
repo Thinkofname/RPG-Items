@@ -65,8 +65,6 @@ import think.rpgitems.power.PowerTNTCannon;
 import think.rpgitems.power.PowerTeleport;
 import think.rpgitems.power.PowerUnbreakable;
 import think.rpgitems.power.PowerUnbreaking;
-import think.rpgitems.stat.Stat;
-import think.rpgitems.stat.StatPotion;
 import think.rpgitems.support.WorldGuard;
 
 @SuppressWarnings("deprecation")
@@ -98,7 +96,6 @@ public class Plugin extends JavaPlugin {
         Power.powers.put("unbreakable", PowerUnbreakable.class);
         Power.powers.put("unbreaking", PowerUnbreaking.class);
         Power.powers.put("rumble", PowerRumble.class);
-        Stat.stats.put("potion", StatPotion.class);
         Locale.init(this);
     }
 
@@ -133,43 +130,9 @@ public class Plugin extends JavaPlugin {
                 });
             }
             metrics.addGraph(graph);
-            Graph graphStats = metrics.createGraph("Stat usage");
-            for (String statName : Stat.stats.keySet()) {
-                graphStats.addPlotter(new Metrics.Plotter(statName) {
-
-                    @Override
-                    public int getValue() {
-                        return Stat.statUsage.get(getColumnName());
-                    }
-                });
-            }
-            metrics.addGraph(graphStats);
             metrics.start();
         } catch (Exception e) {
         }
-
-        (new BukkitRunnable() {
-
-            public void run() {
-                List<World> worlds = Bukkit.getWorlds();
-                for (World world : worlds) {
-                    List<Player> players = world.getPlayers();
-                    for (Player player : players) {
-                        ItemStack heldItem = player.getInventory().getItemInHand();
-                        RPGItem heldRPGItem = ItemManager.toRPGItem(heldItem);
-                        if (heldRPGItem != null)
-                            heldRPGItem.tick(player);
-                        ItemStack[] armour = player.getInventory().getArmorContents();
-                        for (ItemStack item : armour) {
-                            RPGItem rpgItem = ItemManager.toRPGItem(item);
-                            if (rpgItem != null)
-                                rpgItem.tick(player);
-                        }
-                    }
-                }
-
-            }
-        }).runTaskTimer(this, 1, 2);
         Commands.register(new Handler());
     }
 

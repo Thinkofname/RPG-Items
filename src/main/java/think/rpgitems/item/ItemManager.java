@@ -43,7 +43,6 @@ import think.rpgitems.Plugin;
 import think.rpgitems.commands.Commands;
 import think.rpgitems.data.Locale;
 import think.rpgitems.power.Power;
-import think.rpgitems.stat.Stat;
 import think.rpgitems.support.WorldGuard;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
@@ -693,9 +692,6 @@ public class ItemManager {
                 itemByName.put(item.getName(), item);
                 for (Power power : item.powers) {
                     Power.powerUsage.put(power.getName(), Power.powerUsage.get(power.getName()) + 1);
-                }
-                for (Stat stat : item.stats) {
-                    Stat.statUsage.put(stat.getName(), Stat.statUsage.get(stat.getName()) + 1);
                 }
             }
         } catch (Exception e) {
