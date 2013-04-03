@@ -14,6 +14,7 @@ import think.rpgitems.power.PowerArrow;
 import think.rpgitems.power.PowerCommand;
 import think.rpgitems.power.PowerConsume;
 import think.rpgitems.power.PowerFireball;
+import think.rpgitems.power.PowerFlame;
 
 public class PowerHandler implements CommandHandler{
     
@@ -144,6 +145,30 @@ public class PowerHandler implements CommandHandler{
         PowerFireball pow = new PowerFireball();
         pow.item = item;
         pow.cooldownTime = cooldown;
+        item.addPower(pow);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
+    }
+    
+    @CommandString("rpgitem $n[] power flame")
+    @CommandDocumentation("$COMMAND_RPGITEM_FLAME")
+    @CommandGroup("item_power_flame")
+    public void flame(CommandSender sender, RPGItem item) {
+        PowerFlame pow = new PowerFlame();
+        pow.burnTime = 20;
+        pow.item = item;
+        item.addPower(pow);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
+    }
+    
+    @CommandString("rpgitem $n[] power flame $BURNTIME:i[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_FLAME_FULL")
+    @CommandGroup("item_power_flame")
+    public void flame(CommandSender sender, RPGItem item, int burnTime) {
+        PowerFlame pow = new PowerFlame();
+        pow.item = item;
+        pow.burnTime = burnTime;
         item.addPower(pow);
         ItemManager.save(Plugin.plugin);
         sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
