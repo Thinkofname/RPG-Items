@@ -227,10 +227,6 @@ public class Events implements Listener {
                 }
             }
         }
-        if (damage <= 0) {
-            e.setCancelled(true);
-            return;
-        }
         e.setDamage(damage);
     }
 }
