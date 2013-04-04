@@ -34,11 +34,11 @@ import think.rpgitems.item.RPGItem;
 
 public class PowerPotionHit extends Power {
 
-    private int chance = 20;
+    public int chance = 20;
     private Random random = new Random();
-    private PotionEffectType type = PotionEffectType.HARM;
-    private int duration = 20;
-    private int amplifier = 1;
+    public PotionEffectType type = PotionEffectType.HARM;
+    public int duration = 20;
+    public int amplifier = 1;
 
     @Override
     public void hit(Player player, LivingEntity e) {
@@ -70,39 +70,5 @@ public class PowerPotionHit extends Power {
         s.set("duration", duration);
         s.set("amplifier", amplifier);
         s.set("type", type.getName());
-    }
-
-    static {
-        Commands.add("rpgitem $n[] power potionhit $CHANCE:i[] $DURATION:i[] $AMPLIFIER:i[] $EFFECT:s[]", new Commands() {
-
-            @Override
-            public String getDocs() {
-                StringBuilder out = new StringBuilder();
-                for (PotionEffectType type : PotionEffectType.values()) {
-                    if (type != null)
-                        out.append(type.getName().toLowerCase()).append(", ");
-                }
-                return Locale.get("COMMAND_RPGITEM_POTIONHIT") + out.toString();
-            }
-
-            @Override
-            public void command(CommandSender sender, Object[] args) {
-                RPGItem item = (RPGItem) args[0];
-                PowerPotionHit pow = new PowerPotionHit();
-                pow.item = item;
-                pow.chance = (Integer) args[1];
-                pow.duration = (Integer) args[2];
-                pow.amplifier = (Integer) args[3];
-                pow.type = PotionEffectType.getByName((String) args[4]);
-                if (pow.type == null) {
-                    sender.sendMessage(ChatColor.RED + String.format(Locale.get("MESSAGE_ERROR_EFFECT"), (String) args[4]));
-                    return;
-                }
-                item.addPower(pow);
-                ItemManager.save(Plugin.plugin);
-                sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
-
-            }
-        });
     }
 }

@@ -2,6 +2,7 @@ package think.rpgitems;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.potion.PotionEffectType;
 
 import think.rpgitems.commands.CommandDocumentation;
 import think.rpgitems.commands.CommandGroup;
@@ -18,6 +19,7 @@ import think.rpgitems.power.PowerFlame;
 import think.rpgitems.power.PowerIce;
 import think.rpgitems.power.PowerKnockup;
 import think.rpgitems.power.PowerLightning;
+import think.rpgitems.power.PowerPotionHit;
 
 public class PowerHandler implements CommandHandler{
     
@@ -246,6 +248,25 @@ public class PowerHandler implements CommandHandler{
         PowerLightning pow = new PowerLightning();
         pow.item = item;
         pow.chance = chance;
+        item.addPower(pow);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
+    }
+    
+    @CommandString("rpgitem $n[] power potionhit $CHANCE:i[] $DURATION:i[] $AMPLIFIER:i[] $EFFECT:s[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_POTIONHIT+PotionEffectType")
+    @CommandGroup("item_power_potionhit")
+    public void potionhit(CommandSender sender, RPGItem item, int chance, int duration, int amplifier, String effect) {
+        PowerPotionHit pow = new PowerPotionHit();
+        pow.item = item;
+        pow.chance = chance;
+        pow.duration = duration;
+        pow.amplifier = amplifier;
+        pow.type = PotionEffectType.getByName(effect);
+        if (pow.type == null) {
+            sender.sendMessage(ChatColor.RED + String.format(Locale.get("MESSAGE_ERROR_EFFECT"), effect));
+            return;
+        }
         item.addPower(pow);
         ItemManager.save(Plugin.plugin);
         sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));

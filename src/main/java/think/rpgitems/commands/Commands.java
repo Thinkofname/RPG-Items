@@ -40,6 +40,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffectType;
 
 import think.rpgitems.Plugin;
 import think.rpgitems.data.Locale;
@@ -59,8 +60,9 @@ abstract public class Commands {
         argTypes.put('n', ArgumentItem.class);
         argTypes.put('m', ArgumentMaterial.class);
     }
-    
-    public static void add(String a, Commands b) {}
+
+    public static void add(String a, Commands b) {
+    }
 
     public static void exec(CommandSender sender, String com) {
         com = com.trim();
@@ -114,10 +116,9 @@ abstract public class Commands {
                     buf.append(a.printable());
                 }
                 sender.sendMessage(buf.toString());
-                /*String note = c.command.getNote();
-                if (note != null) {
-                    sender.sendMessage(ChatColor.GREEN + "- " + note);
-                }*/
+                /*
+                 * String note = c.command.getNote(); if (note != null) { sender.sendMessage(ChatColor.GREEN + "- " + note); }
+                 */
             }
             sender.sendMessage(ChatColor.GREEN + Locale.get("MESSAGE_COMMAND_INFO"));
             return;
@@ -344,7 +345,7 @@ abstract public class Commands {
         }
         return outList;
     }
-    
+
     public static void register(CommandHandler handler) {
         Method[] methods = handler.getClass().getMethods();
         for (Method method : methods) {
@@ -363,7 +364,7 @@ abstract public class Commands {
             Collections.sort(c);
         }
     }
-    
+
     private static void add(String com, Method method, CommandHandler handler) {
         com = com.trim();
         int pos = com.indexOf(' ');
@@ -382,7 +383,20 @@ abstract public class Commands {
         if (method.isAnnotationPresent(CommandDocumentation.class)) {
             def.documentation = method.getAnnotation(CommandDocumentation.class).value();
             if (def.documentation.charAt(0) == '$') {
-                def.documentation = Locale.get(def.documentation.substring(1));
+                if (def.documentation.contains("+")) {
+                    String[] dArgs = def.documentation.split("\\+");
+                    def.documentation = Locale.get(dArgs[0].substring(1));
+                    if (dArgs[1].equalsIgnoreCase("PotionEffectType")) {
+                        StringBuilder out = new StringBuilder();
+                        for (PotionEffectType type : PotionEffectType.values()) {
+                            if (type != null)
+                                out.append(type.getName().toLowerCase()).append(", ");
+                        }
+                        def.documentation += out.toString();
+                    }
+                } else {
+                    def.documentation = Locale.get(def.documentation.substring(1));
+                }
             }
         } else {
             def.documentation = "";
@@ -453,11 +467,11 @@ abstract public class Commands {
 
     static {
         register(new CommandHandler() {
-            
+
             @CommandString("rpgitem help $TERMS:s[]")
             @CommandDocumentation("$COMMAND_RPGITEM_HELP")
             public void help(CommandSender sender, String query) {
-                searchHelp(sender, query);                
+                searchHelp(sender, query);
             }
         });
     }
@@ -699,7 +713,7 @@ class CommandDef implements Comparable<CommandDef> {
     public CommandArgument[] arguments;
     public String documentation;
     public String sortKey;
-    
+
     @Override
     public int compareTo(CommandDef o) {
         return sortKey.compareToIgnoreCase(o.sortKey);
@@ -716,7 +730,7 @@ abstract class CommandArgument {
     public abstract String printable();
 
     public abstract Class<?> getType();
-    
+
     public String name = "";
 
     public boolean isConst() {
