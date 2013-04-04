@@ -16,6 +16,7 @@ import think.rpgitems.power.PowerConsume;
 import think.rpgitems.power.PowerFireball;
 import think.rpgitems.power.PowerFlame;
 import think.rpgitems.power.PowerIce;
+import think.rpgitems.power.PowerKnockup;
 
 public class PowerHandler implements CommandHandler{
     
@@ -194,6 +195,32 @@ public class PowerHandler implements CommandHandler{
         PowerIce pow = new PowerIce();
         pow.item = item;
         pow.cooldownTime = cooldown;
+        item.addPower(pow);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
+    }
+    
+    @CommandString("rpgitem $n[] power knockup")
+    @CommandDocumentation("$COMMAND_RPGITEM_KNOCKUP")
+    @CommandGroup("item_power_knockup")
+    public void knockup(CommandSender sender, RPGItem item) {
+        PowerKnockup pow = new PowerKnockup();
+        pow.item = item;
+        pow.chance = 20;
+        pow.power = 2;
+        item.addPower(pow);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
+    }
+    
+    @CommandString("rpgitem $n[] power knockup $CHANCE:i[] $POWER:f[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_KNOCKUP_FULL")
+    @CommandGroup("item_power_knockup")
+    public void knockup(CommandSender sender, RPGItem item, int chance, double power) {
+        PowerKnockup pow = new PowerKnockup();
+        pow.item = item;
+        pow.chance = chance;
+        pow.power = power;
         item.addPower(pow);
         ItemManager.save(Plugin.plugin);
         sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));

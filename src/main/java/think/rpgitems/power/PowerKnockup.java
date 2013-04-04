@@ -32,8 +32,8 @@ import think.rpgitems.item.RPGItem;
 
 public class PowerKnockup extends Power {
 
-    private int chance = 20;
-    private double power = 2;
+    public int chance = 20;
+    public double power = 2;
 
     private Random rand = new Random();
 
@@ -63,47 +63,6 @@ public class PowerKnockup extends Power {
     public void save(ConfigurationSection s) {
         s.set("chance", chance);
         s.set("power", power);
-    }
-
-    static {
-        Commands.add("rpgitem $n[] power knockup", new Commands() {
-
-            @Override
-            public String getDocs() {
-                return Locale.get("COMMAND_RPGITEM_KNOCKUP");
-            }
-
-            @Override
-            public void command(CommandSender sender, Object[] args) {
-                RPGItem item = (RPGItem) args[0];
-                PowerKnockup pow = new PowerKnockup();
-                pow.item = item;
-                pow.chance = 20;
-                pow.power = 2;
-                item.addPower(pow);
-                ItemManager.save(Plugin.plugin);
-                sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
-            }
-        });
-        Commands.add("rpgitem $n[] power knockup $CHANCE:i[] $POWER:f[]", new Commands() {
-
-            @Override
-            public String getDocs() {
-                return Locale.get("COMMAND_RPGITEM_KNOCKUP_FULL");
-            }
-
-            @Override
-            public void command(CommandSender sender, Object[] args) {
-                RPGItem item = (RPGItem) args[0];
-                PowerKnockup pow = new PowerKnockup();
-                pow.item = item;
-                pow.chance = (Integer) args[1];
-                pow.power = (Double) args[2];
-                item.addPower(pow);
-                ItemManager.save(Plugin.plugin);
-                sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
-            }
-        });
     }
 
 }
