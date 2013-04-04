@@ -17,6 +17,7 @@ import think.rpgitems.power.PowerFireball;
 import think.rpgitems.power.PowerFlame;
 import think.rpgitems.power.PowerIce;
 import think.rpgitems.power.PowerKnockup;
+import think.rpgitems.power.PowerLightning;
 
 public class PowerHandler implements CommandHandler{
     
@@ -221,6 +222,30 @@ public class PowerHandler implements CommandHandler{
         pow.item = item;
         pow.chance = chance;
         pow.power = power;
+        item.addPower(pow);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
+    }
+    
+    @CommandString("rpgitem $n[] power lightning")
+    @CommandDocumentation("$COMMAND_RPGITEM_LIGHTNING")
+    @CommandGroup("item_power_lightning")
+    public void lightning(CommandSender sender, RPGItem item) {
+        PowerLightning pow = new PowerLightning();
+        pow.item = item;
+        pow.chance = 20;
+        item.addPower(pow);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
+    }
+    
+    @CommandString("rpgitem $n[] power lightning $CHANCE:i[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_LIGHTNING_FULL")
+    @CommandGroup("item_power_lightning")
+    public void lightning(CommandSender sender, RPGItem item, int chance) {
+        PowerLightning pow = new PowerLightning();
+        pow.item = item;
+        pow.chance = chance;
         item.addPower(pow);
         ItemManager.save(Plugin.plugin);
         sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
