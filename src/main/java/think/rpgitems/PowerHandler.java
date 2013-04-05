@@ -20,6 +20,7 @@ import think.rpgitems.power.PowerIce;
 import think.rpgitems.power.PowerKnockup;
 import think.rpgitems.power.PowerLightning;
 import think.rpgitems.power.PowerPotionHit;
+import think.rpgitems.power.PowerPotionSelf;
 
 public class PowerHandler implements CommandHandler{
     
@@ -261,6 +262,25 @@ public class PowerHandler implements CommandHandler{
         pow.item = item;
         pow.chance = chance;
         pow.duration = duration;
+        pow.amplifier = amplifier;
+        pow.type = PotionEffectType.getByName(effect);
+        if (pow.type == null) {
+            sender.sendMessage(ChatColor.RED + String.format(Locale.get("MESSAGE_ERROR_EFFECT"), effect));
+            return;
+        }
+        item.addPower(pow);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
+    }
+    
+    @CommandString("rpgitem $n[] power potionself $COOLDOWN:i[] $DURATION:i[] $AMPLIFIER:i[] $EFFECT:s[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_POTIONSELF+PotionEffectType")
+    @CommandGroup("item_power_potionself")
+    public void potionself(CommandSender sender, RPGItem item, int ccoldown, int duration, int amplifier, String effect) {
+    	PowerPotionSelf pow = new PowerPotionSelf();
+        pow.item = item;
+        pow.cooldownTime = ccoldown;
+        pow.time = duration;
         pow.amplifier = amplifier;
         pow.type = PotionEffectType.getByName(effect);
         if (pow.type == null) {

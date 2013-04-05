@@ -470,6 +470,7 @@ abstract public class Commands {
 
             @CommandString("rpgitem help $TERMS:s[]")
             @CommandDocumentation("$COMMAND_RPGITEM_HELP")
+            @CommandGroup("help")
             public void help(CommandSender sender, String query) {
                 searchHelp(sender, query);
             }
