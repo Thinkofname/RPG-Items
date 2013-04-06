@@ -19,6 +19,7 @@ package think.rpgitems;
 import gnu.trove.map.hash.TIntByteHashMap;
 import gnu.trove.map.hash.TIntIntHashMap;
 
+import java.util.Iterator;
 import java.util.Random;
 
 import org.bukkit.Material;
@@ -166,8 +167,9 @@ public class Events implements Listener {
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent e) {
         Inventory in = e.getInventory();
-        for (int i = 0; i < in.getSize(); i++) {
-            ItemStack item = in.getItem(i);
+        Iterator<ItemStack> it = in.iterator();
+        while(it.hasNext()) {
+            ItemStack item = it.next();
             RPGItem rItem = ItemManager.toRPGItem(item);
             if (rItem == null)
                 return;
