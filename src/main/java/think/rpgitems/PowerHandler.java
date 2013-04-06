@@ -26,6 +26,7 @@ import think.rpgitems.power.PowerRumble;
 import think.rpgitems.power.PowerTNTCannon;
 import think.rpgitems.power.PowerTeleport;
 import think.rpgitems.power.PowerUnbreakable;
+import think.rpgitems.power.PowerUnbreaking;
 
 public class PowerHandler implements CommandHandler{
     
@@ -393,6 +394,30 @@ public class PowerHandler implements CommandHandler{
     public void unbreakable(CommandSender sender, RPGItem item) {
     	PowerUnbreakable pow = new PowerUnbreakable();
         pow.item = item;
+        item.addPower(pow);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
+    }
+    
+    @CommandString("rpgitem $n[] power unbreaking")
+    @CommandDocumentation("$COMMAND_RPGITEM_UNBREAKING")
+    @CommandGroup("item_power_unbreaking")
+    public void unbreaking(CommandSender sender, RPGItem item) {
+    	PowerUnbreaking pow = new PowerUnbreaking();
+        pow.item = item;
+        pow.level = 1;
+        item.addPower(pow);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
+    }
+    
+    @CommandString("rpgitem $n[] power unbreaking $LEVEL:i[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_UNBREAKING_FULL")
+    @CommandGroup("item_power_unbreaking")
+    public void unbreaking(CommandSender sender, RPGItem item, int level) {
+    	PowerUnbreaking pow = new PowerUnbreaking();
+        pow.item = item;
+        pow.level = level;
         item.addPower(pow);
         ItemManager.save(Plugin.plugin);
         sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));

@@ -19,20 +19,15 @@ package think.rpgitems.power;
 import java.util.Random;
 
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import think.rpgitems.Plugin;
-import think.rpgitems.commands.Commands;
 import think.rpgitems.data.Locale;
-import think.rpgitems.item.ItemManager;
-import think.rpgitems.item.RPGItem;
 
 public class PowerUnbreaking extends Power {
 
-    private int level = 1;
+    public int level = 1;
     private Random random = new Random();
 
     @SuppressWarnings("deprecation")
@@ -65,44 +60,4 @@ public class PowerUnbreaking extends Power {
     public String displayText() {
         return String.format(ChatColor.GREEN + Locale.get("POWER_UNBREAKING"), level);
     }
-
-    static {
-        Commands.add("rpgitem $n[] power unbreaking", new Commands() {
-
-            @Override
-            public String getDocs() {
-                return Locale.get("COMMAND_RPGITEM_UNBREAKING");
-            }
-
-            @Override
-            public void command(CommandSender sender, Object[] args) {
-                RPGItem item = (RPGItem) args[0];
-                PowerUnbreaking pow = new PowerUnbreaking();
-                pow.item = item;
-                pow.level = 1;
-                item.addPower(pow);
-                ItemManager.save(Plugin.plugin);
-                sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
-            }
-        });
-        Commands.add("rpgitem $n[] power unbreaking $LEVEL:i[]", new Commands() {
-
-            @Override
-            public String getDocs() {
-                return Locale.get("COMMAND_RPGITEM_UNBREAKING_FULL");
-            }
-
-            @Override
-            public void command(CommandSender sender, Object[] args) {
-                RPGItem item = (RPGItem) args[0];
-                PowerUnbreaking pow = new PowerUnbreaking();
-                pow.item = item;
-                pow.level = (Integer) args[1];
-                item.addPower(pow);
-                ItemManager.save(Plugin.plugin);
-                sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
-            }
-        });
-    }
-
 }
