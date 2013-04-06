@@ -22,6 +22,7 @@ import think.rpgitems.power.PowerLightning;
 import think.rpgitems.power.PowerPotionHit;
 import think.rpgitems.power.PowerPotionSelf;
 import think.rpgitems.power.PowerRainbow;
+import think.rpgitems.power.PowerRumble;
 
 public class PowerHandler implements CommandHandler{
     
@@ -314,6 +315,20 @@ public class PowerHandler implements CommandHandler{
         pow.cooldownTime = cooldown;
         pow.count = count;
         pow.item = item;
+        item.addPower(pow);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
+    }
+    
+    @CommandString("rpgitem $n[] power rumble $COOLDOWN:i[] $POWER:i[] $DISTANCE:i[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_RUMBLE")
+    @CommandGroup("item_power_rumble")
+    public void rumble(CommandSender sender, RPGItem item, int cooldown, int power, int distance) {
+    	PowerRumble pow = new PowerRumble();
+        pow.item = item;
+        pow.cooldownTime = cooldown;
+        pow.power = power;
+        pow.distance = distance;
         item.addPower(pow);
         ItemManager.save(Plugin.plugin);
         sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
