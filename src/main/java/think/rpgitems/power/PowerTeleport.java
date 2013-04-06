@@ -23,23 +23,18 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.util.BlockIterator;
 
-import think.rpgitems.Plugin;
-import think.rpgitems.commands.Commands;
 import think.rpgitems.data.Locale;
 import think.rpgitems.data.RPGValue;
-import think.rpgitems.item.ItemManager;
-import think.rpgitems.item.RPGItem;
 
 public class PowerTeleport extends Power {
 
-    private int distance = 5;
-    private long cd = 20;
+    public int distance = 5;
+    public long cooldownTime = 20;
 
     @Override
     public void rightClick(Player player) {
@@ -52,7 +47,7 @@ public class PowerTeleport extends Power {
             cooldown = value.asLong();
         }
         if (cooldown <= System.currentTimeMillis() / 50) {
-            value.set(System.currentTimeMillis() / 50 + cd);
+            value.set(System.currentTimeMillis() / 50 + cooldownTime);
             // float dist = 0;
             World world = player.getWorld();
             Location start = player.getLocation();
@@ -100,7 +95,7 @@ public class PowerTeleport extends Power {
             cooldown = value.asLong();
         }
         if (cooldown <= System.currentTimeMillis() / 50) {
-            value.set(System.currentTimeMillis() / 50 + cd);
+            value.set(System.currentTimeMillis() / 50 + cooldownTime);
             World world = player.getWorld();
             Location start = player.getLocation();
             Location newLoc = p.getLocation();
@@ -121,13 +116,13 @@ public class PowerTeleport extends Power {
 
     @Override
     public void init(ConfigurationSection s) {
-        cd = s.getLong("cooldown");
+        cooldownTime = s.getLong("cooldown");
         distance = s.getInt("distance");
     }
 
     @Override
     public void save(ConfigurationSection s) {
-        s.set("cooldown", cd);
+        s.set("cooldown", cooldownTime);
         s.set("distance", distance);
     }
 
@@ -138,48 +133,6 @@ public class PowerTeleport extends Power {
 
     @Override
     public String displayText() {
-        return ChatColor.GREEN + String.format(Locale.get("POWER_TELEPORT"), distance, (double) cd / 20d);
+        return ChatColor.GREEN + String.format(Locale.get("POWER_TELEPORT"), distance, (double) cooldownTime / 20d);
     }
-
-    static {
-        Commands.add("rpgitem $n[] power teleport", new Commands() {
-
-            @Override
-            public String getDocs() {
-                return Locale.get("COMMAND_RPGITEM_TELEPORT");
-            }
-
-            @Override
-            public void command(CommandSender sender, Object[] args) {
-                RPGItem item = (RPGItem) args[0];
-                PowerTeleport pow = new PowerTeleport();
-                pow.item = item;
-                pow.cd = 20;
-                pow.distance = 5;
-                item.addPower(pow);
-                ItemManager.save(Plugin.plugin);
-                sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
-            }
-        });
-        Commands.add("rpgitem $n[] power teleport $COOLDOWN:i[] $DISTANCE:i[]", new Commands() {
-
-            @Override
-            public String getDocs() {
-                return Locale.get("COMMAND_RPGITEM_TELEPORT_FULL");
-            }
-
-            @Override
-            public void command(CommandSender sender, Object[] args) {
-                RPGItem item = (RPGItem) args[0];
-                PowerTeleport pow = new PowerTeleport();
-                pow.item = item;
-                pow.cd = (Integer) args[1];
-                pow.distance = (Integer) args[2];
-                item.addPower(pow);
-                ItemManager.save(Plugin.plugin);
-                sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
-            }
-        });
-    }
-
 }

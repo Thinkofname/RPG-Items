@@ -23,6 +23,7 @@ import think.rpgitems.power.PowerPotionHit;
 import think.rpgitems.power.PowerPotionSelf;
 import think.rpgitems.power.PowerRainbow;
 import think.rpgitems.power.PowerRumble;
+import think.rpgitems.power.PowerTeleport;
 
 public class PowerHandler implements CommandHandler{
     
@@ -308,7 +309,7 @@ public class PowerHandler implements CommandHandler{
     }
     
     @CommandString("rpgitem $n[] power rainbow $COOLDOWN:i[] $COUNT:i[]")
-    @CommandDocumentation("$COMMAND_RPGITEM_RAINBOW")
+    @CommandDocumentation("$COMMAND_RPGITEM_RAINBOW_FULL")
     @CommandGroup("item_power_rainbow")
     public void rainbow(CommandSender sender, RPGItem item, int cooldown, int count) {
     	PowerRainbow pow = new PowerRainbow();
@@ -328,6 +329,32 @@ public class PowerHandler implements CommandHandler{
         pow.item = item;
         pow.cooldownTime = cooldown;
         pow.power = power;
+        pow.distance = distance;
+        item.addPower(pow);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
+    }
+    
+    @CommandString("rpgitem $n[] power teleport")
+    @CommandDocumentation("$COMMAND_RPGITEM_TELEPORT")
+    @CommandGroup("item_power_teleport")
+    public void teleport(CommandSender sender, RPGItem item) {
+    	PowerTeleport pow = new PowerTeleport();
+        pow.item = item;
+        pow.cooldownTime = 20;
+        pow.distance = 5;
+        item.addPower(pow);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
+    }
+
+    @CommandString("rpgitem $n[] power teleport $COOLDOWN:i[] $DISTANCE:i[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_TELEPORT_FULL")
+    @CommandGroup("item_power_teleport")
+    public void teleport(CommandSender sender, RPGItem item, int cooldown, int distance) {
+    	PowerTeleport pow = new PowerTeleport();
+        pow.item = item;
+        pow.cooldownTime = cooldown;
         pow.distance = distance;
         item.addPower(pow);
         ItemManager.save(Plugin.plugin);
