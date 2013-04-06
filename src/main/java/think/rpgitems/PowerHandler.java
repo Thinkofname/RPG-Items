@@ -25,6 +25,7 @@ import think.rpgitems.power.PowerRainbow;
 import think.rpgitems.power.PowerRumble;
 import think.rpgitems.power.PowerTNTCannon;
 import think.rpgitems.power.PowerTeleport;
+import think.rpgitems.power.PowerUnbreakable;
 
 public class PowerHandler implements CommandHandler{
     
@@ -381,6 +382,17 @@ public class PowerHandler implements CommandHandler{
     	PowerTNTCannon pow = new PowerTNTCannon();
         pow.item = item;
         pow.cooldownTime = cooldown;
+        item.addPower(pow);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
+    }
+    
+    @CommandString("rpgitem $n[] power unbreakable")
+    @CommandDocumentation("$COMMAND_RPGITEM_UNBREAKABLE")
+    @CommandGroup("item_power_unbreakable")
+    public void unbreakable(CommandSender sender, RPGItem item) {
+    	PowerUnbreakable pow = new PowerUnbreakable();
+        pow.item = item;
         item.addPower(pow);
         ItemManager.save(Plugin.plugin);
         sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
