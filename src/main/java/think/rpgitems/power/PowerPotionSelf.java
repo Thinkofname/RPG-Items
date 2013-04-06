@@ -17,18 +17,13 @@
 package think.rpgitems.power;
 
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import think.rpgitems.Plugin;
-import think.rpgitems.commands.Commands;
 import think.rpgitems.data.Locale;
 import think.rpgitems.data.RPGValue;
-import think.rpgitems.item.ItemManager;
-import think.rpgitems.item.RPGItem;
 
 public class PowerPotionSelf extends Power {
 

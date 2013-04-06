@@ -21,6 +21,7 @@ import think.rpgitems.power.PowerKnockup;
 import think.rpgitems.power.PowerLightning;
 import think.rpgitems.power.PowerPotionHit;
 import think.rpgitems.power.PowerPotionSelf;
+import think.rpgitems.power.PowerRainbow;
 
 public class PowerHandler implements CommandHandler{
     
@@ -287,6 +288,32 @@ public class PowerHandler implements CommandHandler{
             sender.sendMessage(ChatColor.RED + String.format(Locale.get("MESSAGE_ERROR_EFFECT"), effect));
             return;
         }
+        item.addPower(pow);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
+    }
+    
+    @CommandString("rpgitem $n[] power rainbow")
+    @CommandDocumentation("$COMMAND_RPGITEM_RAINBOW")
+    @CommandGroup("item_power_rainbow")
+    public void rainbow(CommandSender sender, RPGItem item) {
+    	PowerRainbow pow = new PowerRainbow();
+        pow.cooldownTime = 20;
+        pow.count = 5;
+        pow.item = item;
+        item.addPower(pow);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
+    }
+    
+    @CommandString("rpgitem $n[] power rainbow $COOLDOWN:i[] $COUNT:i[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_RAINBOW")
+    @CommandGroup("item_power_rainbow")
+    public void rainbow(CommandSender sender, RPGItem item, int cooldown, int count) {
+    	PowerRainbow pow = new PowerRainbow();
+        pow.cooldownTime = cooldown;
+        pow.count = count;
+        pow.item = item;
         item.addPower(pow);
         ItemManager.save(Plugin.plugin);
         sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));

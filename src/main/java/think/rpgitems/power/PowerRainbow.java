@@ -26,7 +26,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
@@ -34,16 +33,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import think.rpgitems.Plugin;
-import think.rpgitems.commands.Commands;
 import think.rpgitems.data.Locale;
 import think.rpgitems.data.RPGValue;
-import think.rpgitems.item.ItemManager;
-import think.rpgitems.item.RPGItem;
 
 public class PowerRainbow extends Power {
 
-    private long cd = 20;
-    private int count = 5;
+    public long cooldownTime = 20;
+    public int count = 5;
     private Random random = new Random();
 
     @Override
@@ -57,7 +53,7 @@ public class PowerRainbow extends Power {
             cooldown = value.asLong();
         }
         if (cooldown <= System.currentTimeMillis() / 50) {
-            value.set(System.currentTimeMillis() / 50 + cd);
+            value.set(System.currentTimeMillis() / 50 + cooldownTime);
             player.playSound(player.getLocation(), Sound.SHOOT_ARROW, 1.0f, 1.0f);
             final ArrayList<FallingBlock> blocks = new ArrayList<FallingBlock>();
             for (int i = 0; i < count; i++) {
@@ -111,7 +107,7 @@ public class PowerRainbow extends Power {
 
     @Override
     public String displayText() {
-        return ChatColor.GREEN + String.format(Locale.get("POWER_RAINBOW"), count, (double) cd / 20d);
+        return ChatColor.GREEN + String.format(Locale.get("POWER_RAINBOW"), count, (double) cooldownTime / 20d);
     }
 
     @Override
@@ -121,54 +117,13 @@ public class PowerRainbow extends Power {
 
     @Override
     public void init(ConfigurationSection s) {
-        cd = s.getLong("cooldown", 20);
+        cooldownTime = s.getLong("cooldown", 20);
         count = s.getInt("count", 5);
     }
 
     @Override
     public void save(ConfigurationSection s) {
-        s.set("cooldown", cd);
+        s.set("cooldown", cooldownTime);
         s.set("count", count);
-    }
-
-    static {
-        Commands.add("rpgitem $n[] power rainbow", new Commands() {
-
-            @Override
-            public String getDocs() {
-                return Locale.get("COMMAND_RPGITEM_RAINBOW");
-            }
-
-            @Override
-            public void command(CommandSender sender, Object[] args) {
-                RPGItem item = (RPGItem) args[0];
-                PowerRainbow pow = new PowerRainbow();
-                pow.cd = 20;
-                pow.count = 5;
-                pow.item = item;
-                item.addPower(pow);
-                ItemManager.save(Plugin.plugin);
-                sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
-            }
-        });
-        Commands.add("rpgitem $n[] power rainbow $COOLDOWN:i[] $COUNT:i[]", new Commands() {
-
-            @Override
-            public String getDocs() {
-                return Locale.get("COMMAND_RPGITEM_RAINBOW_FULL");
-            }
-
-            @Override
-            public void command(CommandSender sender, Object[] args) {
-                RPGItem item = (RPGItem) args[0];
-                PowerRainbow pow = new PowerRainbow();
-                pow.cd = (Integer) args[1];
-                pow.count = (Integer) args[2];
-                pow.item = item;
-                item.addPower(pow);
-                ItemManager.save(Plugin.plugin);
-                sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
-            }
-        });
     }
 }
