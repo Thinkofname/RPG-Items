@@ -37,9 +37,9 @@ import think.rpgitems.Plugin;
 import think.rpgitems.power.Power;
 
 public class ItemManager {
-    private static TIntObjectHashMap<RPGItem> itemById = new TIntObjectHashMap<RPGItem>();
+    public static TIntObjectHashMap<RPGItem> itemById = new TIntObjectHashMap<RPGItem>();
     public static HashMap<String, RPGItem> itemByName = new HashMap<String, RPGItem>();
-    private static int currentPos = 0;
+    public static int currentPos = 0;
 
     public static void load(Plugin plugin) {
         try {
@@ -54,7 +54,6 @@ public class ItemManager {
                 String str = new String(data, "UTF-8");
                 itemStorage.loadFromString(str);
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (InvalidConfigurationException e) {
@@ -78,6 +77,7 @@ public class ItemManager {
                 }
             }
         } catch (Exception e) {
+        	e.printStackTrace();
         }
     }
 

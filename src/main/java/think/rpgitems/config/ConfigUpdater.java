@@ -24,12 +24,13 @@ import think.rpgitems.Plugin;
 
 public class ConfigUpdater {
 
-    final static String CONFIG_VERSION = "0.2";
+    final static String CONFIG_VERSION = "0.3";
 
     static HashMap<String, Updater> updates;
     static {
         updates = new HashMap<String, Updater>();
         updates.put("0.1", new Update01To02());
+        updates.put("0.2", new Update02To03());
     }
 
     public static void updateConfig(ConfigurationSection conf) {
