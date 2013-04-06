@@ -23,6 +23,7 @@ import think.rpgitems.power.PowerPotionHit;
 import think.rpgitems.power.PowerPotionSelf;
 import think.rpgitems.power.PowerRainbow;
 import think.rpgitems.power.PowerRumble;
+import think.rpgitems.power.PowerTNTCannon;
 import think.rpgitems.power.PowerTeleport;
 
 public class PowerHandler implements CommandHandler{
@@ -356,6 +357,30 @@ public class PowerHandler implements CommandHandler{
         pow.item = item;
         pow.cooldownTime = cooldown;
         pow.distance = distance;
+        item.addPower(pow);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
+    }
+    
+    @CommandString("rpgitem $n[] power tntcannon")
+    @CommandDocumentation("$COMMAND_RPGITEM_TNTCANNON")
+    @CommandGroup("item_power_tntcannon")
+    public void tntcannon(CommandSender sender, RPGItem item) {
+    	PowerTNTCannon pow = new PowerTNTCannon();
+        pow.item = item;
+        pow.cooldownTime = 20;
+        item.addPower(pow);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
+    }
+    
+    @CommandString("rpgitem $n[] power tntcannon $COOLDOWN:i[]")
+    @CommandDocumentation("$COMMAND_RPGITEM_TNTCANNON_FULL")
+    @CommandGroup("item_power_tntcannon")
+    public void tntcannon(CommandSender sender, RPGItem item, int cooldown) {
+    	PowerTNTCannon pow = new PowerTNTCannon();
+        pow.item = item;
+        pow.cooldownTime = cooldown;
         item.addPower(pow);
         ItemManager.save(Plugin.plugin);
         sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
