@@ -172,7 +172,7 @@ public class Events implements Listener {
             ItemStack item = it.next();
             RPGItem rItem = ItemManager.toRPGItem(item);
             if (rItem == null)
-                return;
+                continue;;
             item.setType(rItem.item.getType());
             if (!(rItem.meta instanceof LeatherArmorMeta))
                 item.setDurability(rItem.item.getDurability());
