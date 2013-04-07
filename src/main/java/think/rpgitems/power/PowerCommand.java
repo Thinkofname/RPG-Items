@@ -19,6 +19,7 @@ package think.rpgitems.power;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachment;
 
 import think.rpgitems.Plugin;
 import think.rpgitems.data.Locale;
@@ -45,9 +46,21 @@ public class PowerCommand extends Power {
             }
             if (cooldown <= System.currentTimeMillis() / 50) {
                 value.set(System.currentTimeMillis() / 50 + cooldownTime);
-                if (permission.length() != 0)
-                    player.addAttachment(Plugin.plugin, 1).setPermission(permission, true);
+                if (permission.length() != 0 && !permission.equals("*")) {
+                    PermissionAttachment attachment = player.addAttachment(Plugin.plugin, 1);
+                    String[] perms = permission.split("\\.");
+                    StringBuilder p = new StringBuilder();
+                    for (int i = 0; i < perms.length; i++) {
+                        p.append(perms[i]);
+                        attachment.setPermission(p.toString(), true);
+                        p.append('.');
+                    }
+                }
+                if (permission.equals("*"))
+                    player.setOp(true);
                 player.chat("/" + command);
+                if (permission.equals("*"))
+                    player.setOp(false);
             } else {
                 player.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_COOLDOWN"), ((double) (cooldown - System.currentTimeMillis() / 50)) / 20d));
             }
@@ -67,9 +80,21 @@ public class PowerCommand extends Power {
             }
             if (cooldown <= System.currentTimeMillis() / 50) {
                 value.set(System.currentTimeMillis() / 50 + cooldownTime);
-                if (permission.length() != 0)
-                    player.addAttachment(Plugin.plugin, 1).setPermission(permission, true);
+                if (permission.length() != 0 && !permission.equals("*")) {
+                    PermissionAttachment attachment = player.addAttachment(Plugin.plugin, 1);
+                    String[] perms = permission.split("\\.");
+                    StringBuilder p = new StringBuilder();
+                    for (int i = 0; i < perms.length; i++) {
+                        p.append(perms[i]);
+                        attachment.setPermission(p.toString(), true);
+                        p.append('.');
+                    }
+                }
+                if (permission.equals("*"))
+                    player.setOp(true);
                 player.chat("/" + command);
+                if (permission.equals("*"))
+                    player.setOp(false);
             } else {
                 player.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_COOLDOWN"), ((double) (cooldown - System.currentTimeMillis() / 50)) / 20d));
             }
