@@ -25,11 +25,11 @@ import think.rpgitems.power.Power;
 
 public class Update02To03 implements Updater {
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void update(ConfigurationSection section) {
-		Plugin plugin = Plugin.plugin;
-		try {
+    @SuppressWarnings("unchecked")
+    @Override
+    public void update(ConfigurationSection section) {
+        Plugin plugin = Plugin.plugin;
+        try {
             FileInputStream in = null;
             YamlConfiguration itemStorage = null;
             try {
@@ -57,41 +57,41 @@ public class Update02To03 implements Updater {
             int currentPos = itemStorage.getInt("pos", 0);
             ConfigurationSection itemSection = itemStorage.getConfigurationSection("items");
             for (String itemKey : itemSection.getKeys(false)) {
-            	ConfigurationSection s = itemSection.getConfigurationSection(itemKey);
-            	String name = s.getString("name");
+                ConfigurationSection s = itemSection.getConfigurationSection(itemKey);
+                String name = s.getString("name");
                 int id = s.getInt("id");
                 String displayName = null, type = null, hand = null, lore = null;
                 try {
                     if (s.contains("display")) {
-                    	displayName = s.getString("display");
+                        displayName = s.getString("display");
                     } else {
-                    	displayName = new String(byte[].class.cast(s.get("display_bin", "")), "UTF-8");
+                        displayName = new String(byte[].class.cast(s.get("display_bin", "")), "UTF-8");
                     }
                     if (s.contains("type")) {
-                    	type = s.getString("type", Plugin.plugin.getConfig().getString("defaults.sword", "Sword"));
+                        type = s.getString("type", Plugin.plugin.getConfig().getString("defaults.sword", "Sword"));
                     } else {
                         if (s.contains("type_bin")) {
-                        	type = new String(byte[].class.cast(s.get("type_bin", "")), "UTF-8");
+                            type = new String(byte[].class.cast(s.get("type_bin", "")), "UTF-8");
                         } else {
-                        	type = Plugin.plugin.getConfig().getString("defaults.sword", "Sword");
+                            type = Plugin.plugin.getConfig().getString("defaults.sword", "Sword");
                         }
                     }
                     if (s.contains("hand")) {
-                    	hand = s.getString("hand", Plugin.plugin.getConfig().getString("defaults.hand", "One handed"));
+                        hand = s.getString("hand", Plugin.plugin.getConfig().getString("defaults.hand", "One handed"));
                     } else {
                         if (s.contains("hand_bin")) {
-                        	hand = new String(byte[].class.cast(s.get("hand_bin", "")), "UTF-8");
+                            hand = new String(byte[].class.cast(s.get("hand_bin", "")), "UTF-8");
                         } else {
-                        	hand = Plugin.plugin.getConfig().getString("defaults.hand", "One handed");
+                            hand = Plugin.plugin.getConfig().getString("defaults.hand", "One handed");
                         }
                     }
                     if (s.contains("lore")) {
-                    	lore = s.getString("lore");
+                        lore = s.getString("lore");
                     } else {
                         if (s.contains("lore_bin")) {
-                        	lore = new String(byte[].class.cast(s.get("lore_bin", "")), "UTF-8");
+                            lore = new String(byte[].class.cast(s.get("lore_bin", "")), "UTF-8");
                         } else {
-                        	lore = "";
+                            lore = "";
                         }
                     }
                 } catch (Exception e) {
@@ -125,7 +125,7 @@ public class Update02To03 implements Updater {
                             }
                             Power pow = Power.powers.get(key).newInstance();
                             pow.init(powerSection.getConfigurationSection(key));
-                            //pow.item = this;
+                            // pow.item = this;
                             powers.add(pow);
                         } catch (InstantiationException e) {
                             e.printStackTrace();
@@ -134,7 +134,7 @@ public class Update02To03 implements Updater {
                         }
                     }
                 }
-                
+
                 RPGItem newItem = new RPGItem(name, id);
                 newItem.setDisplay(displayName, false);
                 newItem.setType(type, false);
@@ -147,22 +147,22 @@ public class Update02To03 implements Updater {
                 newItem.setDamage(damageMin, damageMax);
                 newItem.setQuality(quality, false);
                 newItem.ignoreWorldGuard = ignoreWorldGuard;
-                
+
                 for (Power power : powers) {
-                	newItem.addPower(power, false);
+                    newItem.addPower(power, false);
                 }
                 ItemManager.itemById.put(newItem.getID(), newItem);
                 ItemManager.itemByName.put(newItem.getName(), newItem);
             }
             ItemManager.currentPos = currentPos;
-            
+
             ItemManager.save(plugin);
             ItemManager.itemByName.clear();
             ItemManager.itemById.clear();
         } catch (Exception e) {
-        	e.printStackTrace();
+            e.printStackTrace();
         }
         section.set("version", "0.3");
-	}
+    }
 
 }

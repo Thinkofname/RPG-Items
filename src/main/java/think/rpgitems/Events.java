@@ -168,7 +168,7 @@ public class Events implements Listener {
     public void onInventoryOpen(InventoryOpenEvent e) {
         Inventory in = e.getInventory();
         Iterator<ItemStack> it = in.iterator();
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             ItemStack item = it.next();
             RPGItem rItem = ItemManager.toRPGItem(item);
             if (rItem == null)

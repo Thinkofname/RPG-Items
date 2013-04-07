@@ -76,9 +76,9 @@ public class RPGItem {
         name = s.getString("name");
         id = s.getInt("id");
         setDisplay(s.getString("display"), false);
-        setType(s.getString("type", Plugin.plugin.getConfig().getString("defaults.sword", "Sword")), false);  
-        setHand(s.getString("hand", Plugin.plugin.getConfig().getString("defaults.hand", "One handed")), false);    
-        setLore(s.getString("lore"), false);            
+        setType(s.getString("type", Plugin.plugin.getConfig().getString("defaults.sword", "Sword")), false);
+        setHand(s.getString("hand", Plugin.plugin.getConfig().getString("defaults.hand", "One handed")), false);
+        setLore(s.getString("lore"), false);
         description = (List<String>) s.getList("description", new ArrayList<String>());
         for (int i = 0; i < description.size(); i++) {
             description.set(i, ChatColor.translateAlternateColorCodes('&', description.get(i)));
@@ -99,7 +99,7 @@ public class RPGItem {
         ConfigurationSection powerList = s.getConfigurationSection("powers");
         if (powerList != null) {
             for (String sectionKey : powerList.getKeys(false)) {
-            	ConfigurationSection section = powerList.getConfigurationSection(sectionKey);
+                ConfigurationSection section = powerList.getConfigurationSection(sectionKey);
                 try {
                     if (!Power.powers.containsKey(section.getString("powerName"))) {
                         // Invalid power
@@ -146,8 +146,8 @@ public class RPGItem {
         ConfigurationSection powerConfigs = s.createSection("powers");
         int i = 0;
         for (Power p : powers) {
-        	MemoryConfiguration pConfig = new MemoryConfiguration();
-        	pConfig.set("powerName", p.getName());
+            MemoryConfiguration pConfig = new MemoryConfiguration();
+            pConfig.set("powerName", p.getName());
             p.save(pConfig);
             powerConfigs.set(Integer.toString(i), pConfig);
             i++;
@@ -178,7 +178,6 @@ public class RPGItem {
         }
     }
 
-   
     public void rebuild() {
         int width = 150;
         meta.setDisplayName(encodedID + quality.colour + ChatColor.BOLD + displayName);
@@ -460,6 +459,7 @@ public class RPGItem {
             sender.sendMessage(s);
         }
     }
+
     public void setDisplay(String str) {
         setDisplay(str, true);
     }

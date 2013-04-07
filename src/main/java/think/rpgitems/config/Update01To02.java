@@ -26,7 +26,7 @@ import think.rpgitems.Plugin;
 
 public class Update01To02 implements Updater {
 
-	@Override
+    @Override
     public void update(ConfigurationSection section) {
 
         File iFile = new File(Plugin.plugin.getDataFolder(), "items.yml");
