@@ -56,7 +56,7 @@ public class PowerHandler implements CommandHandler{
     
     @CommandString("rpgitem $n[] power command $COOLDOWN:i[] $o[left,right] $DISPLAY:s[] $COMMAND:s[]")
     @CommandDocumentation("$COMMAND_RPGITEM_COMMAND")
-    @CommandGroup("item_power_command_a")
+    @CommandGroup("item_power_command_b")
     public void command(CommandSender sender, RPGItem item, int cooldown, String mouse, String displayText, String command) {
         PowerCommand com = new PowerCommand();
         com.cooldownTime = cooldown;
@@ -95,7 +95,7 @@ public class PowerHandler implements CommandHandler{
     
     @CommandString("rpgitem $n[] power command $COOLDOWN:i[] $o[left,right] $DETAILS:s[]")
     @CommandDocumentation("$COMMAND_RPGITEM_COMMAND_OLD")
-    @CommandGroup("item_power_command_b")
+    @CommandGroup("item_power_command_c")
     public void command(CommandSender sender, RPGItem item, int cooldown, String mouse, String details) {
         String[] pArgs = details.split("\\|");
         if (pArgs.length < 2) {
