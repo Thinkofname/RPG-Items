@@ -1,6 +1,7 @@
 package think.rpgitems;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.potion.PotionEffectType;
 
@@ -23,6 +24,7 @@ import think.rpgitems.power.PowerPotionHit;
 import think.rpgitems.power.PowerPotionSelf;
 import think.rpgitems.power.PowerRainbow;
 import think.rpgitems.power.PowerRumble;
+import think.rpgitems.power.PowerSkyHook;
 import think.rpgitems.power.PowerTNTCannon;
 import think.rpgitems.power.PowerTeleport;
 import think.rpgitems.power.PowerUnbreakable;
@@ -418,6 +420,19 @@ public class PowerHandler implements CommandHandler {
         PowerUnbreaking pow = new PowerUnbreaking();
         pow.item = item;
         pow.level = level;
+        item.addPower(pow);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
+    }
+    
+    @CommandString("rpgitem $n[] power skyhook $m[] $DISTANCE:i[]")
+    @CommandDocumentation("Adds the skyhook power to @[Item]#. The skyhook power will allow the user to hook on to @[Material]# up to @[Distance]# blocks away")
+    @CommandGroup("item_power_skyhook")
+    public void skyHook(CommandSender sender, RPGItem item, Material material, int distance) {
+        PowerSkyHook pow = new PowerSkyHook();
+        pow.item = item;
+        pow.railMaterial = material;
+        pow.hookDistance = distance;
         item.addPower(pow);
         ItemManager.save(Plugin.plugin);
         sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
