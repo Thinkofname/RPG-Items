@@ -168,15 +168,19 @@ public class Events implements Listener {
     public void onInventoryOpen(InventoryOpenEvent e) {
         Inventory in = e.getInventory();
         Iterator<ItemStack> it = in.iterator();
-        while (it.hasNext()) {
-            ItemStack item = it.next();
-            RPGItem rItem = ItemManager.toRPGItem(item);
-            if (rItem == null)
-                continue;;
-            item.setType(rItem.item.getType());
-            if (!(rItem.meta instanceof LeatherArmorMeta))
-                item.setDurability(rItem.item.getDurability());
-            item.setItemMeta(rItem.meta);
+        try {
+            while (it.hasNext()) {
+                ItemStack item = it.next();
+                RPGItem rItem = ItemManager.toRPGItem(item);
+                if (rItem == null)
+                    continue;;
+                item.setType(rItem.item.getType());
+                if (!(rItem.meta instanceof LeatherArmorMeta))
+                    item.setDurability(rItem.item.getDurability());
+                item.setItemMeta(rItem.meta);
+            }
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            //Fix for the bug with anvils in craftbukkit
         }
     }
 
