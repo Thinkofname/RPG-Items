@@ -77,7 +77,6 @@ public class ItemManager {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
