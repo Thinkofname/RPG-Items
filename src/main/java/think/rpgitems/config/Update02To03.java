@@ -147,6 +147,7 @@ public class Update02To03 implements Updater {
                 newItem.setDamage(damageMin, damageMax);
                 newItem.setQuality(quality, false);
                 newItem.ignoreWorldGuard = ignoreWorldGuard;
+                newItem.description = description;
 
                 for (Power power : powers) {
                     newItem.addPower(power, false);
