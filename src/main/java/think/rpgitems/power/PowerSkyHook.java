@@ -86,13 +86,13 @@ public class PowerSkyHook extends Power {
     @Override
     public void init(ConfigurationSection s) {
         railMaterial = Material.valueOf(s.getString("railMaterial", "GLASS"));
-        hookDistance = s.getInt("railMaterial", 10);
+        hookDistance = s.getInt("hookDistance", 10);
     }
 
     @Override
     public void save(ConfigurationSection s) {
         s.set("railMaterial", railMaterial.toString());
-        s.set("railMaterial", hookDistance);
+        s.set("hookDistance", hookDistance);
     }
 
     @Override
