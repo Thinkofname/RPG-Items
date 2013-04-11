@@ -92,7 +92,7 @@ public class Handler implements CommandHandler {
     @CommandGroup("item_give")
     public void giveItem(CommandSender sender, RPGItem item) {
         if (sender instanceof Player) {
-            if ((!Plugin.plugin.getConfig().getBoolean("give-perms", false) && sender.hasPermission("rpgitem")) || sender.hasPermission("rpgitem.give." + item.getName())) {
+            if ((!Plugin.plugin.getConfig().getBoolean("give-perms", false) && sender.hasPermission("rpgitem")) || (Plugin.plugin.getConfig().getBoolean("give-perms", false) && sender.hasPermission("rpgitem.give." + item.getName()))) {
                 item.give((Player) sender);
                 sender.sendMessage(ChatColor.AQUA + "You were given " + item.getDisplay());
             } else {
