@@ -67,8 +67,12 @@ public class Events implements Listener {
                 item.recipe = new ArrayList<ItemStack>();
             }
             item.recipe.clear();
-            for (ItemStack i : e.getInventory().getContents()) {
-                item.recipe.add(i);
+            for (int y = 0; y < 3; y++) {
+                for (int x = 0; x < 3; x++) {
+                    int i = x + y * 9;
+                    ItemStack it = e.getInventory().getItem(i);
+                    item.recipe.add(it);
+                }
             }
             item.hasRecipe = true;
             item.resetRecipe(true);

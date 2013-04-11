@@ -6,7 +6,6 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -399,12 +398,21 @@ public class Handler implements CommandHandler {
     public void itemSetRecipe(CommandSender sender, RPGItem item) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            Inventory recipeInventory = Bukkit.createInventory(player, InventoryType.DISPENSER);
+            Inventory recipeInventory = Bukkit.createInventory(player, 27, "RPGItems - " + item.getDisplay());
             if (item.hasRecipe) {
-                for (int i = 0; i < 9; i++) {
-                    ItemStack it = item.recipe.get(i);
-                    if (it != null)
-                        recipeInventory.setItem(i, it);
+                ItemStack blank = new ItemStack(Material.WALL_SIGN);
+                for (int i = 0; i < 27; i++) {
+                    recipeInventory.setItem(i, blank);
+                }
+                for (int x = 0; x < 3; x++) {
+                    for (int y = 0; y < 3; y++) {
+                        int i = x + y * 9;
+                        ItemStack it = item.recipe.get(x + y * 3);
+                        if (it != null)
+                            recipeInventory.setItem(i, it);
+                        else
+                            recipeInventory.setItem(i, null);
+                    }
                 }
             }
             player.openInventory(recipeInventory);
