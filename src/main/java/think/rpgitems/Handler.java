@@ -1,5 +1,7 @@
 package think.rpgitems;
 
+import java.util.ArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -8,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import think.rpgitems.commands.CommandDocumentation;
@@ -401,6 +404,15 @@ public class Handler implements CommandHandler {
             Inventory recipeInventory = Bukkit.createInventory(player, 27, "RPGItems - " + item.getDisplay());
             if (item.hasRecipe) {
                 ItemStack blank = new ItemStack(Material.WALL_SIGN);
+                ItemMeta meta = blank.getItemMeta();
+                meta.setDisplayName(ChatColor.RED + "Do not change. Use the empty slots");
+                ArrayList<String> lore = new ArrayList<String>();
+                lore.add(ChatColor.WHITE + "Place items in the empty spaces");
+                lore.add(ChatColor.WHITE + "in the shape of the crafting");
+                lore.add(ChatColor.WHITE + "recipe that you want the item to");
+                lore.add(ChatColor.WHITE + "have");
+                meta.setLore(lore);
+                blank.setItemMeta(meta);
                 for (int i = 0; i < 27; i++) {
                     recipeInventory.setItem(i, blank);
                 }
