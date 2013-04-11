@@ -72,13 +72,31 @@ public class Handler implements CommandHandler {
             sender.sendMessage(ChatColor.RED + Locale.get("MESSAGE_CREATE_FAIL"));
         }
     }
+    
+    @CommandString("rpgitem option giveperms")
+    @CommandDocumentation("Toggles give requiring permissions")
+    @CommandGroup("option_giveperms")
+    public void givePerms(CommandSender sender) {
+        Plugin.plugin.getConfig().set("give-perms", !Plugin.plugin.getConfig().getBoolean("give-perms", false));
+        if (Plugin.plugin.getConfig().getBoolean("give-perms", false)) {
+            sender.sendMessage(ChatColor.AQUA + "Give now requires permissions");
+        } else {
+            sender.sendMessage(ChatColor.AQUA + "Give now does not require permissions");            
+        }
+        Plugin.plugin.saveConfig();
+    }
 
     @CommandString("rpgitem $n[] give")
     @CommandDocumentation("$COMMAND_RPGITEM_GIVE")
     @CommandGroup("item_give")
     public void giveItem(CommandSender sender, RPGItem item) {
         if (sender instanceof Player) {
-            item.give((Player) sender);
+            if (!Plugin.plugin.getConfig().getBoolean("give-perms", false) || sender.hasPermission("rpgitem.give." + item.getName())) {
+                item.give((Player) sender);
+                sender.sendMessage(ChatColor.AQUA + "You were given " + item.getDisplay());
+            } else {
+                sender.sendMessage(ChatColor.RED + "You do not have permission");
+            }
         } else {
             sender.sendMessage(ChatColor.RED + Locale.get("MESSAGE_GIVE_CONSOLE"));
         }
@@ -89,6 +107,8 @@ public class Handler implements CommandHandler {
     @CommandGroup("item_give")
     public void giveItemPlayer(CommandSender sender, RPGItem item, Player player) {
         item.give(player);
+        sender.sendMessage(ChatColor.AQUA + "Gave " + item.getDisplay() + ChatColor.AQUA + " to " + player.getName());
+        player.sendMessage(ChatColor.AQUA + "You were given " + item.getDisplay());
     }
 
     @CommandString("rpgitem $n[] give $p[] $COUNT:i[]")
