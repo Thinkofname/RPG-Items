@@ -179,8 +179,41 @@ public class RPGItem {
     }
 
     public void rebuild() {
+        List<String> lines = getTooltipLines();
+        meta.setDisplayName(lines.get(0));
+        lines.remove(0);
+        meta.setLore(lines);
+        item.setItemMeta(meta);
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            Iterator<ItemStack> it = player.getInventory().iterator();
+            while (it.hasNext()) {
+                ItemStack item = it.next();
+                if (item == null)
+                    continue;
+                if (!item.hasItemMeta())
+                    continue;
+                if (!item.getItemMeta().hasDisplayName())
+                    continue;
+                ItemMeta im = item.getItemMeta();
+                try {
+                    int id = ItemManager.decodeId(im.getDisplayName());
+                    if (id != getID())
+                        continue;
+                    item.setType(this.item.getType());
+                    if (!(meta instanceof LeatherArmorMeta))
+                        item.setDurability(this.item.getDurability());
+                    item.setItemMeta(meta);
+                } catch (Exception e) {
+                }
+            }
+        }
+    }
+    
+    public List<String> getTooltipLines() {
+        ArrayList<String> output = new ArrayList<String>();
         int width = 150;
-        meta.setDisplayName(encodedID + quality.colour + ChatColor.BOLD + displayName);
+        output.add(encodedID + quality.colour + ChatColor.BOLD + displayName);
         int dWidth = getStringWidthBold(ChatColor.stripColor(displayName));
         if (dWidth > width)
             width = dWidth;
@@ -216,15 +249,13 @@ public class RPGItem {
                 width = dWidth;
         }
 
-        ArrayList<String> lore = new ArrayList<String>();
-
-        lore.add(ChatColor.WHITE + hand + StringUtils.repeat(" ", (width - getStringWidth(ChatColor.stripColor(hand + type))) / 4) + type);
+        output.add(ChatColor.WHITE + hand + StringUtils.repeat(" ", (width - getStringWidth(ChatColor.stripColor(hand + type))) / 4) + type);
         if (damageStr != null) {
-            lore.add(ChatColor.WHITE + damageStr);
+            output.add(ChatColor.WHITE + damageStr);
         }
 
         for (Power p : powers) {
-            lore.add(p.displayText());
+            output.add(p.displayText());
         }
         if (loreText.length() != 0) {
             int cWidth = 0;
@@ -253,7 +284,7 @@ public class RPGItem {
                         cWidth = 0;
                         cWidth += tWidth;
                         tWidth = 0;
-                        lore.add(out.toString());
+                        output.add(out.toString());
                         out = new StringBuilder();
                         out.append(currentColour);
                         out.append(ChatColor.ITALIC);
@@ -268,38 +299,13 @@ public class RPGItem {
                 }
             }
             out.append(temp);
-            lore.add(out.toString());
+            output.add(out.toString());
         }
 
         for (String s : description) {
-            lore.add(s);
+            output.add(s);
         }
-        meta.setLore(lore);
-        item.setItemMeta(meta);
-
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            Iterator<ItemStack> it = player.getInventory().iterator();
-            while (it.hasNext()) {
-                ItemStack item = it.next();
-                if (item == null)
-                    continue;
-                if (!item.hasItemMeta())
-                    continue;
-                if (!item.getItemMeta().hasDisplayName())
-                    continue;
-                ItemMeta im = item.getItemMeta();
-                try {
-                    int id = ItemManager.decodeId(im.getDisplayName());
-                    if (id != getID())
-                        continue;
-                    item.setType(this.item.getType());
-                    if (!(meta instanceof LeatherArmorMeta))
-                        item.setDurability(this.item.getDurability());
-                    item.setItemMeta(meta);
-                } catch (Exception e) {
-                }
-            }
-        }
+        return output;
     }
 
     public String getName() {
@@ -361,101 +367,8 @@ public class RPGItem {
     }
 
     public void print(CommandSender sender) {
-        int width = 150;
-        sender.sendMessage(quality.colour + ChatColor.BOLD + displayName);
-        int dWidth = getStringWidthBold(ChatColor.stripColor(displayName));
-        if (dWidth > width)
-            width = dWidth;
-
-        dWidth = getStringWidth(ChatColor.stripColor(hand + "     " + type));
-        if (dWidth > width)
-            width = dWidth;
-        String damageStr = null;
-        if (damageMin == 0 && damageMax == 0 && armour != 0) {
-            damageStr = armour + "% " + Plugin.plugin.getConfig().getString("defaults.armour", "Armour");
-        } else if (armour == 0 && damageMin == 0 && damageMax == 0) {
-            damageStr = null;
-        } else if (damageMin == damageMax) {
-            damageStr = damageMin + " " + Plugin.plugin.getConfig().getString("defaults.damage", "Damage");
-        } else {
-            damageStr = damageMin + "-" + damageMax + " " + Plugin.plugin.getConfig().getString("defaults.damage", "Damage");
-        }
-        if (damageMin != 0 || damageMax != 0 || armour != 0) {
-            dWidth = getStringWidth(damageStr);
-            if (dWidth > width)
-                width = dWidth;
-        }
-
-        for (Power p : powers) {
-            dWidth = getStringWidth(ChatColor.stripColor(p.displayText()));
-            if (dWidth > width)
-                width = dWidth;
-        }
-
-        for (String s : description) {
-            dWidth = getStringWidth(ChatColor.stripColor(s));
-            if (dWidth > width)
-                width = dWidth;
-        }
-
-        ArrayList<String> lore = new ArrayList<String>();
-
-        lore.add(ChatColor.WHITE + hand + StringUtils.repeat(" ", (width - getStringWidth(ChatColor.stripColor(hand + type))) / 4) + type);
-        if (damageStr != null) {
-            lore.add(ChatColor.WHITE + damageStr);
-        }
-
-        for (Power p : powers) {
-            lore.add(p.displayText());
-        }
-        if (loreText.length() != 0) {
-            int cWidth = 0;
-            int tWidth = 0;
-            StringBuilder out = new StringBuilder();
-            StringBuilder temp = new StringBuilder();
-            out.append(ChatColor.YELLOW);
-            out.append(ChatColor.ITALIC);
-            String currentColour = ChatColor.YELLOW.toString();
-            String dMsg = "\"" + loreText + "\"";
-            for (int i = 0; i < dMsg.length(); i++) {
-                char c = dMsg.charAt(i);
-                temp.append(c);
-                if (c == ChatColor.COLOR_CHAR || c == '&') {
-                    i += 1;
-                    temp.append(dMsg.charAt(i));
-                    currentColour = ChatColor.COLOR_CHAR + "" + dMsg.charAt(i);
-                    continue;
-                }
-                if (c == ' ')
-                    tWidth += 4;
-                else
-                    tWidth += Font.widths[c] + 1;
-                if (c == ' ' || i == dMsg.length() - 1) {
-                    if (cWidth + tWidth > width) {
-                        cWidth = 0;
-                        cWidth += tWidth;
-                        tWidth = 0;
-                        lore.add(out.toString());
-                        out = new StringBuilder();
-                        out.append(currentColour);
-                        out.append(ChatColor.ITALIC);
-                        out.append(temp);
-                        temp = new StringBuilder();
-                    } else {
-                        out.append(temp);
-                        temp = new StringBuilder();
-                        cWidth += tWidth;
-                        tWidth = 0;
-                    }
-                }
-            }
-            out.append(temp);
-            lore.add(out.toString());
-        }
-        for (String s : description) {
-            lore.add(s);
-        }
-        for (String s : lore) {
+        List<String> lines = getTooltipLines();
+        for (String s : lines) {
             sender.sendMessage(s);
         }
     }
