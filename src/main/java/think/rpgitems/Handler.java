@@ -1,10 +1,14 @@
 package think.rpgitems;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import think.rpgitems.commands.CommandDocumentation;
@@ -377,6 +381,36 @@ public class Handler implements CommandHandler {
             sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_WORLDGUARD_OVERRIDE_ACTIVE"));
         } else {
             sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_WORLDGUARD_OVERRIDE_DISABLED"));
+        }
+    }
+    
+    @CommandString("rpgitem $n[] removerecipe")
+    @CommandDocumentation("Removes the @[Item]#'s recipe")
+    @CommandGroup("item_recipe")
+    public void itemRemoveRecipe(CommandSender sender, RPGItem item) {
+        item.hasRecipe = false;
+        item.resetRecipe(true);
+        sender.sendMessage(ChatColor.AQUA + "Recipe removed");
+    }
+    
+    @CommandString("rpgitem $n[] recipe")
+    @CommandDocumentation("Sets the @[Item]#'s recipe")
+    @CommandGroup("item_recipe")
+    public void itemSetRecipe(CommandSender sender, RPGItem item) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Inventory recipeInventory = Bukkit.createInventory(player, InventoryType.DISPENSER);
+            if (item.hasRecipe) {
+                for (int i = 0; i < 9; i++) {
+                    ItemStack it = item.recipe.get(i);
+                    if (it != null)
+                        recipeInventory.setItem(i, it);
+                }
+            }
+            player.openInventory(recipeInventory);
+            Events.recipeWindows.put(player.getName(), item.getID());
+        } else {
+            sender.sendMessage(ChatColor.RED + "This command can only be used by players");
         }
     }
 }

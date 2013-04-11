@@ -18,10 +18,13 @@ package think.rpgitems;
 
 import gnu.trove.map.hash.TIntByteHashMap;
 import gnu.trove.map.hash.TIntIntHashMap;
+import gnu.trove.map.hash.TObjectIntHashMap;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -34,6 +37,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -52,6 +56,26 @@ public class Events implements Listener {
 
     public static TIntByteHashMap removeArrows = new TIntByteHashMap();
     public static TIntIntHashMap rpgProjectiles = new TIntIntHashMap();
+    public static TObjectIntHashMap<String> recipeWindows = new TObjectIntHashMap<String>();
+    
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent e) {
+        if (recipeWindows.containsKey(e.getPlayer().getName())) {
+            int id = recipeWindows.remove(e.getPlayer().getName());
+            RPGItem item = ItemManager.getItemById(id);
+            if (item.recipe == null) {
+                item.recipe = new ArrayList<ItemStack>();
+            }
+            item.recipe.clear();
+            for (ItemStack i : e.getInventory().getContents()) {
+                item.recipe.add(i);
+            }
+            item.hasRecipe = true;
+            item.resetRecipe(true);
+            ItemManager.save(Plugin.plugin);
+            ((Player) e.getPlayer()).sendMessage(ChatColor.AQUA + "Recipe set for " + item.getName());
+        }
+    }
 
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent e) {

@@ -17,8 +17,15 @@
 package think.rpgitems.item;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -32,8 +39,11 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.material.MaterialData;
 
 import think.rpgitems.Plugin;
 import think.rpgitems.data.Font;
@@ -58,6 +68,9 @@ public class RPGItem {
     public List<String> description = new ArrayList<String>();
 
     public ArrayList<Power> powers = new ArrayList<Power>();
+    
+    public boolean hasRecipe = false;
+    public List<ItemStack> recipe = null;
 
     public RPGItem(String name, int id) {
         this.name = name;
@@ -96,6 +109,7 @@ public class RPGItem {
         }
         ignoreWorldGuard = s.getBoolean("ignoreWorldGuard", false);
 
+        //Powers
         ConfigurationSection powerList = s.getConfigurationSection("powers");
         if (powerList != null) {
             for (String sectionKey : powerList.getKeys(false)) {
@@ -117,6 +131,13 @@ public class RPGItem {
             }
         }
         encodedID = getMCEncodedID(id);
+        
+        //Recipes
+        hasRecipe = s.getBoolean("hasRecipe", false);
+        if (hasRecipe) {
+            recipe = (List<ItemStack>) s.getList("recipe");
+        }
+        
         rebuild();
     }
 
@@ -151,6 +172,53 @@ public class RPGItem {
             p.save(pConfig);
             powerConfigs.set(Integer.toString(i), pConfig);
             i++;
+        }
+        
+        //Recipes
+        s.set("hasRecipe", hasRecipe);
+        if (hasRecipe) {
+            s.set("recipe", recipe);
+        }
+    }
+    
+    public void resetRecipe(boolean removeOld) {
+        if (removeOld) {
+            Iterator<Recipe> it = Bukkit.recipeIterator();
+            while(it.hasNext()) {
+                Recipe recipe = it.next();
+                RPGItem rpgitem = ItemManager.toRPGItem(recipe.getResult());
+                if (rpgitem == null) continue;
+                if (rpgitem.getID() == getID()) {
+                    it.remove();
+                }
+            }
+        }
+        if (hasRecipe) {
+            Set<ItemStack> iSet = new HashSet<ItemStack>();
+            for (ItemStack m : recipe) {
+                iSet.add(m);
+            }
+            ItemStack[] iList = iSet.toArray(new ItemStack[iSet.size()]);
+            ShapedRecipe shapedRecipe = new ShapedRecipe(item);
+            int i = 0;
+            Map<ItemStack, Character> iMap = new HashMap<ItemStack, Character>();
+            for (ItemStack m : iList) {
+                iMap.put(m, (char) (65 + i));
+                i++;
+            }
+            iMap.put(null, ' ');
+            StringBuilder out = new StringBuilder();
+            for (ItemStack m : recipe) {
+                out.append(iMap.get(m));
+            }
+            String shape = out.toString();
+            shapedRecipe.shape(new String[]{shape.substring(0, 3), shape.substring(3, 6), shape.substring(6, 9)});
+            for (Entry<ItemStack, Character> e : iMap.entrySet()) {
+                if (e.getKey() != null) {
+                    shapedRecipe.setIngredient(e.getValue(), e.getKey().getData());
+                }
+            }
+            Bukkit.addRecipe(shapedRecipe);
         }
     }
 
@@ -208,6 +276,7 @@ public class RPGItem {
                 }
             }
         }
+        resetRecipe(true);
     }
     
     public List<String> getTooltipLines() {
