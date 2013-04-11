@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Effect;
-import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -36,7 +34,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.mcstats.Metrics;
 import org.mcstats.Metrics.Graph;
 
