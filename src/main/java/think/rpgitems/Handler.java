@@ -36,9 +36,9 @@ public class Handler implements CommandHandler {
         }
     }
 
-    @CommandString("rpgitem worldguard")
+    @CommandString("rpgitem option worldguard")
     @CommandDocumentation("$COMMAND_RPGITEM_WORLDGUARD")
-    @CommandGroup("worldguard")
+    @CommandGroup("option_worldguard")
     public void toggleWorldGuard(CommandSender sender) {
         if (!WorldGuard.isEnabled()) {
             sender.sendMessage(ChatColor.RED + Locale.get("MESSAGE_WORLDGUARD_ERROR"));
