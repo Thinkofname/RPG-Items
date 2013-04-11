@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface CommandString {
     String value();
+    boolean handlePermissions() default false;
 }

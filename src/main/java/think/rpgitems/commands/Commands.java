@@ -61,9 +61,6 @@ abstract public class Commands {
         argTypes.put('m', ArgumentMaterial.class);
     }
 
-    public static void add(String a, Commands b) {
-    }
-
     public static void exec(CommandSender sender, String com) {
         com = com.trim();
         if (com.length() == 0)
@@ -87,7 +84,10 @@ abstract public class Commands {
             for (CommandDef c : command) {
                 if (c.arguments.length == 0) {
                     try {
-                        c.method.invoke(c.handler, sender);
+                        if (c.handlePermissions || sender.hasPermission("rpgitem"))
+                            c.method.invoke(c.handler, sender);
+                        else
+                            sender.sendMessage(ChatColor.RED + Locale.get("MESSAGE_ERROR_PERMISSION"));
                     } catch (IllegalAccessException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -102,25 +102,25 @@ abstract public class Commands {
                 }
             }
             // Print usage
-            sender.sendMessage(String.format(ChatColor.GREEN + Locale.get("MESSAGE_COMMAND_USAGE"), comName, Plugin.plugin.getDescription().getVersion()));
-            for (CommandDef c : command) {
-                StringBuilder buf = new StringBuilder();
-                buf.append(ChatColor.GREEN).append('/').append(comName);
-                for (CommandArgument a : c.arguments) {
-                    buf.append(' ');
-                    if (a.name.length() != 0) {
-                        buf.append(ChatColor.RED);
-                        buf.append(Locale.get("COMMAND_INFO_" + a.name)).append(':');
+            if (sender.hasPermission("rpgitem")) {
+                sender.sendMessage(String.format(ChatColor.GREEN + Locale.get("MESSAGE_COMMAND_USAGE"), comName, Plugin.plugin.getDescription().getVersion()));
+                for (CommandDef c : command) {
+                    StringBuilder buf = new StringBuilder();
+                    buf.append(ChatColor.GREEN).append('/').append(comName);
+                    for (CommandArgument a : c.arguments) {
+                        buf.append(' ');
+                        if (a.name.length() != 0) {
+                            buf.append(ChatColor.RED);
+                            buf.append(Locale.get("COMMAND_INFO_" + a.name)).append(':');
+                        }
+                        buf.append(a.isConst() ? ChatColor.GREEN : ChatColor.GOLD);
+                        buf.append(a.printable());
                     }
-                    buf.append(a.isConst() ? ChatColor.GREEN : ChatColor.GOLD);
-                    buf.append(a.printable());
+                    sender.sendMessage(buf.toString());
                 }
-                sender.sendMessage(buf.toString());
-                /*
-                 * String note = c.command.getNote(); if (note != null) { sender.sendMessage(ChatColor.GREEN + "- " + note); }
-                 */
-            }
-            sender.sendMessage(ChatColor.GREEN + Locale.get("MESSAGE_COMMAND_INFO"));
+                sender.sendMessage(ChatColor.GREEN + Locale.get("MESSAGE_COMMAND_INFO"));
+            } else
+                sender.sendMessage(ChatColor.RED + Locale.get("MESSAGE_ERROR_PERMISSION"));
             return;
         }
         ArrayList<String> args = new ArrayList<String>();
@@ -191,7 +191,10 @@ abstract public class Commands {
                 }
             }
             try {
-                c.method.invoke(c.handler, outArgs.toArray());
+                if (c.handlePermissions || sender.hasPermission("rpgitem"))
+                    c.method.invoke(c.handler, outArgs.toArray());
+                else
+                    sender.sendMessage(ChatColor.RED + Locale.get("MESSAGE_ERROR_PERMISSION"));
             } catch (IllegalAccessException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -204,54 +207,50 @@ abstract public class Commands {
             }
             return;
         }
-
-        if (lastError != null) {
-            sender.sendMessage(ChatColor.RED + String.format(Locale.get("MESSAGE_ERROR_COMMAND"), lastError.error));
-        } else {
-            ArrayList<String> consts = new ArrayList<String>();
-            comLoop: for (CommandDef c : command) {
-                /*
-                 * if (c.arguments.length != args.size()) { if (c.arguments.length != 0 && c.arguments[c.arguments.length-1] instanceof ArgumentString) { if (args.size() < c.arguments.length) continue; } else { continue; } }
-                 */
-                // ArrayList<Object> outArgs = new ArrayList<Object>();
-                for (int i = 0; i < c.arguments.length; i++) {
-                    if (i >= args.size())
-                        break;
-                    CommandArgument a = c.arguments[i];
-                    if (!a.isConst()) {
-                        if (i == c.arguments.length - 1) {
-                            // Special case for strings so they do not need to be quoted
-                            if (a instanceof ArgumentString) {
-                                StringBuilder joined = new StringBuilder();
-                                for (int j = i; j < args.size(); j++) {
-                                    joined.append(args.get(j)).append(' ');
+        if (sender.hasPermission("rpgitem")) {
+            if (lastError != null) {
+                sender.sendMessage(ChatColor.RED + String.format(Locale.get("MESSAGE_ERROR_COMMAND"), lastError.error));
+            } else {
+                ArrayList<String> consts = new ArrayList<String>();
+                comLoop: for (CommandDef c : command) {
+                    for (int i = 0; i < c.arguments.length; i++) {
+                        if (i >= args.size())
+                            break;
+                        CommandArgument a = c.arguments[i];
+                        if (!a.isConst()) {
+                            if (i == c.arguments.length - 1) {
+                                // Special case for strings so they do not need to be quoted
+                                if (a instanceof ArgumentString) {
+                                    StringBuilder joined = new StringBuilder();
+                                    for (int j = i; j < args.size(); j++) {
+                                        joined.append(args.get(j)).append(' ');
+                                    }
+                                    args.set(i, joined.toString().trim());
                                 }
-                                args.set(i, joined.toString().trim());
                             }
-                        }
-                        Object res = a.parse(args.get(i));
-                        if (res instanceof CommandError) {
-                            lastError = (CommandError) res;
-                            continue comLoop;
-                        }
-                        // outArgs.add(res);
-                    } else {
-                        ArgumentConst cst = (ArgumentConst) a;
-                        if (!cst.value.equals(args.get(i))) {
-                            continue comLoop;
+                            Object res = a.parse(args.get(i));
+                            if (res instanceof CommandError) {
+                                lastError = (CommandError) res;
+                                continue comLoop;
+                            }
                         } else {
-                            consts.add(cst.value);
+                            ArgumentConst cst = (ArgumentConst) a;
+                            if (!cst.value.equals(args.get(i))) {
+                                continue comLoop;
+                            } else {
+                                consts.add(cst.value);
+                            }
                         }
                     }
                 }
-                // c.command.command(sender, outArgs.toArray());
+                StringBuilder search = new StringBuilder();
+                for (String term : consts) {
+                    search.append(term).append(' ');
+                }
+                searchHelp(sender, search.toString());
             }
-            StringBuilder search = new StringBuilder();
-            for (String term : consts) {
-                search.append(term).append(' ');
-            }
-            searchHelp(sender, search.toString());
-        }
+        } else
+            sender.sendMessage(ChatColor.RED + Locale.get("MESSAGE_ERROR_PERMISSION"));
     }
 
     public static List<String> complete(String com) {
@@ -406,6 +405,9 @@ abstract public class Commands {
         } else {
             def.sortKey = "";
         }
+        CommandString comString = method.getAnnotation(CommandString.class);
+        def.handlePermissions = comString.handlePermissions();
+
         if (!commands.containsKey(comName)) {
             commands.put(comName, new ArrayList<CommandDef>());
         }
@@ -697,17 +699,10 @@ abstract public class Commands {
             }
         }
     }
-
-    public abstract void command(CommandSender sender, Object[] args);
-
-    public abstract String getDocs();
-
-    public String getNote() {
-        return null;
-    }
 }
 
 class CommandDef implements Comparable<CommandDef> {
+    public boolean handlePermissions;
     public String commandString;
     public CommandHandler handler;
     public Method method;

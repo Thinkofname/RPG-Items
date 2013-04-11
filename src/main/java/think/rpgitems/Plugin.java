@@ -25,7 +25,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -202,10 +201,6 @@ public class Plugin extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (sender instanceof Player ? !((Player) sender).hasPermission("rpgitem") : false) {
-            sender.sendMessage(ChatColor.RED + Locale.get("MESSAGE_ERROR_PERMISSION"));
-            return true;
-        }
         StringBuilder out = new StringBuilder();
         out.append(label).append(' ');
         for (String arg : args)

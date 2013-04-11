@@ -7,4 +7,3 @@ commands:
     rpgitem:
         description: RPG Items
         usage: 
-        permission: rpgitem
