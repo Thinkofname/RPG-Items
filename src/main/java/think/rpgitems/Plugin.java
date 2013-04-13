@@ -51,6 +51,7 @@ import think.rpgitems.power.PowerKnockup;
 import think.rpgitems.power.PowerLightning;
 import think.rpgitems.power.PowerPotionHit;
 import think.rpgitems.power.PowerPotionSelf;
+import think.rpgitems.power.PowerPotionTick;
 import think.rpgitems.power.PowerRainbow;
 import think.rpgitems.power.PowerRumble;
 import think.rpgitems.power.PowerRush;
@@ -92,6 +93,7 @@ public class Plugin extends JavaPlugin {
         Power.powers.put("unbreaking", PowerUnbreaking.class);
         Power.powers.put("rumble", PowerRumble.class);
         Power.powers.put("skyhook", PowerSkyHook.class);
+        Power.powers.put("potiontick", PowerPotionTick.class);
         Locale.init(this);
     }
 

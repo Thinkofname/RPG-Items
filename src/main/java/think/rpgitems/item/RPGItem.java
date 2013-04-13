@@ -72,7 +72,7 @@ public class RPGItem {
 
     public List<String> description = new ArrayList<String>();
 
-    //Powers
+    // Powers
     public ArrayList<Power> powers = new ArrayList<Power>();
     private ArrayList<PowerLeftClick> powerLeftClick = new ArrayList<PowerLeftClick>();
     private ArrayList<PowerRightClick> powerRightClick = new ArrayList<PowerRightClick>();
@@ -80,11 +80,11 @@ public class RPGItem {
     private ArrayList<PowerHit> powerHit = new ArrayList<PowerHit>();
     private ArrayList<PowerTick> powerTick = new ArrayList<PowerTick>();
 
-    //Recipes
+    // Recipes
     public boolean hasRecipe = false;
     public List<ItemStack> recipe = null;
 
-    //Drops
+    // Drops
     public TObjectDoubleHashMap<String> dropChances = new TObjectDoubleHashMap<String>();
 
     public RPGItem(String name, int id) {
@@ -217,7 +217,7 @@ public class RPGItem {
         if (hasRecipe) {
             s.set("recipe", recipe);
         }
-        
+
         ConfigurationSection drops = s.createSection("dropChances");
         for (String key : dropChances.keySet()) {
             drops.set(key, dropChances.get(key));
@@ -307,23 +307,28 @@ public class RPGItem {
             Iterator<ItemStack> it = player.getInventory().iterator();
             while (it.hasNext()) {
                 ItemStack item = it.next();
-                if (item == null)
+                RPGItem rItem = ItemManager.toRPGItem(item);
+                if (rItem == null)
                     continue;
-                if (!item.hasItemMeta())
+                if (rItem.getID() != getID())
                     continue;
-                if (!item.getItemMeta().hasDisplayName())
-                    continue;
-                ItemMeta im = item.getItemMeta();
-                try {
-                    int id = ItemManager.decodeId(im.getDisplayName());
-                    if (id != getID())
-                        continue;
-                    item.setType(this.item.getType());
-                    if (!(meta instanceof LeatherArmorMeta))
-                        item.setDurability(this.item.getDurability());
-                    item.setItemMeta(meta);
-                } catch (Exception e) {
+                item.setType(this.item.getType());
+                if (!(meta instanceof LeatherArmorMeta)) {
+                    item.setDurability(this.item.getDurability());
                 }
+                item.setItemMeta(meta);
+            }
+            for (ItemStack item : player.getInventory().getArmorContents()) {
+                RPGItem rItem = ItemManager.toRPGItem(item);
+                if (rItem == null)
+                    continue;
+                if (rItem.getID() != getID())
+                    continue;
+                item.setType(this.item.getType());
+                if (!(meta instanceof LeatherArmorMeta)) {
+                    item.setDurability(this.item.getDurability());
+                }
+                item.setItemMeta(meta);
             }
         }
         resetRecipe(true);

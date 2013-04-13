@@ -22,6 +22,7 @@ import think.rpgitems.power.PowerKnockup;
 import think.rpgitems.power.PowerLightning;
 import think.rpgitems.power.PowerPotionHit;
 import think.rpgitems.power.PowerPotionSelf;
+import think.rpgitems.power.PowerPotionTick;
 import think.rpgitems.power.PowerRainbow;
 import think.rpgitems.power.PowerRumble;
 import think.rpgitems.power.PowerSkyHook;
@@ -433,6 +434,23 @@ public class PowerHandler implements CommandHandler {
         pow.item = item;
         pow.railMaterial = material;
         pow.hookDistance = distance;
+        item.addPower(pow);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));
+    }
+    
+    @CommandString("rpgitem $n[] power potiontick $AMPLIFIER:i[] $EFFECT:s[]")
+    @CommandDocumentation("Tick")
+    @CommandGroup("item_power_potiontick")
+    public void potionTick(CommandSender sender, RPGItem item, int amplifier, String effect) {
+        PowerPotionTick pow = new PowerPotionTick();
+        pow.item = item;
+        pow.amplifier = amplifier;
+        pow.effect = PotionEffectType.getByName(effect);
+        if (pow.effect == null) {
+            sender.sendMessage(ChatColor.RED + String.format(Locale.get("MESSAGE_ERROR_EFFECT"), effect));
+            return;
+        }
         item.addPower(pow);
         ItemManager.save(Plugin.plugin);
         sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_POWER_OK"));

@@ -61,7 +61,7 @@ public class Events implements Listener {
     public static TIntIntHashMap rpgProjectiles = new TIntIntHashMap();
     public static TObjectIntHashMap<String> recipeWindows = new TObjectIntHashMap<String>();
     public static HashMap<String, Set<Integer>> drops = new HashMap<String, Set<Integer>>();
-    
+
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e) {
         String type = e.getEntity().getType().toString();
@@ -69,7 +69,7 @@ public class Events implements Listener {
         if (drops.containsKey(type)) {
             Set<Integer> items = drops.get(type);
             Iterator<Integer> it = items.iterator();
-            while(it.hasNext()) {
+            while (it.hasNext()) {
                 int id = it.next();
                 RPGItem item = ItemManager.getItemById(id);
                 if (item == null) {
@@ -83,7 +83,7 @@ public class Events implements Listener {
             }
         }
     }
-    
+
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent e) {
         if (recipeWindows.containsKey(e.getPlayer().getName())) {
@@ -191,16 +191,22 @@ public class Events implements Listener {
         PlayerInventory in = player.getInventory();
         for (int i = 0; i < in.getSize(); i++) {
             ItemStack item = in.getItem(i);
-            try {
-                int id = ItemManager.decodeId(item.getItemMeta().getDisplayName());
-                RPGItem rItem = ItemManager.getItemById(id);
-                item.setType(rItem.item.getType());
-                // if (!(rItem.meta instanceof LeatherArmorMeta))
-                // item.setDurability(rItem.item.getDurability());
-                item.setItemMeta(rItem.meta);
-            } catch (Exception ex) {
-
-            }
+            RPGItem rItem = ItemManager.toRPGItem(item);
+            if (rItem == null)
+                continue;
+            item.setType(rItem.item.getType());
+            if (!(rItem.meta instanceof LeatherArmorMeta) && rItem.item.getType().isBlock())
+                item.setDurability(rItem.item.getDurability());
+            item.setItemMeta(rItem.meta);
+        }
+        for (ItemStack item : player.getInventory().getArmorContents()) {
+            RPGItem rItem = ItemManager.toRPGItem(item);
+            if (rItem == null)
+                continue;
+            item.setType(rItem.item.getType());
+            if (!(rItem.meta instanceof LeatherArmorMeta) && rItem.item.getType().isBlock())
+                item.setDurability(rItem.item.getDurability());
+            item.setItemMeta(rItem.meta);
         }
     }
 
@@ -211,7 +217,7 @@ public class Events implements Listener {
         if (rItem == null)
             return;
         item.setType(rItem.item.getType());
-        if (!(rItem.meta instanceof LeatherArmorMeta))
+        if (!(rItem.meta instanceof LeatherArmorMeta) && rItem.item.getType().isBlock())
             item.setDurability(rItem.item.getDurability());
         item.setItemMeta(rItem.meta);
         e.getItem().setItemStack(item);
@@ -227,14 +233,15 @@ public class Events implements Listener {
                 ItemStack item = it.next();
                 RPGItem rItem = ItemManager.toRPGItem(item);
                 if (rItem == null)
-                    continue;;
+                    continue;
+                ;
                 item.setType(rItem.item.getType());
-                if (!(rItem.meta instanceof LeatherArmorMeta))
+                if (!(rItem.meta instanceof LeatherArmorMeta) && rItem.item.getType().isBlock())
                     item.setDurability(rItem.item.getDurability());
                 item.setItemMeta(rItem.meta);
             }
         } catch (ArrayIndexOutOfBoundsException ex) {
-            //Fix for the bug with anvils in craftbukkit
+            // Fix for the bug with anvils in craftbukkit
         }
     }
 
