@@ -1060,6 +1060,7 @@ class ArgumentItem extends CommandArgument {
 
     @Override
     public Object parse(String in) {
+        in = in.toLowerCase();
         RPGItem item = ItemManager.getItemByName(in);
         if (item == null) {
             return new CommandError(String.format(Locale.get("MESSAGE_ERROR_ITEM"), in));
@@ -1069,6 +1070,7 @@ class ArgumentItem extends CommandArgument {
 
     @Override
     public List<String> tabComplete(String in) {
+        in = in.toLowerCase();
         ArrayList<String> out = new ArrayList<String>();
         for (String i : ItemManager.itemByName.keySet()) {
             if (i.startsWith(in)) {
