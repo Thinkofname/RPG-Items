@@ -458,10 +458,7 @@ public class RPGItem {
         int width = 0;
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
-            if (c == ' ')
-                width += 4;
-            else
-                width += Font.widths[c] + 1;
+            width += Font.widths[c] + 1;
         }
         return width;
     }
@@ -470,10 +467,7 @@ public class RPGItem {
         int width = 0;
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
-            if (c == ' ')
-                width += 4;
-            else
-                width += Font.widths[c] + 2;
+            width += Font.widths[c] + 2;
         }
         return width;
     }
