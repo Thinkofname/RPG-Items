@@ -22,8 +22,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import think.rpgitems.data.Locale;
+import think.rpgitems.power.types.PowerRightClick;
 
-public class PowerConsume extends Power {
+public class PowerConsume extends Power implements PowerRightClick {
 
     @Override
     public void rightClick(Player player) {

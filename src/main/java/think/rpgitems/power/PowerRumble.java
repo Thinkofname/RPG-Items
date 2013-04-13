@@ -31,8 +31,9 @@ import org.bukkit.util.Vector;
 import think.rpgitems.Plugin;
 import think.rpgitems.data.Locale;
 import think.rpgitems.data.RPGValue;
+import think.rpgitems.power.types.PowerRightClick;
 
-public class PowerRumble extends Power {
+public class PowerRumble extends Power implements PowerRightClick {
 
     public long cooldownTime = 20;
     public int power = 2;

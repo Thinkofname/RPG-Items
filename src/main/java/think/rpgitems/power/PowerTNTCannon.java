@@ -24,8 +24,9 @@ import org.bukkit.entity.TNTPrimed;
 
 import think.rpgitems.data.Locale;
 import think.rpgitems.data.RPGValue;
+import think.rpgitems.power.types.PowerRightClick;
 
-public class PowerTNTCannon extends Power {
+public class PowerTNTCannon extends Power implements PowerRightClick {
 
     public long cooldownTime = 20;
 

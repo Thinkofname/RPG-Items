@@ -48,6 +48,11 @@ import think.rpgitems.Events;
 import think.rpgitems.Plugin;
 import think.rpgitems.data.Font;
 import think.rpgitems.power.Power;
+import think.rpgitems.power.types.PowerHit;
+import think.rpgitems.power.types.PowerLeftClick;
+import think.rpgitems.power.types.PowerProjectileHit;
+import think.rpgitems.power.types.PowerRightClick;
+import think.rpgitems.power.types.PowerTick;
 
 public class RPGItem {
     public ItemStack item;
@@ -67,11 +72,19 @@ public class RPGItem {
 
     public List<String> description = new ArrayList<String>();
 
+    //Powers
     public ArrayList<Power> powers = new ArrayList<Power>();
+    private ArrayList<PowerLeftClick> powerLeftClick = new ArrayList<PowerLeftClick>();
+    private ArrayList<PowerRightClick> powerRightClick = new ArrayList<PowerRightClick>();
+    private ArrayList<PowerProjectileHit> powerProjectileHit = new ArrayList<PowerProjectileHit>();
+    private ArrayList<PowerHit> powerHit = new ArrayList<PowerHit>();
+    private ArrayList<PowerTick> powerTick = new ArrayList<PowerTick>();
 
+    //Recipes
     public boolean hasRecipe = false;
     public List<ItemStack> recipe = null;
 
+    //Drops
     public TObjectDoubleHashMap<String> dropChances = new TObjectDoubleHashMap<String>();
 
     public RPGItem(String name, int id) {
@@ -254,26 +267,32 @@ public class RPGItem {
     }
 
     public void leftClick(Player player) {
-        for (Power power : powers) {
+        for (PowerLeftClick power : powerLeftClick) {
             power.leftClick(player);
         }
     }
 
     public void rightClick(Player player) {
-        for (Power power : powers) {
+        for (PowerRightClick power : powerRightClick) {
             power.rightClick(player);
         }
     }
 
     public void projectileHit(Player player, Projectile arrow) {
-        for (Power power : powers) {
+        for (PowerProjectileHit power : powerProjectileHit) {
             power.projectileHit(player, arrow);
         }
     }
 
     public void hit(Player player, LivingEntity e) {
-        for (Power power : powers) {
+        for (PowerHit power : powerHit) {
             power.hit(player, e);
+        }
+    }
+
+    public void tick(Player player) {
+        for (PowerTick power : powerTick) {
+            power.tick(player);
         }
     }
 
@@ -454,18 +473,6 @@ public class RPGItem {
         return width;
     }
 
-    public boolean removePower(String pow) {
-        Iterator<Power> it = powers.iterator();
-        while (it.hasNext()) {
-            if (it.next().getName().equalsIgnoreCase(pow)) {
-                it.remove();
-                rebuild();
-                return true;
-            }
-        }
-        return false;
-    }
-
     public void print(CommandSender sender) {
         List<String> lines = getTooltipLines();
         for (String s : lines) {
@@ -607,8 +614,55 @@ public class RPGItem {
     public void addPower(Power power, boolean update) {
         powers.add(power);
         Power.powerUsage.put(power.getName(), Power.powerUsage.get(power.getName()) + 1);
+        if (power instanceof PowerHit) {
+            powerHit.add((PowerHit) power);
+        }
+        if (power instanceof PowerLeftClick) {
+            powerLeftClick.add((PowerLeftClick) power);
+        }
+        if (power instanceof PowerRightClick) {
+            powerRightClick.add((PowerRightClick) power);
+        }
+        if (power instanceof PowerProjectileHit) {
+            powerProjectileHit.add((PowerProjectileHit) power);
+        }
+        if (power instanceof PowerTick) {
+            powerTick.add((PowerTick) power);
+        }
         if (update)
             rebuild();
+    }
+
+    public boolean removePower(String pow) {
+        Iterator<Power> it = powers.iterator();
+        Power power = null;
+        while (it.hasNext()) {
+            Power p = it.next();
+            if (p.getName().equalsIgnoreCase(pow)) {
+                it.remove();
+                power = p;
+                rebuild();
+                break;
+            }
+        }
+        if (power != null) {
+            if (power instanceof PowerHit) {
+                powerHit.remove((PowerHit) power);
+            }
+            if (power instanceof PowerLeftClick) {
+                powerLeftClick.remove(power);
+            }
+            if (power instanceof PowerRightClick) {
+                powerRightClick.remove(power);
+            }
+            if (power instanceof PowerProjectileHit) {
+                powerProjectileHit.remove(power);
+            }
+            if (power instanceof PowerTick) {
+                powerTick.remove(power);
+            }
+        }
+        return power != null;
     }
 
     public void addDescription(String str) {

@@ -23,9 +23,10 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import think.rpgitems.data.RPGValue;
+import think.rpgitems.power.types.PowerRightClick;
 
 @Deprecated
-public class PowerRush extends Power {
+public class PowerRush extends Power implements PowerRightClick {
 
     private long cd = 20;
     private int speed = 3;

@@ -12,8 +12,9 @@ import org.bukkit.util.Vector;
 
 import think.rpgitems.Plugin;
 import think.rpgitems.data.RPGValue;
+import think.rpgitems.power.types.PowerRightClick;
 
-public class PowerSkyHook extends Power {
+public class PowerSkyHook extends Power implements PowerRightClick {
     
     public Material railMaterial = Material.GLASS;
     public int hookDistance = 10;

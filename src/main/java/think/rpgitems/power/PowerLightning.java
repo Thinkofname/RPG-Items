@@ -25,8 +25,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 
 import think.rpgitems.data.Locale;
+import think.rpgitems.power.types.PowerHit;
+import think.rpgitems.power.types.PowerProjectileHit;
 
-public class PowerLightning extends Power {
+public class PowerLightning extends Power implements PowerHit, PowerProjectileHit {
 
     public int chance = 20;
     private Random random = new Random();

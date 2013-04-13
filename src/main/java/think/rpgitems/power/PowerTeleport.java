@@ -30,8 +30,10 @@ import org.bukkit.util.BlockIterator;
 
 import think.rpgitems.data.Locale;
 import think.rpgitems.data.RPGValue;
+import think.rpgitems.power.types.PowerProjectileHit;
+import think.rpgitems.power.types.PowerRightClick;
 
-public class PowerTeleport extends Power {
+public class PowerTeleport extends Power implements PowerRightClick, PowerProjectileHit {
 
     public int distance = 5;
     public long cooldownTime = 20;

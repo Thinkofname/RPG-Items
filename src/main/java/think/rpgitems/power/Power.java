@@ -24,9 +24,6 @@ import java.util.HashSet;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 
 import think.rpgitems.item.RPGItem;
 
@@ -46,22 +43,6 @@ public abstract class Power {
     public abstract void save(ConfigurationSection s);
 
     public abstract String getName();
-
-    public void rightClick(Player player) {
-
-    }
-
-    public void leftClick(Player player) {
-
-    }
-
-    public void hit(Player player, LivingEntity e) {
-
-    }
-
-    public void projectileHit(Player player, Projectile arrow) {
-
-    }
 
     public abstract String displayText();
 

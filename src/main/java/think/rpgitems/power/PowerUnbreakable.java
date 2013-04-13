@@ -22,8 +22,9 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import think.rpgitems.data.Locale;
+import think.rpgitems.power.types.PowerHit;
 
-public class PowerUnbreakable extends Power {
+public class PowerUnbreakable extends Power implements PowerHit {
 
     @SuppressWarnings("deprecation")
     @Override

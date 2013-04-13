@@ -24,8 +24,10 @@ import org.bukkit.permissions.PermissionAttachment;
 import think.rpgitems.Plugin;
 import think.rpgitems.data.Locale;
 import think.rpgitems.data.RPGValue;
+import think.rpgitems.power.types.PowerLeftClick;
+import think.rpgitems.power.types.PowerRightClick;
 
-public class PowerCommand extends Power {
+public class PowerCommand extends Power implements PowerRightClick, PowerLeftClick {
 
     public String command = "";
     public String display = "Runs command";

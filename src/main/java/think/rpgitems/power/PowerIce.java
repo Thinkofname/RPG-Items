@@ -37,8 +37,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import think.rpgitems.Plugin;
 import think.rpgitems.data.Locale;
 import think.rpgitems.data.RPGValue;
+import think.rpgitems.power.types.PowerRightClick;
 
-public class PowerIce extends Power {
+public class PowerIce extends Power implements PowerRightClick {
 
     public long cooldownTime = 20;
 

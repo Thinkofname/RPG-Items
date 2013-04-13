@@ -24,8 +24,9 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import think.rpgitems.data.Locale;
+import think.rpgitems.power.types.PowerHit;
 
-public class PowerUnbreaking extends Power {
+public class PowerUnbreaking extends Power implements PowerHit {
 
     public int level = 1;
     private Random random = new Random();

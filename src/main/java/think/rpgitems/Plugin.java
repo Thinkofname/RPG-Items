@@ -57,6 +57,7 @@ import think.rpgitems.power.PowerRush;
 import think.rpgitems.power.PowerSkyHook;
 import think.rpgitems.power.PowerTNTCannon;
 import think.rpgitems.power.PowerTeleport;
+import think.rpgitems.power.PowerTicker;
 import think.rpgitems.power.PowerUnbreakable;
 import think.rpgitems.power.PowerUnbreaking;
 import think.rpgitems.support.WorldGuard;
@@ -130,6 +131,7 @@ public class Plugin extends JavaPlugin {
         }
         Commands.register(new Handler());
         Commands.register(new PowerHandler());
+        new PowerTicker().runTaskTimer(this, 0, 1);
     }
 
     @Override

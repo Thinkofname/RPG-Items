@@ -24,8 +24,9 @@ import org.bukkit.potion.PotionEffectType;
 
 import think.rpgitems.data.Locale;
 import think.rpgitems.data.RPGValue;
+import think.rpgitems.power.types.PowerRightClick;
 
-public class PowerPotionSelf extends Power {
+public class PowerPotionSelf extends Power implements PowerRightClick {
 
     public long cooldownTime = 20;
     public int amplifier = 3;

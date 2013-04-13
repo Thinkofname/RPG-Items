@@ -24,8 +24,9 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import think.rpgitems.data.Locale;
+import think.rpgitems.power.types.PowerHit;
 
-public class PowerKnockup extends Power {
+public class PowerKnockup extends Power implements PowerHit {
 
     public int chance = 20;
     public double power = 2;

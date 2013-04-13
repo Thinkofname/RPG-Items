@@ -25,8 +25,9 @@ import org.bukkit.entity.Player;
 import think.rpgitems.Events;
 import think.rpgitems.data.Locale;
 import think.rpgitems.data.RPGValue;
+import think.rpgitems.power.types.PowerRightClick;
 
-public class PowerArrow extends Power {
+public class PowerArrow extends Power implements PowerRightClick{
 
     public long cooldownTime = 20;
 
