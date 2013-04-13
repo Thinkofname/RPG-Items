@@ -21,8 +21,10 @@ import gnu.trove.map.hash.TIntIntHashMap;
 import gnu.trove.map.hash.TObjectIntHashMap;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -35,6 +37,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -57,6 +60,29 @@ public class Events implements Listener {
     public static TIntByteHashMap removeArrows = new TIntByteHashMap();
     public static TIntIntHashMap rpgProjectiles = new TIntIntHashMap();
     public static TObjectIntHashMap<String> recipeWindows = new TObjectIntHashMap<String>();
+    public static HashMap<String, Set<Integer>> drops = new HashMap<String, Set<Integer>>();
+    
+    @EventHandler
+    public void onEntityDeath(EntityDeathEvent e) {
+        String type = e.getEntity().getType().toString();
+        Random random = new Random();
+        if (drops.containsKey(type)) {
+            Set<Integer> items = drops.get(type);
+            Iterator<Integer> it = items.iterator();
+            while(it.hasNext()) {
+                int id = it.next();
+                RPGItem item = ItemManager.getItemById(id);
+                if (item == null) {
+                    it.remove();
+                    continue;
+                }
+                double chance = item.dropChances.get(type);
+                if (random.nextDouble() < chance / 100d) {
+                    e.getDrops().add(item.item);
+                }
+            }
+        }
+    }
     
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent e) {

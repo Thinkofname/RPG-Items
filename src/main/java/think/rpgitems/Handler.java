@@ -1,12 +1,15 @@
 package think.rpgitems;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -32,7 +35,7 @@ public class Handler implements CommandHandler {
     public void listItems(CommandSender sender) {
         sender.sendMessage(ChatColor.GREEN + "RPGItems:");
         for (RPGItem item : ItemManager.itemByName.values()) {
-            sender.sendMessage(ChatColor.GREEN + item.getName() + " - " + item.getQuality().colour + ChatColor.BOLD + item.getDisplay());
+            sender.sendMessage(ChatColor.GREEN + item.getName() + " - " + item.getDisplay());
         }
     }
 
@@ -453,5 +456,36 @@ public class Handler implements CommandHandler {
         } else {
             sender.sendMessage(ChatColor.RED + "This command can only be used by players");
         }
+    }
+    
+    @CommandString("rpgitem $n[] drop $e[org.bukkit.entity.EntityType]")
+    @CommandDocumentation("Gets the chance that @[Item]# will drop from @[EntityType]#. 0 means it doesn't drop")
+    @CommandGroup("item_drop")
+    public void getItemDropChance(CommandSender sender, RPGItem item, EntityType type) {
+        sender.sendMessage(String.format(ChatColor.AQUA + "The chance that '%s" + ChatColor.AQUA + "' will drop from '%s' is %.2f%%", item.getDisplay(), type.toString().toLowerCase(), item.dropChances.get(type.toString())));
+    }
+
+    @CommandString("rpgitem $n[] drop $e[org.bukkit.entity.EntityType] $CHANCE:f[]")
+    @CommandDocumentation("Sets the chance that @[Item]# will drop from @[EntityType]# to @[Chance]#%. 0% prevents it from dropping")
+    @CommandGroup("item_drop")
+    public void setItemDropChance(CommandSender sender, RPGItem item, EntityType type, double chance) {
+        chance = Math.min(chance, 100.0);
+        String typeS = type.toString();
+        if (chance > 0) {
+            item.dropChances.put(typeS, chance);
+            if (!Events.drops.containsKey(typeS)) {
+                Events.drops.put(typeS, new HashSet<Integer>());
+            }
+            Set<Integer> set = Events.drops.get(typeS);
+            set.add(item.getID());
+        } else {
+            item.dropChances.remove(typeS);
+            if (Events.drops.containsKey(typeS)) {
+                Set<Integer> set = Events.drops.get(typeS);
+                set.remove(item.getID());
+            }
+        }
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage(String.format(ChatColor.AQUA + "The chance that '%s" + ChatColor.AQUA + "' will drop from '%s' was set to %.2f%%", item.getDisplay(), typeS.toLowerCase(), item.dropChances.get(typeS)));
     }
 }

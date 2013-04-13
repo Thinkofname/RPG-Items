@@ -27,6 +27,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -59,6 +60,7 @@ abstract public class Commands {
         argTypes.put('o', ArgumentOption.class);
         argTypes.put('n', ArgumentItem.class);
         argTypes.put('m', ArgumentMaterial.class);
+        argTypes.put('e', ArgumentEnum.class);
     }
 
     public static void exec(CommandSender sender, String com) {
@@ -443,10 +445,10 @@ abstract public class Commands {
                 CommandArgument arg;
                 try {
                     arg = cAT.newInstance();
+                    arg.init(a.substring(3, a.length() - 1));
                     if (!params[realArgumentsCount + 1].isAssignableFrom(arg.getType())) {
                         throw new RuntimeException("Type mismatch for " + method.getName());
                     }
-                    arg.init(a.substring(3, a.length() - 1));
                     arg.name = name;
                     arguments.add(arg);
                     realArgumentsCount++;
@@ -1124,6 +1126,60 @@ class ArgumentMaterial extends CommandArgument {
     @Override
     public Class<?> getType() {
         return Material.class;
+    }
+
+}
+
+class ArgumentEnum extends CommandArgument {
+
+    private Class<?> e;
+    private List<?> enumConsts;
+
+    @Override
+    public void init(String a) {
+        try {
+           e = Class.forName(a);
+           if (!e.isEnum()) {
+               throw new RuntimeException(a + " is not an enum");
+           }
+           enumConsts = Arrays.asList(e.getEnumConstants());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Override
+    public Object parse(String in) {
+        Enum<?> en = null;
+        try {
+            en = Enum.valueOf((Class<Enum>)e, in.toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            return new CommandError(String.format("%s is not a %s", in, e.getSimpleName()));
+        }
+        return en;
+    }
+
+    @Override
+    public List<String> tabComplete(String in) {
+        ArrayList<String> out = new ArrayList<String>();
+        String it = in.toUpperCase();
+        for (Object en : enumConsts) {
+            if (en.toString().startsWith(it)) {
+                out.add(en.toString());
+            }
+        }
+        return out;
+    }
+
+    @Override
+    public String printable() {
+        return "[" + e.getSimpleName() + "]";
+    }
+
+    @Override
+    public Class<?> getType() {
+        return e;
     }
 
 }

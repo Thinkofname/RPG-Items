@@ -16,6 +16,8 @@
  */
 package think.rpgitems.item;
 
+import gnu.trove.map.hash.TObjectDoubleHashMap;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,6 +44,7 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
+import think.rpgitems.Events;
 import think.rpgitems.Plugin;
 import think.rpgitems.data.Font;
 import think.rpgitems.power.Power;
@@ -65,9 +68,11 @@ public class RPGItem {
     public List<String> description = new ArrayList<String>();
 
     public ArrayList<Power> powers = new ArrayList<Power>();
-    
+
     public boolean hasRecipe = false;
     public List<ItemStack> recipe = null;
+
+    public TObjectDoubleHashMap<String> dropChances = new TObjectDoubleHashMap<String>();
 
     public RPGItem(String name, int id) {
         this.name = name;
@@ -106,7 +111,7 @@ public class RPGItem {
         }
         ignoreWorldGuard = s.getBoolean("ignoreWorldGuard", false);
 
-        //Powers
+        // Powers
         ConfigurationSection powerList = s.getConfigurationSection("powers");
         if (powerList != null) {
             for (String sectionKey : powerList.getKeys(false)) {
@@ -128,13 +133,36 @@ public class RPGItem {
             }
         }
         encodedID = getMCEncodedID(id);
-        
-        //Recipes
+
+        // Recipes
         hasRecipe = s.getBoolean("hasRecipe", false);
         if (hasRecipe) {
             recipe = (List<ItemStack>) s.getList("recipe");
         }
-        
+
+        ConfigurationSection drops = s.getConfigurationSection("dropChances");
+        if (drops != null) {
+            for (String key : drops.getKeys(false)) {
+                double chance = drops.getDouble(key, 0.0);
+                chance = Math.min(chance, 100.0);
+                if (chance > 0) {
+                    dropChances.put(key, chance);
+                    if (!Events.drops.containsKey(key)) {
+                        Events.drops.put(key, new HashSet<Integer>());
+                    }
+                    Set<Integer> set = Events.drops.get(key);
+                    set.add(getID());
+                } else {
+                    dropChances.remove(key);
+                    if (Events.drops.containsKey(key)) {
+                        Set<Integer> set = Events.drops.get(key);
+                        set.remove(getID());
+                    }
+                }
+                dropChances.put(key, chance);
+            }
+        }
+
         rebuild();
     }
 
@@ -170,21 +198,27 @@ public class RPGItem {
             powerConfigs.set(Integer.toString(i), pConfig);
             i++;
         }
-        
-        //Recipes
+
+        // Recipes
         s.set("hasRecipe", hasRecipe);
         if (hasRecipe) {
             s.set("recipe", recipe);
         }
+        
+        ConfigurationSection drops = s.createSection("dropChances");
+        for (String key : dropChances.keySet()) {
+            drops.set(key, dropChances.get(key));
+        }
     }
-    
+
     public void resetRecipe(boolean removeOld) {
         if (removeOld) {
             Iterator<Recipe> it = Bukkit.recipeIterator();
-            while(it.hasNext()) {
+            while (it.hasNext()) {
                 Recipe recipe = it.next();
                 RPGItem rpgitem = ItemManager.toRPGItem(recipe.getResult());
-                if (rpgitem == null) continue;
+                if (rpgitem == null)
+                    continue;
                 if (rpgitem.getID() == getID()) {
                     it.remove();
                 }
@@ -209,7 +243,7 @@ public class RPGItem {
                 out.append(iMap.get(m));
             }
             String shape = out.toString();
-            shapedRecipe.shape(new String[]{shape.substring(0, 3), shape.substring(3, 6), shape.substring(6, 9)});
+            shapedRecipe.shape(new String[] { shape.substring(0, 3), shape.substring(3, 6), shape.substring(6, 9) });
             for (Entry<ItemStack, Character> e : iMap.entrySet()) {
                 if (e.getKey() != null) {
                     shapedRecipe.setIngredient(e.getValue(), e.getKey().getData());
@@ -275,7 +309,7 @@ public class RPGItem {
         }
         resetRecipe(true);
     }
-    
+
     public List<String> getTooltipLines() {
         ArrayList<String> output = new ArrayList<String>();
         int width = 150;
@@ -450,7 +484,7 @@ public class RPGItem {
     }
 
     public String getDisplay() {
-        return displayName;
+        return quality.colour + ChatColor.BOLD + displayName;
     }
 
     public void setType(String str) {
