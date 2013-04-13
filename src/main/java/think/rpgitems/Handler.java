@@ -459,7 +459,7 @@ public class Handler implements CommandHandler {
     }
     
     @CommandString("rpgitem $n[] drop $e[org.bukkit.entity.EntityType]")
-    @CommandDocumentation("Gets the chance that @[Item]# will drop from @[EntityType]#. 0 means it doesn't drop")
+    @CommandDocumentation("Gets the chance that @[Item]# will drop from @[EntityType]#. 0% means it doesn't drop")
     @CommandGroup("item_drop")
     public void getItemDropChance(CommandSender sender, RPGItem item, EntityType type) {
         sender.sendMessage(String.format(ChatColor.AQUA + "The chance that '%s" + ChatColor.AQUA + "' will drop from '%s' is %.2f%%", item.getDisplay(), type.toString().toLowerCase(), item.dropChances.get(type.toString())));

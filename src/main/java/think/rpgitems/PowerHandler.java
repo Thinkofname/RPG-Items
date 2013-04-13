@@ -440,7 +440,7 @@ public class PowerHandler implements CommandHandler {
     }
     
     @CommandString("rpgitem $n[] power potiontick $AMPLIFIER:i[] $EFFECT:s[]")
-    @CommandDocumentation("Tick")
+    @CommandDocumentation("Adds the potiontick power to @[Item]#. The potiontick power will give the welder of the @[Item]# @[Effect]# level @[Amplifier]# while held/worn")
     @CommandGroup("item_power_potiontick")
     public void potionTick(CommandSender sender, RPGItem item, int amplifier, String effect) {
         PowerPotionTick pow = new PowerPotionTick();
