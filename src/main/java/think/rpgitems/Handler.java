@@ -425,7 +425,11 @@ public class Handler implements CommandHandler {
     public void itemSetRecipe(CommandSender sender, RPGItem item) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            Inventory recipeInventory = Bukkit.createInventory(player, 27, "RPGItems - " + item.getDisplay());
+            String title = "RPGItems - " + item.getDisplay();
+            if (title.length() > 32) {
+                title = title.substring(0, 32);
+            }
+            Inventory recipeInventory = Bukkit.createInventory(player, 27, title);
             if (item.hasRecipe) {
                 ItemStack blank = new ItemStack(Material.WALL_SIGN);
                 ItemMeta meta = blank.getItemMeta();
