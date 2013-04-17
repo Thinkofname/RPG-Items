@@ -22,11 +22,53 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
+
+import org.bukkit.entity.Player;
 
 import think.rpgitems.Plugin;
 
 public class Locale {
+    
+    private static Method getHandle;
+    private static Method getLocale;
+    private static Field language;
+    private static boolean canLocale = true;
+    private static boolean firstTime = true;
+    
+    public static String getPlayerLocale(Player player) {
+        if (firstTime) {
+            try {
+                getHandle = player.getClass().getMethod("getHandle", (Class<?>[]) null);
+                getLocale = getHandle.getReturnType().getMethod("getLocale", (Class<?>[]) null);
+                language = getLocale.getReturnType().getDeclaredField("e");
+                if (!language.getType().equals(String.class)) {
+                    canLocale = false;
+                }
+            } catch (Exception e) {
+                Plugin.plugin.getLogger().warning("Failed to get player locale");
+                canLocale = false;
+            }
+            firstTime = false;
+        }
+        if (!canLocale) {
+            return "en_GB";
+        }
+        try {
+            Object minePlayer = getHandle.invoke(player,(Object[]) null);
+            Object locale = getLocale.invoke(minePlayer, (Object[]) null);
+            if (language.getType().equals(String.class)) {
+                language.setAccessible(true);
+                return (String) language.get(locale);
+            }
+        } catch (Exception e) {
+            canLocale = false;
+        } 
+        //Any error default to en_GB
+        return "en_GB";
+    }
 
     private static HashMap<String, String> strings = new HashMap<String, String>();
 
