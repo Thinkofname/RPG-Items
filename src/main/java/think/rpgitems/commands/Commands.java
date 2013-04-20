@@ -113,7 +113,7 @@ abstract public class Commands {
                         buf.append(' ');
                         if (a.name.length() != 0) {
                             buf.append(ChatColor.RED);
-                            buf.append(Locale.get("COMMAND_INFO_" + a.name)).append(':');
+                            buf.append(Locale.get("COMMAND_INFO_" + a.name));
                         }
                         buf.append(a.isConst() ? ChatColor.GREEN : ChatColor.GOLD);
                         buf.append(a.printable());
@@ -503,7 +503,7 @@ abstract public class Commands {
                         buf.append(' ');
                         if (a.name.length() != 0) {
                             buf.append(ChatColor.RED).append(ChatColor.BOLD);
-                            buf.append(Locale.get("COMMAND_INFO_" + a.name)).append(':');
+                            buf.append(Locale.get("COMMAND_INFO_" + a.name));
                         }
                         buf.append(a.isConst() ? ChatColor.GREEN : ChatColor.GOLD).append(ChatColor.BOLD);
                         buf.append(a.printable());
@@ -600,7 +600,7 @@ abstract public class Commands {
                         if (a.name.length() != 0) {
                             buf.append("<<color 006EFF>>");
                             buf.append(Locale.get("COMMAND_INFO_" + a.name));
-                            buf.append("<</color>>:");
+                            buf.append("<</color>>");
                         }
                         if (a.isConst())
                             buf.append("<<color 000000>>");

@@ -94,11 +94,11 @@ public class Plugin extends JavaPlugin {
         Power.powers.put("rumble", PowerRumble.class);
         Power.powers.put("skyhook", PowerSkyHook.class);
         Power.powers.put("potiontick", PowerPotionTick.class);
-        Locale.init(this);
     }
 
     @Override
     public void onEnable() {
+        Locale.init(this);
         updateConfig();
         WorldGuard.init(this);
         ConfigurationSection conf = getConfig();
