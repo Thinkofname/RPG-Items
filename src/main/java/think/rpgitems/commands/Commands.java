@@ -76,9 +76,11 @@ abstract public class Commands {
         }
         com = com.substring(pos + 1);
 
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player)sender) : "en_GB";
+        
         ArrayList<CommandDef> command = commands.get(comName);
         if (command == null) {
-            sender.sendMessage(ChatColor.RED + String.format(Locale.get("MESSAGE_ERROR_UNKNOWN_COMMAND"), comName));
+            sender.sendMessage(ChatColor.RED + String.format(Locale.get("message.error.unknown.command", locale), comName));
             return;
         }
 
@@ -89,7 +91,7 @@ abstract public class Commands {
                         if (c.handlePermissions || sender.hasPermission("rpgitem"))
                             c.method.invoke(c.handler, sender);
                         else
-                            sender.sendMessage(ChatColor.RED + Locale.get("MESSAGE_ERROR_PERMISSION"));
+                            sender.sendMessage(ChatColor.RED + Locale.get("message.error.permission", locale));
                     } catch (IllegalAccessException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -105,7 +107,7 @@ abstract public class Commands {
             }
             // Print usage
             if (sender.hasPermission("rpgitem")) {
-                sender.sendMessage(String.format(ChatColor.GREEN + Locale.get("MESSAGE_COMMAND_USAGE"), comName, Plugin.plugin.getDescription().getVersion()));
+                sender.sendMessage(String.format(ChatColor.GREEN + Locale.get("message.command.usage", locale), comName, Plugin.plugin.getDescription().getVersion()));
                 for (CommandDef c : command) {
                     StringBuilder buf = new StringBuilder();
                     buf.append(ChatColor.GREEN).append('/').append(comName);
@@ -113,16 +115,16 @@ abstract public class Commands {
                         buf.append(' ');
                         if (a.name.length() != 0) {
                             buf.append(ChatColor.RED);
-                            buf.append(Locale.get("COMMAND_INFO_" + a.name));
+                            buf.append(Locale.get("command.info." + a.name, locale));
                         }
                         buf.append(a.isConst() ? ChatColor.GREEN : ChatColor.GOLD);
-                        buf.append(a.printable());
+                        buf.append(a.printable(locale));
                     }
                     sender.sendMessage(buf.toString());
                 }
-                sender.sendMessage(ChatColor.GREEN + Locale.get("MESSAGE_COMMAND_INFO"));
+                sender.sendMessage(ChatColor.GREEN + Locale.get("message.command.info", locale));
             } else
-                sender.sendMessage(ChatColor.RED + Locale.get("MESSAGE_ERROR_PERMISSION"));
+                sender.sendMessage(ChatColor.RED + Locale.get("message.error.permission", locale));
             return;
         }
         ArrayList<String> args = new ArrayList<String>();
@@ -179,7 +181,7 @@ abstract public class Commands {
                             args.set(i, joined.toString().trim());
                         }
                     }
-                    Object res = a.parse(args.get(i));
+                    Object res = a.parse(args.get(i), locale);
                     if (res instanceof CommandError) {
                         lastError = (CommandError) res;
                         continue comLoop;
@@ -196,7 +198,7 @@ abstract public class Commands {
                 if (c.handlePermissions || sender.hasPermission("rpgitem"))
                     c.method.invoke(c.handler, outArgs.toArray());
                 else
-                    sender.sendMessage(ChatColor.RED + Locale.get("MESSAGE_ERROR_PERMISSION"));
+                    sender.sendMessage(ChatColor.RED + Locale.get("message.error.permission", locale));
             } catch (IllegalAccessException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -211,7 +213,7 @@ abstract public class Commands {
         }
         if (sender.hasPermission("rpgitem")) {
             if (lastError != null) {
-                sender.sendMessage(ChatColor.RED + String.format(Locale.get("MESSAGE_ERROR_COMMAND"), lastError.error));
+                sender.sendMessage(ChatColor.RED + String.format(Locale.get("message.error.command", locale), lastError.error));
             } else {
                 ArrayList<String> consts = new ArrayList<String>();
                 comLoop: for (CommandDef c : command) {
@@ -230,7 +232,7 @@ abstract public class Commands {
                                     args.set(i, joined.toString().trim());
                                 }
                             }
-                            Object res = a.parse(args.get(i));
+                            Object res = a.parse(args.get(i), locale);
                             if (res instanceof CommandError) {
                                 lastError = (CommandError) res;
                                 continue comLoop;
@@ -252,10 +254,10 @@ abstract public class Commands {
                 searchHelp(sender, search.toString());
             }
         } else
-            sender.sendMessage(ChatColor.RED + Locale.get("MESSAGE_ERROR_PERMISSION"));
+            sender.sendMessage(ChatColor.RED + Locale.get("message.error.permission", locale));
     }
 
-    public static List<String> complete(String com) {
+    public static List<String> complete(CommandSender sender, String com) {
         com = com.trim();
         if (com.length() == 0) {
             return new ArrayList<String>();
@@ -269,6 +271,8 @@ abstract public class Commands {
         }
         com = com.substring(pos + 1);
 
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player)sender) : "en_GB";
+        
         ArrayList<CommandDef> command = commands.get(comName);
 
         if (command == null) {
@@ -327,7 +331,7 @@ abstract public class Commands {
                     }
                 } else {
                     if (!a.isConst()) {
-                        Object res = a.parse(args.get(i));
+                        Object res = a.parse(args.get(i), locale);
                         if (res instanceof CommandError) {
                             continue comLoop;
                         }
@@ -383,22 +387,6 @@ abstract public class Commands {
         Class<?>[] params = method.getParameterTypes();
         if (method.isAnnotationPresent(CommandDocumentation.class)) {
             def.documentation = method.getAnnotation(CommandDocumentation.class).value();
-            if (def.documentation.charAt(0) == '$') {
-                if (def.documentation.contains("+")) {
-                    String[] dArgs = def.documentation.split("\\+");
-                    def.documentation = Locale.get(dArgs[0].substring(1));
-                    if (dArgs[1].equalsIgnoreCase("PotionEffectType")) {
-                        StringBuilder out = new StringBuilder();
-                        for (PotionEffectType type : PotionEffectType.values()) {
-                            if (type != null)
-                                out.append(type.getName().toLowerCase()).append(", ");
-                        }
-                        def.documentation += out.toString();
-                    }
-                } else {
-                    def.documentation = Locale.get(def.documentation.substring(1));
-                }
-            }
         } else {
             def.documentation = "";
         }
@@ -486,7 +474,8 @@ abstract public class Commands {
             generateHelp();
             return;
         }
-        sender.sendMessage(ChatColor.GREEN + String.format(Locale.get("MESSAGE_HELP_FOR"), terms));
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
+        sender.sendMessage(ChatColor.GREEN + String.format(Locale.get("message.help.for", locale), terms));
         String[] term = terms.toLowerCase().split(" ");
         for (Entry<String, ArrayList<CommandDef>> command : commands.entrySet()) {
             for (CommandDef c : command.getValue()) {
@@ -503,13 +492,31 @@ abstract public class Commands {
                         buf.append(' ');
                         if (a.name.length() != 0) {
                             buf.append(ChatColor.RED).append(ChatColor.BOLD);
-                            buf.append(Locale.get("COMMAND_INFO_" + a.name));
+                            buf.append(Locale.get("command.info." + a.name, locale));
                         }
                         buf.append(a.isConst() ? ChatColor.GREEN : ChatColor.GOLD).append(ChatColor.BOLD);
-                        buf.append(a.printable());
+                        buf.append(a.printable(locale));
                     }
                     sender.sendMessage(buf.toString());
-                    String docStr = c.documentation.replaceAll("@", "" + ChatColor.BLUE).replaceAll("#", "" + ChatColor.WHITE);
+                    String docStr = c.documentation;
+                    if (docStr.charAt(0) == '$') {
+                        if (docStr.contains("+")) {
+                            String[] dArgs = docStr.split("\\+");
+                            docStr = Locale.get(dArgs[0].substring(1), locale);
+                            if (dArgs[1].equalsIgnoreCase("PotionEffectType")) {
+                                StringBuilder out = new StringBuilder();
+                                for (PotionEffectType type : PotionEffectType.values()) {
+                                    if (type != null)
+                                        out.append(type.getName().toLowerCase()).append(", ");
+                                }
+                                docStr += out.toString();
+                            }
+                        } else {
+                            docStr = Locale.get(docStr.substring(1), locale);
+                        }
+                    }
+                    docStr = docStr.replaceAll("@", "" + ChatColor.BLUE).replaceAll("#", "" + ChatColor.WHITE);
+                    
                     StringBuilder docBuf = new StringBuilder();
                     char[] chars = docStr.toCharArray();
                     docBuf.append(ChatColor.WHITE);
@@ -599,18 +606,35 @@ abstract public class Commands {
                     for (CommandArgument a : c.arguments) {
                         if (a.name.length() != 0) {
                             buf.append("<<color 006EFF>>");
-                            buf.append(Locale.get("COMMAND_INFO_" + a.name));
+                            buf.append(Locale.get("command.info." + a.name, "en_GB"));
                             buf.append("<</color>>");
                         }
                         if (a.isConst())
                             buf.append("<<color 000000>>");
                         else
                             buf.append("<<color 0000ff>>");
-                        buf.append(a.printable());
+                        buf.append(a.printable("en_GB"));
                         buf.append("<</color>> ");
                     }
                     buf.append("**===\n");
-                    String docStr = c.documentation.replaceAll("@", "<<color 0000ff>>").replaceAll("#", "<</color>>");
+                    String docStr = c.documentation;
+                    if (docStr.charAt(0) == '$') {
+                        if (docStr.contains("+")) {
+                            String[] dArgs = docStr.split("\\+");
+                            docStr = Locale.get(dArgs[0].substring(1), "en_GB");
+                            if (dArgs[1].equalsIgnoreCase("PotionEffectType")) {
+                                StringBuilder out2 = new StringBuilder();
+                                for (PotionEffectType type : PotionEffectType.values()) {
+                                    if (type != null)
+                                        out2.append(type.getName().toLowerCase()).append(", ");
+                                }
+                                docStr += out2.toString();
+                            }
+                        } else {
+                            docStr = Locale.get(docStr.substring(1), "en_GB");
+                        }
+                    }
+                    docStr = docStr.replaceAll("@", "<<color 0000ff>>").replaceAll("#", "<</color>>");
                     StringBuilder docBuf = new StringBuilder();
                     char[] chars = docStr.toCharArray();
                     for (int i = 0; i < chars.length; i++) {
@@ -721,11 +745,11 @@ class CommandDef implements Comparable<CommandDef> {
 abstract class CommandArgument {
     public abstract void init(String a);
 
-    public abstract Object parse(String in);
+    public abstract Object parse(String in, String locale);
 
     public abstract List<String> tabComplete(String in);
 
-    public abstract String printable();
+    public abstract String printable(String locale);
 
     public abstract Class<?> getType();
 
@@ -767,23 +791,23 @@ class ArgumentInteger extends CommandArgument {
     }
 
     @Override
-    public Object parse(String in) {
+    public Object parse(String in, String locale) {
         if (hasLimits) {
             try {
                 int i = Integer.parseInt(in);
                 if (i < min || i > max) {
-                    return new CommandError(String.format(Locale.get("MESSAGE_ERROR_INTEGER_LIMIT"), min, max));
+                    return new CommandError(String.format(Locale.get("message.error.integer.limit", locale), min, max));
                 }
                 return i;
             } catch (NumberFormatException e) {
-                return new CommandError(String.format(Locale.get("MESSAGE_ERROR_INTEGER_FORMAT"), in));
+                return new CommandError(String.format(Locale.get("message.error.integer.format", locale), in));
             }
         } else {
             try {
                 int i = Integer.parseInt(in);
                 return i;
             } catch (NumberFormatException e) {
-                return new CommandError(String.format(Locale.get("MESSAGE_ERROR_INTEGER_FORMAT"), in));
+                return new CommandError(String.format(Locale.get("message.error.integer.format", locale), in));
             }
         }
     }
@@ -794,11 +818,11 @@ class ArgumentInteger extends CommandArgument {
     }
 
     @Override
-    public String printable() {
+    public String printable(String locale) {
         if (hasLimits) {
-            return String.format(Locale.get("COMMAND_INFO_INTEGER_LIMIT"), min, max);
+            return String.format(Locale.get("command.info.integer.limit", locale), min, max);
         }
-        return Locale.get("COMMAND_INFO_INTEGER");
+        return Locale.get("command.info.integer", locale);
     }
 
     @Override
@@ -830,23 +854,23 @@ class ArgumentDouble extends CommandArgument {
     }
 
     @Override
-    public Object parse(String in) {
+    public Object parse(String in, String locale) {
         if (hasLimits) {
             try {
                 double i = Double.parseDouble(in);
                 if (i < min || i > max) {
-                    return new CommandError(String.format(Locale.get("MESSAGE_ERROR_DOUBLE_LIMIT"), min, max));
+                    return new CommandError(String.format(Locale.get("message.error.double.limit", locale), min, max));
                 }
                 return i;
             } catch (NumberFormatException e) {
-                return new CommandError(String.format(Locale.get("MESSAGE_ERROR_DOUBLE_FORMAT"), in));
+                return new CommandError(String.format(Locale.get("message.error.double.format", locale), in));
             }
         } else {
             try {
                 double i = Double.parseDouble(in);
                 return i;
             } catch (NumberFormatException e) {
-                return new CommandError(String.format(Locale.get("MESSAGE_ERROR_DOUBLE_FORMAT"), in));
+                return new CommandError(String.format(Locale.get("message.error.double.format", locale), in));
             }
         }
     }
@@ -857,11 +881,11 @@ class ArgumentDouble extends CommandArgument {
     }
 
     @Override
-    public String printable() {
+    public String printable(String locale) {
         if (hasLimits) {
-            return String.format(Locale.get("COMMAND_INFO_DOUBLE_LIMIT"), min, max);
+            return String.format(Locale.get("command.info.double.limit", locale), min, max);
         }
-        return Locale.get("COMMAND_INFO_DOUBLE");
+        return Locale.get("command.info.double", locale);
     }
 
     @Override
@@ -885,9 +909,9 @@ class ArgumentString extends CommandArgument {
     }
 
     @Override
-    public Object parse(String in) {
+    public Object parse(String in, String locale) {
         if (maxLength != 0 && in.length() > maxLength)
-            return new CommandError(String.format(Locale.get("MESSAGE_ERROR_STRING_LENGTH"), in, maxLength));
+            return new CommandError(String.format(Locale.get("message.error.string.length", locale), in, maxLength));
         return in;
     }
 
@@ -897,10 +921,10 @@ class ArgumentString extends CommandArgument {
     }
 
     @Override
-    public String printable() {
+    public String printable(String locale) {
         if (maxLength != 0)
-            return String.format(Locale.get("COMMAND_INFO_STRING_LIMIT"), maxLength);
-        return Locale.get("COMMAND_INFO_STRING");
+            return String.format(Locale.get("command.info.string.limit", locale), maxLength);
+        return Locale.get("command.info.string", locale);
     }
 
     @Override
@@ -924,7 +948,7 @@ class ArgumentConst extends CommandArgument {
     }
 
     @Override
-    public Object parse(String in) {
+    public Object parse(String in, String locale) {
         return null;
     }
 
@@ -938,7 +962,7 @@ class ArgumentConst extends CommandArgument {
     }
 
     @Override
-    public String printable() {
+    public String printable(String locale) {
         return value;
     }
 
@@ -960,10 +984,10 @@ class ArgumentPlayer extends CommandArgument {
     }
 
     @Override
-    public Object parse(String in) {
+    public Object parse(String in, String locale) {
         Player player = Bukkit.getPlayer(in);
         if (player == null)
-            return new CommandError(String.format(Locale.get("MESSAGE_ERROR_PLAYER"), in));
+            return new CommandError(String.format(Locale.get("message.error.player", locale), in));
         return player;
     }
 
@@ -978,8 +1002,8 @@ class ArgumentPlayer extends CommandArgument {
     }
 
     @Override
-    public String printable() {
-        return Locale.get("COMMAND_INFO_PLAYER");
+    public String printable(String locale) {
+        return Locale.get("command.info.player", locale);
     }
 
     @Override
@@ -1009,13 +1033,13 @@ class ArgumentOption extends CommandArgument {
     }
 
     @Override
-    public Object parse(String in) {
+    public Object parse(String in, String locale) {
         for (String o : options) {
             if (o.equalsIgnoreCase(in)) {
                 return o;
             }
         }
-        return new CommandError(String.format(Locale.get("MESSAGE_ERROR_OPTION"), in));
+        return new CommandError(String.format(Locale.get("message.error.option", locale), in));
     }
 
     @Override
@@ -1031,7 +1055,7 @@ class ArgumentOption extends CommandArgument {
     }
 
     @Override
-    public String printable() {
+    public String printable(String locale) {
         if (shortVersion.length() == 0) {
             StringBuilder out = new StringBuilder();
             out.append('[');
@@ -1059,11 +1083,11 @@ class ArgumentItem extends CommandArgument {
     }
 
     @Override
-    public Object parse(String in) {
+    public Object parse(String in, String locale) {
         in = in.toLowerCase();
         RPGItem item = ItemManager.getItemByName(in);
         if (item == null) {
-            return new CommandError(String.format(Locale.get("MESSAGE_ERROR_ITEM"), in));
+            return new CommandError(String.format(Locale.get("message.error.item", locale), in));
         }
         return item;
     }
@@ -1081,8 +1105,8 @@ class ArgumentItem extends CommandArgument {
     }
 
     @Override
-    public String printable() {
-        return Locale.get("COMMAND_INFO_ITEM");
+    public String printable(String locale) {
+        return Locale.get("command.info.item", locale);
     }
 
     @Override
@@ -1100,10 +1124,10 @@ class ArgumentMaterial extends CommandArgument {
     }
 
     @Override
-    public Object parse(String in) {
+    public Object parse(String in, String locale) {
         Material mat = Material.matchMaterial(in);
         if (mat == null) {
-            return new CommandError(String.format(Locale.get("MESSAGE_ERROR_MATERIAL"), in));
+            return new CommandError(String.format(Locale.get("message.error.material", locale), in));
         }
         return mat;
     }
@@ -1121,8 +1145,8 @@ class ArgumentMaterial extends CommandArgument {
     }
 
     @Override
-    public String printable() {
-        return Locale.get("COMMAND_INFO_MATERIAL");
+    public String printable(String locale) {
+        return Locale.get("command.info.material", locale);
     }
 
     @Override
@@ -1152,7 +1176,7 @@ class ArgumentEnum extends CommandArgument {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public Object parse(String in) {
+    public Object parse(String in, String locale) {
         Enum<?> en = null;
         try {
             en = Enum.valueOf((Class<Enum>)e, in.toUpperCase());
@@ -1175,7 +1199,7 @@ class ArgumentEnum extends CommandArgument {
     }
 
     @Override
-    public String printable() {
+    public String printable(String locale) {
         return "[" + e.getSimpleName() + "]";
     }
 

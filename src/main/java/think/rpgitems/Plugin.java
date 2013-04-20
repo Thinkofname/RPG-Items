@@ -218,6 +218,6 @@ public class Plugin extends JavaPlugin {
         out.append(alias).append(' ');
         for (String arg : args)
             out.append(arg).append(' ');
-        return Commands.complete(out.toString());
+        return Commands.complete(sender, out.toString());
     }
 }

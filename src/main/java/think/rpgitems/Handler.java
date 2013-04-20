@@ -30,7 +30,7 @@ import think.rpgitems.support.WorldGuard;
 public class Handler implements CommandHandler {
 
     @CommandString("rpgitem list")
-    @CommandDocumentation("$COMMAND_RPGITEM_LIST")
+    @CommandDocumentation("$command.rpgitem.list")
     @CommandGroup("list")
     public void listItems(CommandSender sender) {
         sender.sendMessage(ChatColor.GREEN + "RPGItems:");
@@ -40,17 +40,18 @@ public class Handler implements CommandHandler {
     }
 
     @CommandString("rpgitem option worldguard")
-    @CommandDocumentation("$COMMAND_RPGITEM_WORLDGUARD")
+    @CommandDocumentation("$command.rpgitem.worldguard")
     @CommandGroup("option_worldguard")
     public void toggleWorldGuard(CommandSender sender) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         if (!WorldGuard.isEnabled()) {
-            sender.sendMessage(ChatColor.RED + Locale.get("MESSAGE_WORLDGUARD_ERROR"));
+            sender.sendMessage(ChatColor.RED + Locale.get("message.worldguard.error", locale));
             return;
         }
         if (WorldGuard.useWorldGuard) {
-            sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_WORLDGUARD_DISABLE"));
+            sender.sendMessage(ChatColor.AQUA + Locale.get("message.worldguard.disable", locale));
         } else {
-            sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_WORLDGUARD_ENABLE"));
+            sender.sendMessage(ChatColor.AQUA + Locale.get("message.worldguard.enable", locale));
         }
         WorldGuard.useWorldGuard = !WorldGuard.useWorldGuard;
         Plugin.plugin.getConfig().set("support.worldguard", WorldGuard.useWorldGuard);
@@ -58,21 +59,22 @@ public class Handler implements CommandHandler {
     }
 
     @CommandString("rpgitem $n[]")
-    @CommandDocumentation("$COMMAND_RPGITEM_PRINT")
+    @CommandDocumentation("$command.rpgitem.print")
     @CommandGroup("item")
     public void printItem(CommandSender sender, RPGItem item) {
         item.print(sender);
     }
 
-    @CommandString("rpgitem $NAME:s[] create")
-    @CommandDocumentation("$COMMAND_RPGITEM_CREATE")
+    @CommandString("rpgitem $name:s[] create")
+    @CommandDocumentation("$command.rpgitem.create")
     @CommandGroup("item")
     public void createItem(CommandSender sender, String itemName) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         if (ItemManager.newItem(itemName.toLowerCase()) != null) {
-            sender.sendMessage(String.format(ChatColor.GREEN + Locale.get("MESSAGE_CREATE_OK"), itemName));
+            sender.sendMessage(String.format(ChatColor.GREEN + Locale.get("message.create.ok", locale), itemName));
             ItemManager.save(Plugin.plugin);
         } else {
-            sender.sendMessage(ChatColor.RED + Locale.get("MESSAGE_CREATE_FAIL"));
+            sender.sendMessage(ChatColor.RED + Locale.get("message.create.fail", locale));
         }
     }
     
@@ -91,9 +93,10 @@ public class Handler implements CommandHandler {
 
     @CommandString(value = "rpgitem $n[] give",
                     handlePermissions = true)
-    @CommandDocumentation("$COMMAND_RPGITEM_GIVE")
+    @CommandDocumentation("$command.rpgitem.give")
     @CommandGroup("item_give")
     public void giveItem(CommandSender sender, RPGItem item) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         if (sender instanceof Player) {
             if ((!Plugin.plugin.getConfig().getBoolean("give-perms", false) && sender.hasPermission("rpgitem")) || (Plugin.plugin.getConfig().getBoolean("give-perms", false) && sender.hasPermission("rpgitem.give." + item.getName()))) {
                 item.give((Player) sender);
@@ -102,12 +105,12 @@ public class Handler implements CommandHandler {
                 sender.sendMessage(ChatColor.RED + "You do not have permission");
             }
         } else {
-            sender.sendMessage(ChatColor.RED + Locale.get("MESSAGE_GIVE_CONSOLE"));
+            sender.sendMessage(ChatColor.RED + Locale.get("message.give.console", locale));
         }
     }
 
     @CommandString("rpgitem $n[] give $p[]")
-    @CommandDocumentation("$COMMAND_RPGITEM_GIVE_PLAYER")
+    @CommandDocumentation("$command.rpgitem.give.player")
     @CommandGroup("item_give")
     public void giveItemPlayer(CommandSender sender, RPGItem item, Player player) {
         item.give(player);
@@ -115,8 +118,8 @@ public class Handler implements CommandHandler {
         player.sendMessage(ChatColor.AQUA + "You were given " + item.getDisplay());
     }
 
-    @CommandString("rpgitem $n[] give $p[] $COUNT:i[]")
-    @CommandDocumentation("$COMMAND_RPGITEM_GIVE_PLAYER_COUNT")
+    @CommandString("rpgitem $n[] give $p[] $count:i[]")
+    @CommandDocumentation("$command.rpgitem.give.player.count")
     @CommandGroup("item_give")
     public void giveItemPlayerCount(CommandSender sender, RPGItem item, Player player, int count) {
         for (int i = 0; i < count; i++) {
@@ -125,155 +128,174 @@ public class Handler implements CommandHandler {
     }
 
     @CommandString("rpgitem $n[] remove")
-    @CommandDocumentation("$COMMAND_RPGITEM_REMOVE")
+    @CommandDocumentation("$command.rpgitem.remove")
     @CommandGroup("item_remove")
     public void removeItem(CommandSender sender, RPGItem item) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         ItemManager.remove(item);
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_REMOVE_OK"), item.getName()));
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.remove.ok", locale), item.getName()));
         ItemManager.save(Plugin.plugin);
     }
 
     @CommandString("rpgitem $n[] display")
-    @CommandDocumentation("$COMMAND_RPGITEM_DISPLAY")
+    @CommandDocumentation("$command.rpgitem.display")
     @CommandGroup("item_display")
     public void getItemDisplay(CommandSender sender, RPGItem item) {
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_DISPLAY_GET"), item.getName(), item.getDisplay()));
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.display.get", locale), item.getName(), item.getDisplay()));
     }
 
-    @CommandString("rpgitem $n[] display $DISPLAY:s[]")
-    @CommandDocumentation("$COMMAND_RPGITEM_DISPLAY_SET")
+    @CommandString("rpgitem $n[] display $display:s[]")
+    @CommandDocumentation("$command.rpgitem.display.set")
     @CommandGroup("item_display")
     public void setItemDisplay(CommandSender sender, RPGItem item, String display) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         item.setDisplay(display);
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_DISPLAY_SET"), item.getName(), item.getDisplay()));
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.display.set", locale), item.getName(), item.getDisplay()));
         ItemManager.save(Plugin.plugin);
     }
 
     @CommandString("rpgitem $n[] quality")
-    @CommandDocumentation("$COMMAND_RPGITEM_QUALITY")
+    @CommandDocumentation("$command.rpgitem.quality")
     @CommandGroup("item_quality")
     public void getItemQuality(CommandSender sender, RPGItem item) {
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_QUALITY_GET"), item.getName(), item.getQuality().toString().toLowerCase()));
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.quality.get", locale), item.getName(), item.getQuality().toString().toLowerCase()));
     }
 
-    @CommandString("rpgitem $n[] quality $QUALITY:o[trash,common,uncommon,rare,epic,legendary]")
+    @CommandString("rpgitem $n[] quality $quality:o[trash,common,uncommon,rare,epic,legendary]")
     @CommandDocumentation("$COMMAND_RPGITEM_QUALITY_SET")
     @CommandGroup("item_quality")
     public void setItemQuality(CommandSender sender, RPGItem item, String quality) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         item.setQuality(Quality.valueOf(quality.toUpperCase()));
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_QUALITY_SET"), item.getName(), item.getQuality().toString().toLowerCase()));
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.quality.set", locale), item.getName(), item.getQuality().toString().toLowerCase()));
         ItemManager.save(Plugin.plugin);
     }
 
     @CommandString("rpgitem $n[] damage")
-    @CommandDocumentation("$COMMAND_RPGITEM_DAMAGE")
+    @CommandDocumentation("$command.rpgitem.damage")
     @CommandGroup("item_damage")
     public void getItemDamage(CommandSender sender, RPGItem item) {
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_DAMAGE_GET"), item.getName(), item.getDamageMin(), item.getDamageMax()));
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.damage.get", locale), item.getName(), item.getDamageMin(), item.getDamageMax()));
     }
 
-    @CommandString("rpgitem $n[] damage $DAMAGE:i[]")
-    @CommandDocumentation("$COMMAND_RPGITEM_DAMAGE_SET")
+    @CommandString("rpgitem $n[] damage $damage:i[]")
+    @CommandDocumentation("$command.rpgitem.damage.set")
     @CommandGroup("item_damage")
     public void setItemDamage(CommandSender sender, RPGItem item, int damage) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         item.setDamage(damage, damage);
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_DAMAGE_SET"), item.getName(), item.getDamageMin()));
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.damage.set", locale), item.getName(), item.getDamageMin()));
         ItemManager.save(Plugin.plugin);
     }
 
-    @CommandString("rpgitem $n[] damage $MIN:i[] $MAX:i[]")
-    @CommandDocumentation("$COMMAND_RPGITEM_DAMAGE_SET_RANAGE")
+    @CommandString("rpgitem $n[] damage $min:i[] $max:i[]")
+    @CommandDocumentation("$command.rpgitem.damage.set.range")
     @CommandGroup("item_damage")
     public void setItemDamage(CommandSender sender, RPGItem item, int min, int max) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         item.setDamage(min, max);
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_DAMAGE_SET_RANGE"), item.getName(), item.getDamageMin(), item.getDamageMax()));
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.damage.set.range", locale), item.getName(), item.getDamageMin(), item.getDamageMax()));
         ItemManager.save(Plugin.plugin);
     }
 
     @CommandString("rpgitem $n[] armour")
-    @CommandDocumentation("$COMMAND_RPGITEM_ARMOUR")
+    @CommandDocumentation("$command.rpgitem.armour")
     @CommandGroup("item_armour")
     public void getItemArmour(CommandSender sender, RPGItem item) {
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_ARMOUR_GET"), item.getName(), item.getArmour()));
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.armour.get", locale), item.getName(), item.getArmour()));
     }
 
-    @CommandString("rpgitem $n[] armour $ARMOUR:i[0,100]")
-    @CommandDocumentation("$COMMAND_RPGITEM_ARMOUR_SET")
+    @CommandString("rpgitem $n[] armour $armour:i[0,100]")
+    @CommandDocumentation("$command.rpgitem.armour.set")
     @CommandGroup("item_armour")
     public void setItemArmour(CommandSender sender, RPGItem item, int armour) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         item.setArmour(armour);
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_ARMOUR_SET"), item.getName(), item.getArmour()));
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.armour.set", locale), item.getName(), item.getArmour()));
         ItemManager.save(Plugin.plugin);
     }
 
     @CommandString("rpgitem $n[] type")
-    @CommandDocumentation("$COMMAND_RPGITEM_TYPE")
+    @CommandDocumentation("$command.rpgitem.type")
     @CommandGroup("item_type")
     public void getItemType(CommandSender sender, RPGItem item) {
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_TYPE_GET"), item.getName(), item.getType()));
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.type.get", locale), item.getName(), item.getType()));
     }
 
-    @CommandString("rpgitem $n[] type $TYPE:s[]")
-    @CommandDocumentation("$COMMAND_RPGITEM_TYPE_SET")
+    @CommandString("rpgitem $n[] type $type:s[]")
+    @CommandDocumentation("$command.rpgitem.type.set")
     @CommandGroup("item_type")
     public void setItemType(CommandSender sender, RPGItem item, String type) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         item.setType(type);
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_TYPE_SET"), item.getName(), item.getType()));
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.type.set", locale), item.getName(), item.getType()));
         ItemManager.save(Plugin.plugin);
     }
 
     @CommandString("rpgitem $n[] hand")
-    @CommandDocumentation("$COMMAND_RPGITEM_HAND")
+    @CommandDocumentation("$command.rpgitem.hand")
     @CommandGroup("item_hand")
     public void getItemHand(CommandSender sender, RPGItem item) {
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_HAND_GET"), item.getName(), item.getHand()));
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.hand.get", locale), item.getName(), item.getHand()));
     }
 
-    @CommandString("rpgitem $n[] hand $HAND:s[]")
-    @CommandDocumentation("$COMMAND_RPGITEM_HAND_SET")
+    @CommandString("rpgitem $n[] hand $hand:s[]")
+    @CommandDocumentation("$command.rpgitem.hand.set")
     @CommandGroup("item_hand")
     public void setItemHand(CommandSender sender, RPGItem item, String hand) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         item.setHand(hand);
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_HAND_SET"), item.getName(), item.getHand()));
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.hand.set", locale), item.getName(), item.getHand()));
         ItemManager.save(Plugin.plugin);
     }
 
     @CommandString("rpgitem $n[] lore")
-    @CommandDocumentation("$COMMAND_RPGITEM_LORE")
+    @CommandDocumentation("$command.rpgitem.lore")
     @CommandGroup("item_lore")
     public void getItemLore(CommandSender sender, RPGItem item) {
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_LORE_GET"), item.getName(), item.getLore()));
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.lore.get", locale), item.getName(), item.getLore()));
     }
 
-    @CommandString("rpgitem $n[] lore $LORE:s[]")
-    @CommandDocumentation("$COMMAND_RPGITEM_LORE_SET")
+    @CommandString("rpgitem $n[] lore $lore:s[]")
+    @CommandDocumentation("$command.rpgitem.lore.set")
     @CommandGroup("item_lore")
     public void setItemLore(CommandSender sender, RPGItem item, String lore) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         item.setLore(lore);
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_LORE_SET"), item.getName(), item.getLore()));
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.lore.set", locale), item.getName(), item.getLore()));
         ItemManager.save(Plugin.plugin);
     }
 
     @CommandString("rpgitem $n[] item")
-    @CommandDocumentation("$COMMAND_RPGITEM_ITEM")
+    @CommandDocumentation("$command.rpgitem.item")
     @CommandGroup("item_item")
     public void getItemItem(CommandSender sender, RPGItem item) {
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_ITEM_GET"), item.getName(), item.getItem().toString()));
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.item.get", locale), item.getName(), item.getItem().toString()));
     }
 
     @CommandString("rpgitem $n[] item $m[]")
-    @CommandDocumentation("$COMMAND_RPGITEM_ITEM_SET")
+    @CommandDocumentation("$command.rpgitem.item.set")
     @CommandGroup("item_item")
     public void setItemItem(CommandSender sender, RPGItem item, Material material) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         item.setItem(material);
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_ITEM_SET"), item.getName(), item.getItem(), item.item.getDurability()));
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.item.set", locale), item.getName(), item.getItem(), item.item.getDurability()));
         ItemManager.save(Plugin.plugin);
     }
 
-    @CommandString("rpgitem $n[] item $m[] $DATA:i[]")
-    @CommandDocumentation("$COMMAND_RPGITEM_ITEM_SET_DATA")
+    @CommandString("rpgitem $n[] item $m[] $data:i[]")
+    @CommandDocumentation("$command.rpgitem.item.set.data")
     @CommandGroup("item_item")
     public void setItemItem(CommandSender sender, RPGItem item, Material material, int data) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         item.setItem(material, false);
         item.meta = item.item.getItemMeta();
         if (item.meta instanceof LeatherArmorMeta) {
@@ -282,14 +304,15 @@ public class Handler implements CommandHandler {
             item.setDataValue((short) data);
         }
         item.rebuild();
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_ITEM_SET"), item.getName(), item.getItem(), item.item.getDurability()));
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.item.set", locale), item.getName(), item.getItem(), item.item.getDurability()));
         ItemManager.save(Plugin.plugin);
     }
 
-    @CommandString("rpgitem $n[] item $m[] hex $HEXCOLOUR:s[]")
-    @CommandDocumentation("$COMMAND_RPGITEM_ITEM_SET_DATA_HEX")
+    @CommandString("rpgitem $n[] item $m[] hex $hexcolour:s[]")
+    @CommandDocumentation("$command.rpgitem.item.set.data.hex")
     @CommandGroup("item_item")
     public void setItemItem(CommandSender sender, RPGItem item, Material material, String hexColour) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         int dam;
         try {
             dam = Integer.parseInt((String) hexColour, 16);
@@ -305,31 +328,33 @@ public class Handler implements CommandHandler {
             item.setDataValue((short) dam);
         }
         item.rebuild();
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_ITEM_SET"), item.getName(), item.getItem(), item.item.getDurability()));
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.item.set", locale), item.getName(), item.getItem(), item.item.getDurability()));
         ItemManager.save(Plugin.plugin);
     }
 
-    @CommandString("rpgitem $n[] item $ITEMID:i[]")
-    @CommandDocumentation("$COMMAND_RPGITEM_ITEM_SET_ID")
+    @CommandString("rpgitem $n[] item $itemid:i[]")
+    @CommandDocumentation("$command.rpgitem.item.set.id")
     @CommandGroup("item_item")
     public void setItemItem(CommandSender sender, RPGItem item, int id) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         Material mat = Material.getMaterial(id);
         if (mat == null) {
             sender.sendMessage(ChatColor.RED + "Cannot find item");
             return;
         }
         item.setItem(mat);
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_ITEM_SET"), item.getName(), item.getItem(), item.item.getDurability()));
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.item.set", locale), item.getName(), item.getItem(), item.item.getDurability()));
         ItemManager.save(Plugin.plugin);
     }
 
-    @CommandString("rpgitem $n[] item $ITEMID:i[] $DATA:i[]")
-    @CommandDocumentation("$COMMAND_RPGITEM_ITEM_SET_ID_DATA")
+    @CommandString("rpgitem $n[] item $itemid:i[] $data:i[]")
+    @CommandDocumentation("$command.rpgitem.item.set.id.data")
     @CommandGroup("item_item")
     public void setItemItem(CommandSender sender, RPGItem item, int id, int data) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         Material mat = Material.getMaterial(id);
         if (mat == null) {
-            sender.sendMessage(ChatColor.RED + Locale.get("MESSAGE_ITEM_CANT_FIND"));
+            sender.sendMessage(ChatColor.RED + Locale.get("message.item.cant.find", locale));
             return;
         }
         item.setItem(mat, false);
@@ -340,73 +365,78 @@ public class Handler implements CommandHandler {
             item.setDataValue((short) data);
         }
         item.rebuild();
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_ITEM_SET"), item.getName(), item.getItem(), item.item.getDurability()));
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.item.set", locale), item.getName(), item.getItem(), item.item.getDurability()));
         ItemManager.save(Plugin.plugin);
     }
 
-    @CommandString("rpgitem $n[] removepower $POWER:s[]")
+    @CommandString("rpgitem $n[] removepower $power:s[]")
     @CommandDocumentation("$COMMAND_RPGITEM_REMOVEPOWER")
     @CommandGroup("item_removepower")
     public void itemRemovePower(CommandSender sender, RPGItem item, String power) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         if (item.removePower(power)) {
             Power.powerUsage.put(power, Power.powerUsage.get(power) - 1);
-            sender.sendMessage(ChatColor.GREEN + String.format(Locale.get("MESSAGE_POWER_REMOVED"), power));
+            sender.sendMessage(ChatColor.GREEN + String.format(Locale.get("message.power.removed", locale), power));
             ItemManager.save(Plugin.plugin);
         } else {
-            sender.sendMessage(ChatColor.RED + String.format(Locale.get("MESSAGE_POWER_UNKNOWN"), power));
+            sender.sendMessage(ChatColor.RED + String.format(Locale.get("message.power.unknown", locale), power));
         }
     }
 
-    @CommandString("rpgitem $n[] description add $DESCRIPTIONLINE:s[]")
-    @CommandDocumentation("$COMMAND_RPGITEM_DESCRIPTION_ADD")
+    @CommandString("rpgitem $n[] description add $descriptionline:s[]")
+    @CommandDocumentation("$command.rpgitem.description.add")
     @CommandGroup("item_description")
     public void itemAddDescription(CommandSender sender, RPGItem item, String line) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         item.addDescription(ChatColor.WHITE + line);
-        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_DESCRIPTION_OK"));
+        sender.sendMessage(ChatColor.AQUA + Locale.get("message.description.ok", locale));
         ItemManager.save(Plugin.plugin);
     }
 
-    @CommandString("rpgitem $n[] description set $LINENO:i[] $DESCRIPTIONLINE:s[]")
-    @CommandDocumentation("$COMMAND_RPGITEM_DESCRIPTION_SET")
+    @CommandString("rpgitem $n[] description set $lineno:i[] $descriptionline:s[]")
+    @CommandDocumentation("$command.rpgitem.description.set")
     @CommandGroup("item_description")
     public void itemSetDescription(CommandSender sender, RPGItem item, int lineNo, String line) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         if (lineNo < 0 || lineNo >= item.description.size()) {
-            sender.sendMessage(ChatColor.RED + String.format(Locale.get("MESSAGE_DESCRIPTION_OUT_OF_RANGE"), line));
+            sender.sendMessage(ChatColor.RED + String.format(Locale.get("message.description.out.of.range", locale), line));
             return;
         }
         item.description.set(lineNo, ChatColor.translateAlternateColorCodes('&', ChatColor.WHITE + line));
         item.rebuild();
-        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_DESCRIPTION_CHANGE"));
+        sender.sendMessage(ChatColor.AQUA + Locale.get("message.description.change", locale));
         ItemManager.save(Plugin.plugin);
     }
 
-    @CommandString("rpgitem $n[] description remove $LINENO:i[]")
-    @CommandDocumentation("$COMMAND_RPGITEM_DESCRIPTION_REMOVE")
+    @CommandString("rpgitem $n[] description remove $lineno:i[]")
+    @CommandDocumentation("$command.rpgitem.description.remove")
     @CommandGroup("item_description")
     public void itemRemoveDescription(CommandSender sender, RPGItem item, int lineNo) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         if (lineNo < 0 || lineNo >= item.description.size()) {
-            sender.sendMessage(ChatColor.RED + String.format(Locale.get("MESSAGE_DESCRIPTION_OUT_OF_RANGE"), lineNo));
+            sender.sendMessage(ChatColor.RED + String.format(Locale.get("message.description.out.of.range", locale), lineNo));
             return;
         }
         item.description.remove(lineNo);
         item.rebuild();
-        sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_DESCRIPTION_REMOVE"));
+        sender.sendMessage(ChatColor.AQUA + Locale.get("message.description.remove", locale));
         ItemManager.save(Plugin.plugin);
     }
 
     @CommandString("rpgitem $n[] worldguard")
-    @CommandDocumentation("$COMMAND_RPGITEM_ITEM_WORLDGUARD")
+    @CommandDocumentation("$command.rpgitem.item.worldguard")
     @CommandGroup("item_worldguard")
     public void itemToggleWorldGuard(CommandSender sender, RPGItem item) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         if (!WorldGuard.isEnabled()) {
-            sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_WORLDGUARD_ERROR"));
+            sender.sendMessage(ChatColor.AQUA + Locale.get("message.worldguard.error", locale));
             return;
         }
         item.ignoreWorldGuard = !item.ignoreWorldGuard;
         if (item.ignoreWorldGuard) {
-            sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_WORLDGUARD_OVERRIDE_ACTIVE"));
+            sender.sendMessage(ChatColor.AQUA + Locale.get("message.worldguard.override.active", locale));
         } else {
-            sender.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_WORLDGUARD_OVERRIDE_DISABLED"));
+            sender.sendMessage(ChatColor.AQUA + Locale.get("message.worldguard.override.disabled", locale));
         }
     }
     
@@ -469,7 +499,7 @@ public class Handler implements CommandHandler {
         sender.sendMessage(String.format(ChatColor.AQUA + "The chance that '%s" + ChatColor.AQUA + "' will drop from '%s' is %.2f%%", item.getDisplay(), type.toString().toLowerCase(), item.dropChances.get(type.toString())));
     }
 
-    @CommandString("rpgitem $n[] drop $e[org.bukkit.entity.EntityType] $CHANCE:f[]")
+    @CommandString("rpgitem $n[] drop $e[org.bukkit.entity.EntityType] $chance:f[]")
     @CommandDocumentation("Sets the chance that @[Item]# will drop from @[EntityType]# to @[Chance]#%. 0% prevents it from dropping")
     @CommandGroup("item_drop")
     public void setItemDropChance(CommandSender sender, RPGItem item, EntityType type, double chance) {

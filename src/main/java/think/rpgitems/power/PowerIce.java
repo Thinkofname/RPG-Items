@@ -135,7 +135,7 @@ public class PowerIce extends Power implements PowerRightClick {
             run.runTaskTimer(Plugin.plugin, 0, 1);
 
         } else {
-            player.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_COOLDOWN"), ((double) (cooldown - System.currentTimeMillis() / 50)) / 20d));
+            player.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.cooldown", Locale.getPlayerLocale(player)), ((double) (cooldown - System.currentTimeMillis() / 50)) / 20d));
         }
     }
 
@@ -158,7 +158,7 @@ public class PowerIce extends Power implements PowerRightClick {
 
     @Override
     public String displayText() {
-        return ChatColor.GREEN + String.format(Locale.get("POWER_ICE"), (double) cooldownTime / 20d);
+        return ChatColor.GREEN + String.format(Locale.get("power.ice", "en_GB"), (double) cooldownTime / 20d);
     }
 
     @Override

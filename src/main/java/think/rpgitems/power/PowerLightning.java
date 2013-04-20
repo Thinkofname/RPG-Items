@@ -47,7 +47,7 @@ public class PowerLightning extends Power implements PowerHit, PowerProjectileHi
 
     @Override
     public String displayText() {
-        return ChatColor.GREEN + String.format(Locale.get("POWER_LIGHTNING"), (int) ((1d / (double) chance) * 100d));
+        return ChatColor.GREEN + String.format(Locale.get("power.lightning", "en_GB"), (int) ((1d / (double) chance) * 100d));
     }
 
     @Override

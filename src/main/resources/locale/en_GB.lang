@@ -1,4 +1,4 @@
-#Generated on 2013-04-20 15:08:31
+#Generated on 2013-04-20 18:13:26
 command.info.amplifier=Amplifier
 command.info.armour=Armour
 command.info.burntime=Burntime
@@ -33,7 +33,6 @@ command.info.permission=Permission
 command.info.player=[Player]
 command.info.power=Power
 command.info.quality=Quality
-command.info.rumble=Adds the runble power to @[Item]# with a cooldown of @[Cooldown]# ticks and a power of @[Power]#, the wave will travel @[Distance]# blocks. The rumble power sends a shockwave through the ground and sends any hit entities flying
 command.info.string=[String]
 command.info.string.limit=[String(Max:%d)]
 command.info.terms=Terms
@@ -91,6 +90,7 @@ command.rpgitem.rainbow=Adds the rainbow power to @[Item]# with a default cooldo
 command.rpgitem.rainbow.full=Adds the rainbow power to @[Item]# with a cooldown of @[Cooldown]# ticks and a block count of @[Count]#. The rainbow power will fire blocks of coloured wool on right click, the wool will remove itself.
 command.rpgitem.remove=Remove the item @[Item]# from the system. This does not currently remove the item from players' inventories but all powers and damage will stop working on them.
 command.rpgitem.removepower=Removes power @[Power]# from item @[Item]#
+command.rpgitem.rumble=Adds the runble power to @[Item]# with a cooldown of @[Cooldown]# ticks and a power of @[Power]#, the wave will travel @[Distance]# blocks. The rumble power sends a shockwave through the ground and sends any hit entities flying
 command.rpgitem.teleport=Adds the teleport power to @[Item]# with a default cooldown of 20 ticks (1 second) and teleport distance of 5 blocks. The teleport will teleport you in the direction you're looking in
 command.rpgitem.teleport.full=Adds the teleport power to @[Item]# with a cooldown of @[Cooldown]# ticks (1 second) and teleport distance of @[Distance]# blocks. The teleport will teleport you in the direction you're looking in
 command.rpgitem.tntcannon=Adds the tntcannon power to @[Item]# with a default cooldown of 20 ticks (1 second). The tntcannon power will fire active tnt on right click.

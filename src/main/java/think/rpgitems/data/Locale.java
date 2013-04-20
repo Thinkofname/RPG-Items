@@ -145,6 +145,7 @@ public class Locale extends BukkitRunnable {
                 String[] args = line.split("=");
                 map.put(args[0].trim(), args[1].trim());
             }
+            return map;
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -163,8 +164,8 @@ public class Locale extends BukkitRunnable {
                 getHandle = player.getClass().getMethod("getHandle", (Class<?>[]) null);
                 getLocale = getHandle.getReturnType().getMethod("getLocale", (Class<?>[]) null);
                 language = getLocale.getReturnType().getDeclaredField("e");
+                language.setAccessible(true);
                 if (!language.getType().equals(String.class)) {
-                    language.setAccessible(true);
                     canLocale = false;
                 }
             } catch (Exception e) {
@@ -181,49 +182,30 @@ public class Locale extends BukkitRunnable {
             Object locale = getLocale.invoke(minePlayer, (Object[]) null);
             return (String) language.get(locale);
         } catch (Exception e) {
+            Plugin.plugin.getLogger().warning("Failed to get player locale");
             canLocale = false;
         } 
         //Any error default to en_GB
         return "en_GB";
     }
 
-    private static HashMap<String, String> strings = new HashMap<String, String>();
-
     public static void init(Plugin plugin) {
         (new Locale(plugin)).runTaskTimerAsynchronously(plugin, 0, 24l * 60l * 60l * 20l);
-        try {
-            InputStream defs = plugin.getResource("default.lang");
-            load(defs);
-            defs.close();
-            File altFile = new File(plugin.getDataFolder(), "default.lang");
-            if (altFile.exists()) {
-                FileInputStream alts = new FileInputStream(altFile);
-                load(alts);
-                alts.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
-
-    private static void load(InputStream in) throws IOException {
-        BufferedReader r = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-        String line;
-        while ((line = r.readLine()) != null) {
-            line = line.trim();
-            if (line.startsWith("-") || line.length() == 0)
-                continue;
-            String[] args = line.split("=");
-            args[0] = args[0].trim();
-            args[1] = args[1].trim();
-            args[1] = args[1].substring(1, args[1].length() - 1);
-            strings.put(args[0], args[1]);
-        }
+    
+    public static String get(String key, String locale) {
+        if (!localeStrings.containsKey(locale))
+            return get(key);
+        HashMap<String, String> strings = localeStrings.get(locale);
+        if (strings == null || !strings.containsKey(key))
+            return get(key);
+        return strings.get(key);
     }
-
-    public static String get(String name) {
-        if (strings.containsKey(name))
-            return strings.get(name);
-        return "Locale error: " + name;
+    
+    private static String get(String key) {
+        HashMap<String, String> strings = localeStrings.get("en_GB");
+        if (!strings.containsKey(key))
+            return "!" + key + "!";
+        return strings.get(key);
     }
 }

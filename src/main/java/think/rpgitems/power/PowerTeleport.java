@@ -82,7 +82,7 @@ public class PowerTeleport extends Power implements PowerRightClick, PowerProjec
             world.playEffect(newLoc, Effect.ENDER_SIGNAL, 0);
             world.playSound(newLoc, Sound.ENDERMAN_TELEPORT, 1.0f, 0.3f);
         } else {
-            player.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_COOLDOWN"), ((double) (cooldown - System.currentTimeMillis() / 50)) / 20d));
+            player.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.cooldown", Locale.getPlayerLocale(player)), ((double) (cooldown - System.currentTimeMillis() / 50)) / 20d));
         }
     }
 
@@ -102,7 +102,7 @@ public class PowerTeleport extends Power implements PowerRightClick, PowerProjec
             Location start = player.getLocation();
             Location newLoc = p.getLocation();
             if (start.distanceSquared(newLoc) >= distance * distance) {
-                player.sendMessage(ChatColor.AQUA + Locale.get("MESSAGE_TOO_FAR"));
+                player.sendMessage(ChatColor.AQUA + Locale.get("message.too.far", Locale.getPlayerLocale(player)));
                 return;
             }
             newLoc.setPitch(start.getPitch());
@@ -112,7 +112,7 @@ public class PowerTeleport extends Power implements PowerRightClick, PowerProjec
             world.playEffect(newLoc, Effect.ENDER_SIGNAL, 0);
             world.playSound(newLoc, Sound.ENDERMAN_TELEPORT, 1.0f, 0.3f);
         } else {
-            player.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_COOLDOWN"), ((double) (cooldown - System.currentTimeMillis() / 50)) / 20d));
+            player.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.cooldown", Locale.getPlayerLocale(player)), ((double) (cooldown - System.currentTimeMillis() / 50)) / 20d));
         }
     }
 
@@ -135,6 +135,6 @@ public class PowerTeleport extends Power implements PowerRightClick, PowerProjec
 
     @Override
     public String displayText() {
-        return ChatColor.GREEN + String.format(Locale.get("POWER_TELEPORT"), distance, (double) cooldownTime / 20d);
+        return ChatColor.GREEN + String.format(Locale.get("power.teleport", "en_GB"), distance, (double) cooldownTime / 20d);
     }
 }

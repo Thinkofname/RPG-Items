@@ -47,7 +47,7 @@ public class PowerPotionSelf extends Power implements PowerRightClick {
             value.set(System.currentTimeMillis() / 50 + cooldownTime);
             player.addPotionEffect(new PotionEffect(type, time, amplifier));
         } else {
-            player.sendMessage(ChatColor.AQUA + String.format(Locale.get("MESSAGE_COOLDOWN"), ((double) (cooldown - System.currentTimeMillis() / 50)) / 20d));
+            player.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.cooldown", Locale.getPlayerLocale(player)), ((double) (cooldown - System.currentTimeMillis() / 50)) / 20d));
         }
     }
 
@@ -74,7 +74,7 @@ public class PowerPotionSelf extends Power implements PowerRightClick {
 
     @Override
     public String displayText() {
-        return ChatColor.GREEN + String.format(Locale.get("POWER_POTIONSELF"), type.getName().toLowerCase().replaceAll("_", " "), amplifier + 1, ((double) time) / 20d);
+        return ChatColor.GREEN + String.format(Locale.get("power.potionself", "en_GB"), type.getName().toLowerCase().replaceAll("_", " "), amplifier + 1, ((double) time) / 20d);
     }
 
 }
