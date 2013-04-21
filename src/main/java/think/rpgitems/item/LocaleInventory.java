@@ -17,16 +17,22 @@ import think.rpgitems.data.Locale;
 public class LocaleInventory extends InventoryView {
     
     private Player player;
+    private InventoryView view;
     private Inventory real;
     private Inventory fake;
     private String locale;
     
-    public LocaleInventory(Player player, Inventory real) {
+    public LocaleInventory(Player player, InventoryView inventoryView) {
         locale = Locale.getPlayerLocale(player);
         this.player = player;
-        this.real = real;
+        real = inventoryView.getTopInventory();
+        view = inventoryView;
         fake = Bukkit.createInventory(real.getHolder(), real.getSize(), real.getTitle());
         reload();
+    }
+    
+    public InventoryView getView() {
+        return view;
     }
     
     public void reload() {

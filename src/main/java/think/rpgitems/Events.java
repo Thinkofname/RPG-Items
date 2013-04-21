@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -240,24 +241,38 @@ public class Events implements Listener {
             ((Player) e.getPlayer()).sendMessage(ChatColor.AQUA + "Recipe set for " + item.getName());
         } else if (useLocaleInv && e.getView() instanceof LocaleInventory) {
             localeInventories.remove(e.getView());
+            ((LocaleInventory) e.getView()).getView().close();
         }
     }
     
-    @EventHandler
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onInventoryClick(InventoryClickEvent e) {
         if (useLocaleInv && e.getView() instanceof LocaleInventory) {
             LocaleInventory inv = (LocaleInventory) e.getView();
-            e.setCancelled(true);
-            ItemStack current = e.getCurrentItem();
-            ItemStack cursor = e.getCursor();
-            e.setCurrentItem(cursor);
-            e.setCursor(current);
-            inv.sumbitChanges();
+            InventoryClickEvent clickEvent = new InventoryClickEvent(inv.getView(), e.getSlotType(), e.getRawSlot(), e.isRightClick(), e.isShiftClick());
+            Bukkit.getServer().getPluginManager().callEvent(clickEvent);
+            if (clickEvent.isCancelled()) {
+                e.setCancelled(true);
+            } else {
+                switch(clickEvent.getResult()) {
+                case DEFAULT: //Can't really do this with current events
+                case ALLOW:
+                    System.out.println("ok...");
+                    System.out.println(inv.getView().getItem(e.getRawSlot()));
+                    inv.getView().setItem(e.getRawSlot(), clickEvent.getCursor());
+                    System.out.println(inv.getView().getItem(e.getRawSlot()));
+                    break;
+                case DENY:
+                    break;
+                }
+            }
             for (LocaleInventory localeInv : localeInventories) {
-                localeInv.reload();
+                if (localeInv != inv)
+                    localeInv.reload();
             }
         }
     }
+    
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onInventoryOpen(final InventoryOpenEvent e) {
@@ -282,8 +297,8 @@ public class Events implements Listener {
                 // Fix for the bug with anvils in craftbukkit
             } 
         } else if (useLocaleInv) {
+            LocaleInventory localeInv = new LocaleInventory((Player) e.getPlayer(), e.getView());
             e.setCancelled(true);
-            LocaleInventory localeInv = new LocaleInventory((Player) e.getPlayer(), e.getInventory());
             e.getPlayer().openInventory(localeInv);
             localeInventories.add(localeInv);
         }
