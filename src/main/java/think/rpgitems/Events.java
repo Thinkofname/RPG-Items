@@ -45,7 +45,6 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -305,53 +304,68 @@ public class Events implements Listener {
     }
 
     Random random = new Random();
+    
+    private int playerDamager(EntityDamageByEntityEvent e, int damage) {
+        Player player = (Player) e.getDamager();
+        ItemStack item = player.getItemInHand();
+        if (item.getType() == Material.BOW || item.getType() == Material.SNOW_BALL || item.getType() == Material.EGG || item.getType() == Material.POTION)
+            return damage;
+
+        RPGItem rItem = ItemManager.toRPGItem(item);
+        if (rItem == null)
+            return damage;
+        if (!WorldGuard.canPvP(player.getLocation()) && !rItem.ignoreWorldGuard)
+            return damage;
+        damage = rItem.getDamageMin() != rItem.getDamageMax() ? (rItem.getDamageMin() + random.nextInt(rItem.getDamageMax() - rItem.getDamageMin())) : rItem.getDamageMin();
+        if (e.getEntity() instanceof LivingEntity) {
+            LivingEntity le = (LivingEntity) e.getEntity();
+            rItem.hit(player, le);
+        }
+        return damage;
+    }
+    
+    private int projectileDamager(EntityDamageByEntityEvent e, int damage) {
+        Projectile entity = (Projectile) e.getDamager();
+        if (rpgProjectiles.contains(entity.getEntityId())) {
+            RPGItem rItem = ItemManager.getItemById(rpgProjectiles.get(entity.getEntityId()));
+            if (rItem == null)
+                return damage;
+            damage = rItem.getDamageMin() != rItem.getDamageMax() ? (rItem.getDamageMin() + random.nextInt(rItem.getDamageMax() - rItem.getDamageMin())) : rItem.getDamageMin();
+            if (e.getEntity() instanceof LivingEntity) {
+                LivingEntity le = (LivingEntity) e.getEntity();
+                rItem.hit((Player) entity.getShooter(), le);
+            }
+        }
+        return damage;
+    }
+    
+    private int playerHit(EntityDamageByEntityEvent e, int damage) {
+        Player p = (Player) e.getEntity();
+        if (e.isCancelled() || !WorldGuard.canPvP(p.getLocation()))
+            return damage;
+        for (ItemStack pArmour : p.getInventory().getArmorContents()) {
+            RPGItem pRItem = ItemManager.toRPGItem(pArmour);
+            if (pRItem == null)
+                continue;
+            if (!WorldGuard.canPvP(p.getLocation()) && !pRItem.ignoreWorldGuard)
+                return damage;
+            if (pRItem.getArmour() > 0) {
+                damage -= Math.round(((double) damage) * (((double) pRItem.getArmour()) / 100d));
+            }
+        }
+        return damage;
+    }
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent e) {
         int damage = e.getDamage();
         if (e.getDamager() instanceof Player) {
-            Player player = (Player) e.getDamager();
-            ItemStack item = player.getItemInHand();
-            if (item.getType() == Material.BOW || item.getType() == Material.SNOW_BALL || item.getType() == Material.EGG || item.getType() == Material.POTION)
-                return;
-
-            RPGItem rItem = ItemManager.toRPGItem(item);
-            if (rItem == null)
-                return;
-            if (!WorldGuard.canPvP(player.getLocation()) && !rItem.ignoreWorldGuard)
-                return;
-            damage = rItem.getDamageMin() != rItem.getDamageMax() ? (rItem.getDamageMin() + random.nextInt(rItem.getDamageMax() - rItem.getDamageMin())) : rItem.getDamageMin();
-            if (e.getEntity() instanceof LivingEntity) {
-                LivingEntity le = (LivingEntity) e.getEntity();
-                rItem.hit(player, le);
-            }
+            damage = playerDamager(e, damage);
         } else if (e.getDamager() instanceof Projectile) {
-            Projectile entity = (Projectile) e.getDamager();
-            if (rpgProjectiles.contains(entity.getEntityId())) {
-                RPGItem rItem = ItemManager.getItemById(rpgProjectiles.get(entity.getEntityId()));
-                if (rItem == null)
-                    return;
-                damage = rItem.getDamageMin() != rItem.getDamageMax() ? (rItem.getDamageMin() + random.nextInt(rItem.getDamageMax() - rItem.getDamageMin())) : rItem.getDamageMin();
-                if (e.getEntity() instanceof LivingEntity) {
-                    LivingEntity le = (LivingEntity) e.getEntity();
-                    rItem.hit((Player) entity.getShooter(), le);
-                }
-            }
+            damage = projectileDamager(e, damage);
         }
         if (e.getEntity() instanceof Player) {
-            Player p = (Player) e.getEntity();
-            if (e.isCancelled() || !WorldGuard.canPvP(p.getLocation()))
-                return;
-            for (ItemStack pArmour : p.getInventory().getArmorContents()) {
-                RPGItem pRItem = ItemManager.toRPGItem(pArmour);
-                if (pRItem == null)
-                    continue;
-                if (!WorldGuard.canPvP(p.getLocation()) && !pRItem.ignoreWorldGuard)
-                    return;
-                if (pRItem.getArmour() > 0) {
-                    damage -= Math.round(((double) damage) * (((double) pRItem.getArmour()) / 100d));
-                }
-            }
+            damage = playerHit(e, damage);
         }
         e.setDamage(damage);
     }
