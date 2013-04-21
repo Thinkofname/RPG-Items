@@ -157,8 +157,8 @@ public class PowerIce extends Power implements PowerRightClick {
     }
 
     @Override
-    public String displayText() {
-        return ChatColor.GREEN + String.format(Locale.get("power.ice", "en_GB"), (double) cooldownTime / 20d);
+    public String displayText(String locale) {
+        return ChatColor.GREEN + String.format(Locale.get("power.ice", locale), (double) cooldownTime / 20d);
     }
 
     @Override

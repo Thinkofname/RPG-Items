@@ -127,7 +127,7 @@ public class PowerRumble extends Power implements PowerRightClick {
     }
 
     @Override
-    public String displayText() {
-        return ChatColor.GREEN + String.format(Locale.get("power.rumble", "en_GB"), (double) cooldownTime / 20d);
+    public String displayText(String locale) {
+        return ChatColor.GREEN + String.format(Locale.get("power.rumble", locale), (double) cooldownTime / 20d);
     }
 }

@@ -31,12 +31,15 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import think.rpgitems.Plugin;
+import think.rpgitems.item.ItemManager;
+import think.rpgitems.item.RPGItem;
 
 public class Locale extends BukkitRunnable {
     
@@ -62,6 +65,10 @@ public class Locale extends BukkitRunnable {
     
     private final static String localeUpdateURL = "http://thinkofdeath.planetofhosting.net/index.php?page=localeget&lastupdate=";
     private final static String localeDownloadURL = "http://thinkofdeath.planetofhosting.net/locale/%s/%s.lang";
+    
+    public static Set<String> getLocales() {
+        return localeStrings.keySet();
+    }
 
     @Override
     public void run() {
@@ -101,6 +108,9 @@ public class Locale extends BukkitRunnable {
                 config.set("lastLocaleUpdate", lastUpdate);
                 plugin.saveConfig();
                 reloadLocales(plugin);
+                for (RPGItem item : ItemManager.itemById.valueCollection()) {
+                    item.rebuild();
+                }
             }
         }).runTask(plugin);
     }

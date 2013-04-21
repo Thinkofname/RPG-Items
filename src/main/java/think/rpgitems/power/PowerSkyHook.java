@@ -102,7 +102,7 @@ public class PowerSkyHook extends Power implements PowerRightClick {
     }
 
     @Override
-    public String displayText() {
+    public String displayText(String locale) {
         return ChatColor.GREEN + "Hooks onto a sky rail";
     }
 

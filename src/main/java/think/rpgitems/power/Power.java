@@ -44,7 +44,7 @@ public abstract class Power {
 
     public abstract String getName();
 
-    public abstract String displayText();
+    public abstract String displayText(String locale);
 
     public static Entity[] getNearbyEntities(Location l, double radius) {
         int iRadius = (int) radius;

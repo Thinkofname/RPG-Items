@@ -47,6 +47,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import think.rpgitems.Events;
 import think.rpgitems.Plugin;
 import think.rpgitems.data.Font;
+import think.rpgitems.data.Locale;
 import think.rpgitems.power.Power;
 import think.rpgitems.power.types.PowerHit;
 import think.rpgitems.power.types.PowerLeftClick;
@@ -56,7 +57,9 @@ import think.rpgitems.power.types.PowerTick;
 
 public class RPGItem {
     public ItemStack item;
-    public ItemMeta meta;
+    
+    private HashMap<String, ItemMeta> localeMeta = new HashMap<String, ItemMeta>();
+    
     private int id;
     private String name;
     private String encodedID;
@@ -92,7 +95,11 @@ public class RPGItem {
         this.id = id;
         encodedID = getMCEncodedID(id);
         item = new ItemStack(Material.WOOD_SWORD);
-        meta = item.getItemMeta();
+        
+        ItemMeta meta = item.getItemMeta();
+        for (String locale : Locale.getLocales()) {
+            localeMeta.put(locale, meta.clone());
+        }
 
         displayName = item.getType().toString();
         rebuild();
@@ -116,11 +123,14 @@ public class RPGItem {
         damageMax = s.getInt("damageMax");
         armour = s.getInt("armour", 0);
         item = new ItemStack(Material.valueOf(s.getString("item")));
-        meta = item.getItemMeta();
+        ItemMeta meta = item.getItemMeta();
         if (meta instanceof LeatherArmorMeta) {
             ((LeatherArmorMeta) meta).setColor(Color.fromRGB(s.getInt("item_colour", 0)));
         } else {
             item.setDurability((short) s.getInt("item_data", 0));
+        }
+        for (String locale : Locale.getLocales()) {
+            localeMeta.put(locale, meta.clone());
         }
         ignoreWorldGuard = s.getBoolean("ignoreWorldGuard", false);
 
@@ -197,6 +207,8 @@ public class RPGItem {
         s.set("description", descriptionConv);
         s.set("item", item.getType().toString());
         s.set("ignoreWorldGuard", ignoreWorldGuard);
+        
+        ItemMeta meta = localeMeta.get("en_GB");
         if (meta instanceof LeatherArmorMeta) {
             s.set("item_colour", ((LeatherArmorMeta) meta).getColor().asRGB());
         } else {
@@ -297,14 +309,18 @@ public class RPGItem {
     }
 
     public void rebuild() {
-        List<String> lines = getTooltipLines();
-        meta.setDisplayName(lines.get(0));
-        lines.remove(0);
-        meta.setLore(lines);
-        item.setItemMeta(meta);
+        for (String locale : Locale.getLocales()) {
+            List<String> lines = getTooltipLines(locale);
+            ItemMeta meta = localeMeta.get(locale); 
+            meta.setDisplayName(lines.get(0));
+            lines.remove(0);
+            meta.setLore(lines);
+            //item.setItemMeta(meta);
+        }
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             Iterator<ItemStack> it = player.getInventory().iterator();
+            String locale = Locale.getPlayerLocale(player);
             while (it.hasNext()) {
                 ItemStack item = it.next();
                 RPGItem rItem = ItemManager.toRPGItem(item);
@@ -313,6 +329,7 @@ public class RPGItem {
                 if (rItem.getID() != getID())
                     continue;
                 item.setType(this.item.getType());
+                ItemMeta meta = localeMeta.get(locale);
                 if (!(meta instanceof LeatherArmorMeta)) {
                     item.setDurability(this.item.getDurability());
                 }
@@ -325,6 +342,7 @@ public class RPGItem {
                 if (rItem.getID() != getID())
                     continue;
                 item.setType(this.item.getType());
+                ItemMeta meta = localeMeta.get(locale);
                 if (!(meta instanceof LeatherArmorMeta)) {
                     item.setDurability(this.item.getDurability());
                 }
@@ -334,7 +352,7 @@ public class RPGItem {
         resetRecipe(true);
     }
 
-    public List<String> getTooltipLines() {
+    public List<String> getTooltipLines(String locale) {
         ArrayList<String> output = new ArrayList<String>();
         int width = 150;
         output.add(encodedID + quality.colour + ChatColor.BOLD + displayName);
@@ -362,7 +380,7 @@ public class RPGItem {
         }
 
         for (Power p : powers) {
-            dWidth = getStringWidth(ChatColor.stripColor(p.displayText()));
+            dWidth = getStringWidth(ChatColor.stripColor(p.displayText(locale)));
             if (dWidth > width)
                 width = dWidth;
         }
@@ -379,7 +397,7 @@ public class RPGItem {
         }
 
         for (Power p : powers) {
-            output.add(p.displayText());
+            output.add(p.displayText(locale));
         }
         if (loreText.length() != 0) {
             int cWidth = 0;
@@ -432,6 +450,14 @@ public class RPGItem {
         return output;
     }
 
+    public ItemMeta getLocaleMeta(String locale) {
+        return localeMeta.get(locale);
+    }
+    
+    public void setLocaleMeta(String locale, ItemMeta meta) {
+        localeMeta.put(locale, meta);
+    }
+    
     public String getName() {
         return name;
     }
@@ -473,7 +499,8 @@ public class RPGItem {
     }
 
     public void print(CommandSender sender) {
-        List<String> lines = getTooltipLines();
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
+        List<String> lines = getTooltipLines(locale);
         for (String s : lines) {
             sender.sendMessage(s);
         }
@@ -603,7 +630,9 @@ public class RPGItem {
     }
 
     public void give(Player player) {
-        player.getInventory().addItem(item);
+        ItemStack i = item.clone();
+        i.setItemMeta(localeMeta.get(Locale.getPlayerLocale(player)));
+        player.getInventory().addItem(i);
     }
 
     public void addPower(Power power) {

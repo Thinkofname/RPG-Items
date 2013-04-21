@@ -104,7 +104,7 @@ public class PowerCommand extends Power implements PowerRightClick, PowerLeftCli
     }
 
     @Override
-    public String displayText() {
+    public String displayText(String locale) {
         return ChatColor.GREEN + display;
     }
 

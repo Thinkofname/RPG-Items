@@ -39,7 +39,7 @@ public class PowerPotionTick extends Power implements PowerTick {
     }
 
     @Override
-    public String displayText() {
+    public String displayText(String locale) {
         return ChatColor.GREEN + String.format("Gives %s %d while in use", effect.getName().toLowerCase().replaceAll("_", " "), amplifier + 1);
     }
 

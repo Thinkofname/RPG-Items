@@ -18,6 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import think.rpgitems.Plugin;
+import think.rpgitems.data.Locale;
 import think.rpgitems.item.ItemManager;
 import think.rpgitems.item.Quality;
 import think.rpgitems.item.RPGItem;
@@ -141,7 +142,9 @@ public class Update02To03 implements Updater {
                 newItem.setHand(hand, false);
                 newItem.setLore(lore, false);
                 newItem.setItem(item.getType());
-                newItem.meta = meta;
+                for (String locales : Locale.getLocales()) {
+                    newItem.setLocaleMeta(locales, meta);
+                }
                 newItem.item = item;
                 newItem.setArmour(armour, false);
                 newItem.setDamage(damageMin, damageMax);

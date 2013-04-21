@@ -50,8 +50,8 @@ public class PowerFireball extends Power implements PowerRightClick {
     }
 
     @Override
-    public String displayText() {
-        return ChatColor.GREEN + String.format(Locale.get("power.fireball", "en_GB"), (double) cooldownTime / 20d);
+    public String displayText(String locale) {
+        return ChatColor.GREEN + String.format(Locale.get("power.fireball", locale), (double) cooldownTime / 20d);
     }
 
     @Override

@@ -22,6 +22,7 @@ import gnu.trove.map.hash.TObjectIntHashMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
@@ -33,6 +34,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -40,18 +42,24 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import think.rpgitems.data.Locale;
 import think.rpgitems.item.ItemManager;
+import think.rpgitems.item.LocaleInventory;
 import think.rpgitems.item.RPGItem;
 import think.rpgitems.support.WorldGuard;
 
@@ -81,29 +89,6 @@ public class Events implements Listener {
                     e.getDrops().add(item.item);
                 }
             }
-        }
-    }
-
-    @EventHandler
-    public void onInventoryClose(InventoryCloseEvent e) {
-        if (recipeWindows.containsKey(e.getPlayer().getName())) {
-            int id = recipeWindows.remove(e.getPlayer().getName());
-            RPGItem item = ItemManager.getItemById(id);
-            if (item.recipe == null) {
-                item.recipe = new ArrayList<ItemStack>();
-            }
-            item.recipe.clear();
-            for (int y = 0; y < 3; y++) {
-                for (int x = 0; x < 3; x++) {
-                    int i = x + y * 9;
-                    ItemStack it = e.getInventory().getItem(i);
-                    item.recipe.add(it);
-                }
-            }
-            item.hasRecipe = true;
-            item.resetRecipe(true);
-            ItemManager.save(Plugin.plugin);
-            ((Player) e.getPlayer()).sendMessage(ChatColor.AQUA + "Recipe set for " + item.getName());
         }
     }
 
@@ -189,24 +174,27 @@ public class Events implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
         PlayerInventory in = player.getInventory();
+        String locale = Locale.getPlayerLocale(player);
         for (int i = 0; i < in.getSize(); i++) {
             ItemStack item = in.getItem(i);
             RPGItem rItem = ItemManager.toRPGItem(item);
             if (rItem == null)
                 continue;
             item.setType(rItem.item.getType());
-            if (!(rItem.meta instanceof LeatherArmorMeta) && rItem.item.getType().isBlock())
+            ItemMeta meta = rItem.getLocaleMeta(locale);
+            if (!(meta instanceof LeatherArmorMeta) && rItem.item.getType().isBlock())
                 item.setDurability(rItem.item.getDurability());
-            item.setItemMeta(rItem.meta);
+            item.setItemMeta(meta);
         }
         for (ItemStack item : player.getInventory().getArmorContents()) {
             RPGItem rItem = ItemManager.toRPGItem(item);
             if (rItem == null)
                 continue;
             item.setType(rItem.item.getType());
-            if (!(rItem.meta instanceof LeatherArmorMeta) && rItem.item.getType().isBlock())
+            ItemMeta meta = rItem.getLocaleMeta(locale);
+            if (!(meta instanceof LeatherArmorMeta) && rItem.item.getType().isBlock())
                 item.setDurability(rItem.item.getDurability());
-            item.setItemMeta(rItem.meta);
+            item.setItemMeta(meta);
         }
     }
 
@@ -216,32 +204,87 @@ public class Events implements Listener {
         RPGItem rItem = ItemManager.toRPGItem(item);
         if (rItem == null)
             return;
+        String locale = Locale.getPlayerLocale(e.getPlayer());
         item.setType(rItem.item.getType());
-        if (!(rItem.meta instanceof LeatherArmorMeta) && rItem.item.getType().isBlock())
+        ItemMeta meta = rItem.getLocaleMeta(locale);
+        if (!(meta instanceof LeatherArmorMeta) && rItem.item.getType().isBlock())
             item.setDurability(rItem.item.getDurability());
-        item.setItemMeta(rItem.meta);
+        item.setItemMeta(meta);
         e.getItem().setItemStack(item);
 
     }
+    
+    private HashSet<LocaleInventory> localeInventories = new HashSet<LocaleInventory>();
+
 
     @EventHandler
-    public void onInventoryOpen(InventoryOpenEvent e) {
-        Inventory in = e.getInventory();
-        Iterator<ItemStack> it = in.iterator();
-        try {
-            while (it.hasNext()) {
-                ItemStack item = it.next();
-                RPGItem rItem = ItemManager.toRPGItem(item);
-                if (rItem == null)
-                    continue;
-                ;
-                item.setType(rItem.item.getType());
-                if (!(rItem.meta instanceof LeatherArmorMeta) && rItem.item.getType().isBlock())
-                    item.setDurability(rItem.item.getDurability());
-                item.setItemMeta(rItem.meta);
+    public void onInventoryClose(InventoryCloseEvent e) {
+        if (recipeWindows.containsKey(e.getPlayer().getName())) {
+            int id = recipeWindows.remove(e.getPlayer().getName());
+            RPGItem item = ItemManager.getItemById(id);
+            if (item.recipe == null) {
+                item.recipe = new ArrayList<ItemStack>();
             }
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            // Fix for the bug with anvils in craftbukkit
+            item.recipe.clear();
+            for (int y = 0; y < 3; y++) {
+                for (int x = 0; x < 3; x++) {
+                    int i = x + y * 9;
+                    ItemStack it = e.getInventory().getItem(i);
+                    item.recipe.add(it);
+                }
+            }
+            item.hasRecipe = true;
+            item.resetRecipe(true);
+            ItemManager.save(Plugin.plugin);
+            ((Player) e.getPlayer()).sendMessage(ChatColor.AQUA + "Recipe set for " + item.getName());
+        } else if (e.getView() instanceof LocaleInventory) {
+            localeInventories.remove(e.getView());
+        }
+    }
+    
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent e) {
+        if (e.getView() instanceof LocaleInventory) {
+            LocaleInventory inv = (LocaleInventory) e.getView();
+            e.setCancelled(true);
+            ItemStack current = e.getCurrentItem();
+            ItemStack cursor = e.getCursor();
+            e.setCurrentItem(cursor);
+            e.setCursor(current);
+            inv.sumbitChanges();
+            for (LocaleInventory localeInv : localeInventories) {
+                localeInv.reload();
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onInventoryOpen(final InventoryOpenEvent e) {
+        if (e.getView() instanceof LocaleInventory) return;
+        if (e.getInventory().getType() != InventoryType.CHEST) {
+            Inventory in = e.getInventory();
+            Iterator<ItemStack> it = in.iterator(); 
+            String locale = Locale.getPlayerLocale((Player) e.getPlayer());        
+            try {
+                while (it.hasNext()) {
+                    ItemStack item = it.next();
+                    RPGItem rItem = ItemManager.toRPGItem(item);
+                    if (rItem == null)
+                        continue;
+                    item.setType(rItem.item.getType());
+                    ItemMeta meta = rItem.getLocaleMeta(locale);
+                    if (!(meta instanceof LeatherArmorMeta) && rItem.item.getType().isBlock())
+                        item.setDurability(rItem.item.getDurability());
+                    item.setItemMeta(meta);
+                }
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                // Fix for the bug with anvils in craftbukkit
+            } 
+        } else {
+            e.setCancelled(true);
+            LocaleInventory localeInv = new LocaleInventory((Player) e.getPlayer(), e.getInventory());
+            e.getPlayer().openInventory(localeInv);
+            localeInventories.add(localeInv);
         }
     }
 

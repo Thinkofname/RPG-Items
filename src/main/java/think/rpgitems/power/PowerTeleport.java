@@ -134,7 +134,7 @@ public class PowerTeleport extends Power implements PowerRightClick, PowerProjec
     }
 
     @Override
-    public String displayText() {
-        return ChatColor.GREEN + String.format(Locale.get("power.teleport", "en_GB"), distance, (double) cooldownTime / 20d);
+    public String displayText(String locale) {
+        return ChatColor.GREEN + String.format(Locale.get("power.teleport", locale), distance, (double) cooldownTime / 20d);
     }
 }

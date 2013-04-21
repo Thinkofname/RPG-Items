@@ -297,11 +297,14 @@ public class Handler implements CommandHandler {
     public void setItemItem(CommandSender sender, RPGItem item, Material material, int data) {
         String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         item.setItem(material, false);
-        item.meta = item.item.getItemMeta();
-        if (item.meta instanceof LeatherArmorMeta) {
-            ((LeatherArmorMeta) item.meta).setColor(Color.fromRGB(data));
+        ItemMeta meta = item.item.getItemMeta();
+        if (meta instanceof LeatherArmorMeta) {
+            ((LeatherArmorMeta) meta).setColor(Color.fromRGB(data));
         } else {
             item.setDataValue((short) data);
+        }
+        for (String locales : Locale.getLocales()) {
+            item.setLocaleMeta(locales, meta);
         }
         item.rebuild();
         sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.item.set", locale), item.getName(), item.getItem(), item.item.getDurability()));
@@ -321,11 +324,14 @@ public class Handler implements CommandHandler {
             return;
         }
         item.setItem(material, false);
-        item.meta = item.item.getItemMeta();
-        if (item.meta instanceof LeatherArmorMeta) {
-            ((LeatherArmorMeta) item.meta).setColor(Color.fromRGB(dam));
+        ItemMeta meta = item.item.getItemMeta();
+        if (meta instanceof LeatherArmorMeta) {
+            ((LeatherArmorMeta) meta).setColor(Color.fromRGB(dam));
         } else {
             item.setDataValue((short) dam);
+        }
+        for (String locales : Locale.getLocales()) {
+            item.setLocaleMeta(locales, meta);
         }
         item.rebuild();
         sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.item.set", locale), item.getName(), item.getItem(), item.item.getDurability()));
@@ -358,11 +364,14 @@ public class Handler implements CommandHandler {
             return;
         }
         item.setItem(mat, false);
-        item.meta = item.item.getItemMeta();
-        if (item.meta instanceof LeatherArmorMeta) {
-            ((LeatherArmorMeta) item.meta).setColor(Color.fromRGB(data));
+        ItemMeta meta = item.item.getItemMeta();
+        if (meta instanceof LeatherArmorMeta) {
+            ((LeatherArmorMeta) meta).setColor(Color.fromRGB(data));
         } else {
             item.setDataValue((short) data);
+        }
+        for (String locales : Locale.getLocales()) {
+            item.setLocaleMeta(locales, meta);
         }
         item.rebuild();
         sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.item.set", locale), item.getName(), item.getItem(), item.item.getDurability()));

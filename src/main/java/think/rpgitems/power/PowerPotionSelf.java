@@ -73,8 +73,8 @@ public class PowerPotionSelf extends Power implements PowerRightClick {
     }
 
     @Override
-    public String displayText() {
-        return ChatColor.GREEN + String.format(Locale.get("power.potionself", "en_GB"), type.getName().toLowerCase().replaceAll("_", " "), amplifier + 1, ((double) time) / 20d);
+    public String displayText(String locale) {
+        return ChatColor.GREEN + String.format(Locale.get("power.potionself", locale), type.getName().toLowerCase().replaceAll("_", " "), amplifier + 1, ((double) time) / 20d);
     }
 
 }

@@ -107,8 +107,8 @@ public class PowerRainbow extends Power implements PowerRightClick {
     }
 
     @Override
-    public String displayText() {
-        return ChatColor.GREEN + String.format(Locale.get("power.rainbow", "en_GB"), count, (double) cooldownTime / 20d);
+    public String displayText(String locale) {
+        return ChatColor.GREEN + String.format(Locale.get("power.rainbow", locale), count, (double) cooldownTime / 20d);
     }
 
     @Override

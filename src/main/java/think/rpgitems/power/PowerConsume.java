@@ -53,7 +53,7 @@ public class PowerConsume extends Power implements PowerRightClick {
     }
 
     @Override
-    public String displayText() {
-        return ChatColor.GREEN + Locale.get("power_consume", "en_GB");
+    public String displayText(String locale) {
+        return ChatColor.GREEN + Locale.get("power_consume", locale);
     }
 }

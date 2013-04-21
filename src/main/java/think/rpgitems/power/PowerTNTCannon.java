@@ -51,8 +51,8 @@ public class PowerTNTCannon extends Power implements PowerRightClick {
     }
 
     @Override
-    public String displayText() {
-        return ChatColor.GREEN + String.format(Locale.get("power.tntcannon", "en_GB"), (double) cooldownTime / 20d);
+    public String displayText(String locale) {
+        return ChatColor.GREEN + String.format(Locale.get("power.tntcannon", locale), (double) cooldownTime / 20d);
     }
 
     @Override

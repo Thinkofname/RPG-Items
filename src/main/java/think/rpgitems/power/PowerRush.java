@@ -68,7 +68,7 @@ public class PowerRush extends Power implements PowerRightClick {
     }
 
     @Override
-    public String displayText() {
+    public String displayText(String locale) {
         return ChatColor.GREEN + "Gives temporary speed boost";
     }
 

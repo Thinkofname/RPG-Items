@@ -52,8 +52,8 @@ public class PowerArrow extends Power implements PowerRightClick{
     }
 
     @Override
-    public String displayText() {
-        return ChatColor.GREEN + String.format(Locale.get("power.arrow", "en_GB"), (double) cooldownTime / 20d);
+    public String displayText(String locale) {
+        return ChatColor.GREEN + String.format(Locale.get("power.arrow", locale), (double) cooldownTime / 20d);
     }
 
     @Override
