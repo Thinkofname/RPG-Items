@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -41,6 +42,7 @@ import think.rpgitems.power.Power;
 public class ItemManager {
     public static TIntObjectHashMap<RPGItem> itemById = new TIntObjectHashMap<RPGItem>();
     public static HashMap<String, RPGItem> itemByName = new HashMap<String, RPGItem>();
+    public static HashMap<String, ItemGroup> groups = new HashMap<String, ItemGroup>();
     public static int currentPos = 0;
 
     public static void load(Plugin plugin) {
@@ -76,6 +78,14 @@ public class ItemManager {
                 itemByName.put(item.getName(), item);
                 for (Power power : item.powers) {
                     Power.powerUsage.put(power.getName(), Power.powerUsage.get(power.getName()) + 1);
+                }
+            }
+            
+            if (itemStorage.contains("groups")) {
+                ConfigurationSection gSection = itemStorage.getConfigurationSection("groups");
+                for (String key : gSection.getKeys(false)) {
+                    ItemGroup group = new ItemGroup(gSection.getConfigurationSection(key));
+                    groups.put(group.getName(), group);
                 }
             }
         } catch (Exception e) {
@@ -114,6 +124,13 @@ public class ItemManager {
             item.save(itemSection);
         }
 
+        ConfigurationSection groupsSection = itemStorage.createSection("groups");
+        
+        for (Entry<String, ItemGroup> group : groups.entrySet()) {
+            ConfigurationSection groupSection = groupsSection.createSection(group.getKey());
+            group.getValue().save(groupSection);
+        }
+        
         FileOutputStream out = null;
         try {
             File f = new File(plugin.getDataFolder(), "items.yml");
