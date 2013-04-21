@@ -61,6 +61,13 @@ public class Locale extends BukkitRunnable {
         dataFolder = plugin.getDataFolder();
         version = plugin.getDescription().getVersion();
         reloadLocales(plugin);
+        if (!plugin.getConfig().contains("localeDownload")) {
+            plugin.getConfig().set("localeDownload", true);
+            plugin.saveConfig();
+        }
+        if (!plugin.getConfig().getBoolean("localeDownload", true)) {
+            cancel();
+        }
     }
     
     private final static String localeUpdateURL = "http://thinkofdeath.planetofhosting.net/index.php?page=localeget&lastupdate=";

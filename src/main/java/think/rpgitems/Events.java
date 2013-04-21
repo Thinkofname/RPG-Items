@@ -69,6 +69,7 @@ public class Events implements Listener {
     public static TIntIntHashMap rpgProjectiles = new TIntIntHashMap();
     public static TObjectIntHashMap<String> recipeWindows = new TObjectIntHashMap<String>();
     public static HashMap<String, Set<Integer>> drops = new HashMap<String, Set<Integer>>();
+    public static boolean useLocaleInv = false;
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e) {
@@ -237,14 +238,14 @@ public class Events implements Listener {
             item.resetRecipe(true);
             ItemManager.save(Plugin.plugin);
             ((Player) e.getPlayer()).sendMessage(ChatColor.AQUA + "Recipe set for " + item.getName());
-        } else if (e.getView() instanceof LocaleInventory) {
+        } else if (useLocaleInv && e.getView() instanceof LocaleInventory) {
             localeInventories.remove(e.getView());
         }
     }
     
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
-        if (e.getView() instanceof LocaleInventory) {
+        if (useLocaleInv && e.getView() instanceof LocaleInventory) {
             LocaleInventory inv = (LocaleInventory) e.getView();
             e.setCancelled(true);
             ItemStack current = e.getCurrentItem();
@@ -261,7 +262,7 @@ public class Events implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onInventoryOpen(final InventoryOpenEvent e) {
         if (e.getView() instanceof LocaleInventory) return;
-        if (e.getInventory().getType() != InventoryType.CHEST) {
+        if (e.getInventory().getType() != InventoryType.CHEST || !useLocaleInv) {
             Inventory in = e.getInventory();
             Iterator<ItemStack> it = in.iterator(); 
             String locale = Locale.getPlayerLocale((Player) e.getPlayer());        
@@ -280,7 +281,7 @@ public class Events implements Listener {
             } catch (ArrayIndexOutOfBoundsException ex) {
                 // Fix for the bug with anvils in craftbukkit
             } 
-        } else {
+        } else if (useLocaleInv) {
             e.setCancelled(true);
             LocaleInventory localeInv = new LocaleInventory((Player) e.getPlayer(), e.getInventory());
             e.getPlayer().openInventory(localeInv);

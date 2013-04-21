@@ -105,6 +105,9 @@ public class Plugin extends JavaPlugin {
         if (conf.getBoolean("autoupdate", true)) {
             new Updater(this, "rpg-items", this.getFile(), Updater.UpdateType.DEFAULT, false);
         }
+        if (conf.getBoolean("localeInv", false)) {
+            Events.useLocaleInv = true;
+        }
         getServer().getPluginManager().registerEvents(new Events(), this);
         ItemManager.load(this);
 
