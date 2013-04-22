@@ -87,6 +87,7 @@ public class Events implements Listener {
                 }
                 double chance = item.dropChances.get(type);
                 if (random.nextDouble() < chance / 100d) {
+                    item.item.setItemMeta(item.getLocaleMeta("en_GB"));
                     e.getDrops().add(item.item);
                 }
             }
