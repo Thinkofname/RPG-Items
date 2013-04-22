@@ -315,7 +315,7 @@ public class RPGItem {
         }
         for (String locale : Locale.getLocales()) {
             List<String> lines = getTooltipLines(locale);
-            ItemMeta meta = localeMeta.get(locale);
+            ItemMeta meta = getLocaleMeta(locale);
             meta.setDisplayName(lines.get(0));
             lines.remove(0);
             meta.setLore(lines);
@@ -333,7 +333,7 @@ public class RPGItem {
                 if (rItem.getID() != getID())
                     continue;
                 item.setType(this.item.getType());
-                ItemMeta meta = localeMeta.get(locale);
+                ItemMeta meta = getLocaleMeta(locale);
                 if (!(meta instanceof LeatherArmorMeta)) {
                     item.setDurability(this.item.getDurability());
                 }
@@ -346,7 +346,7 @@ public class RPGItem {
                 if (rItem.getID() != getID())
                     continue;
                 item.setType(this.item.getType());
-                ItemMeta meta = localeMeta.get(locale);
+                ItemMeta meta = getLocaleMeta(locale);
                 if (!(meta instanceof LeatherArmorMeta)) {
                     item.setDurability(this.item.getDurability());
                 }
