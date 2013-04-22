@@ -255,6 +255,7 @@ public class RPGItem {
                 iSet.add(m);
             }
             ItemStack[] iList = iSet.toArray(new ItemStack[iSet.size()]);
+            item.setItemMeta(getLocaleMeta("en_GB"));
             ShapedRecipe shapedRecipe = new ShapedRecipe(item);
             int i = 0;
             Map<ItemStack, Character> iMap = new HashMap<ItemStack, Character>();
