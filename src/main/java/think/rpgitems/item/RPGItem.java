@@ -455,7 +455,11 @@ public class RPGItem {
     }
 
     public ItemMeta getLocaleMeta(String locale) {
-        return localeMeta.get(locale);
+        ItemMeta meta = localeMeta.get(locale);
+        System.out.println(locale);
+        if (meta == null)
+            meta = localeMeta.get("en_GB");
+        return meta;
     }
     
     public void setLocaleMeta(String locale, ItemMeta meta) {
@@ -635,7 +639,7 @@ public class RPGItem {
 
     public void give(Player player) {
         ItemStack i = item.clone();
-        i.setItemMeta(localeMeta.get(Locale.getPlayerLocale(player)));
+        i.setItemMeta(getLocaleMeta(Locale.getPlayerLocale(player)));
         player.getInventory().addItem(i);
     }
 
