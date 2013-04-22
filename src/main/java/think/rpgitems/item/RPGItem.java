@@ -310,6 +310,7 @@ public class RPGItem {
     }
 
     public void rebuild() {
+        localeMeta.clear();
         for (String locale : Locale.getLocales()) {
             localeMeta.put(locale, item.getItemMeta().clone());
         }
@@ -456,7 +457,6 @@ public class RPGItem {
 
     public ItemMeta getLocaleMeta(String locale) {
         ItemMeta meta = localeMeta.get(locale);
-        System.out.println(locale);
         if (meta == null)
             meta = localeMeta.get("en_GB");
         return meta;
