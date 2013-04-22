@@ -311,8 +311,11 @@ public class RPGItem {
 
     public void rebuild() {
         for (String locale : Locale.getLocales()) {
+            localeMeta.put(locale, item.getItemMeta().clone());
+        }
+        for (String locale : Locale.getLocales()) {
             List<String> lines = getTooltipLines(locale);
-            ItemMeta meta = localeMeta.get(locale); 
+            ItemMeta meta = localeMeta.get(locale);
             meta.setDisplayName(lines.get(0));
             lines.remove(0);
             meta.setLore(lines);
