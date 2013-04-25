@@ -164,7 +164,7 @@ public class Handler implements CommandHandler {
     }
 
     @CommandString("rpgitem $n[] quality $quality:o[trash,common,uncommon,rare,epic,legendary]")
-    @CommandDocumentation("$COMMAND_RPGITEM_QUALITY_SET")
+    @CommandDocumentation("$command.rpgitem.quality.set")
     @CommandGroup("item_quality")
     public void setItemQuality(CommandSender sender, RPGItem item, String quality) {
         String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
@@ -379,7 +379,7 @@ public class Handler implements CommandHandler {
     }
 
     @CommandString("rpgitem $n[] removepower $power:s[]")
-    @CommandDocumentation("$COMMAND_RPGITEM_REMOVEPOWER")
+    @CommandDocumentation("$command.rpgitem.removepower")
     @CommandGroup("item_removepower")
     public void itemRemovePower(CommandSender sender, RPGItem item, String power) {
         String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";

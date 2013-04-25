@@ -460,8 +460,8 @@ abstract public class Commands {
     static {
         register(new CommandHandler() {
 
-            @CommandString("rpgitem help $TERMS:s[]")
-            @CommandDocumentation("$COMMAND_RPGITEM_HELP")
+            @CommandString("rpgitem help $terms:s[]")
+            @CommandDocumentation("$command.rpgitem.help")
             @CommandGroup("help")
             public void help(CommandSender sender, String query) {
                 searchHelp(sender, query);
