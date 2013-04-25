@@ -443,7 +443,7 @@ public class PowerHandler implements CommandHandler {
     }
 
     @CommandString("rpgitem $n[] power unbreaking $level:i[]")
-    @CommandDocumentation("$command.rpgitem.unbreaking_full")
+    @CommandDocumentation("$command.rpgitem.unbreaking.full")
     @CommandGroup("item_power_unbreaking")
     public void unbreaking(CommandSender sender, RPGItem item, int level) {
         String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
@@ -456,7 +456,7 @@ public class PowerHandler implements CommandHandler {
     }
     
     @CommandString("rpgitem $n[] power skyhook $m[] $distance:i[]")
-    @CommandDocumentation("Adds the skyhook power to @[Item]#. The skyhook power will allow the user to hook on to @[Material]# up to @[Distance]# blocks away")
+    @CommandDocumentation("$command.rpgitem.skyhook")
     @CommandGroup("item_power_skyhook")
     public void skyHook(CommandSender sender, RPGItem item, Material material, int distance) {
         String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
@@ -470,7 +470,7 @@ public class PowerHandler implements CommandHandler {
     }
     
     @CommandString("rpgitem $n[] power potiontick $amplifier:i[] $effect:s[]")
-    @CommandDocumentation("Adds the potiontick power to @[Item]#. The potiontick power will give the welder of the @[Item]# @[Effect]# level @[Amplifier]# while held/worn")
+    @CommandDocumentation("$command.rpgitem.potiontick")
     @CommandGroup("item_power_potiontick")
     public void potionTick(CommandSender sender, RPGItem item, int amplifier, String effect) {
         String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";

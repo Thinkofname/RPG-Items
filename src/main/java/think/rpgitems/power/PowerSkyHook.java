@@ -11,6 +11,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import think.rpgitems.Plugin;
+import think.rpgitems.data.Locale;
 import think.rpgitems.data.RPGValue;
 import think.rpgitems.power.types.PowerRightClick;
 
@@ -32,7 +33,7 @@ public class PowerSkyHook extends Power implements PowerRightClick {
         }
         Block block = player.getTargetBlock(null, hookDistance);
         if (block.getType() != railMaterial) {
-            player.sendMessage(ChatColor.AQUA + "You failed to hook anything");
+            player.sendMessage(ChatColor.AQUA + Locale.get("message.skyhook.fail", Locale.getPlayerLocale(player)));
             return;
         }
         isHooking.set(true);
@@ -103,7 +104,7 @@ public class PowerSkyHook extends Power implements PowerRightClick {
 
     @Override
     public String displayText(String locale) {
-        return ChatColor.GREEN + "Hooks onto a sky rail";
+        return ChatColor.GREEN + Locale.get("power.skyhook", locale);
     }
 
 }

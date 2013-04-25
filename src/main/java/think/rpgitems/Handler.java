@@ -450,18 +450,20 @@ public class Handler implements CommandHandler {
     }
     
     @CommandString("rpgitem $n[] removerecipe")
-    @CommandDocumentation("Removes the @[Item]#'s recipe")
+    @CommandDocumentation("$command.rpgitem.removerecipe")
     @CommandGroup("item_recipe")
     public void itemRemoveRecipe(CommandSender sender, RPGItem item) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         item.hasRecipe = false;
         item.resetRecipe(true);
-        sender.sendMessage(ChatColor.AQUA + "Recipe removed");
+        sender.sendMessage(ChatColor.AQUA + Locale.get("message.recipe.removed", locale));
     }
     
     @CommandString("rpgitem $n[] recipe")
-    @CommandDocumentation("Sets the @[Item]#'s recipe")
+    @CommandDocumentation("$command.rpgitem.recipe")
     @CommandGroup("item_recipe")
     public void itemSetRecipe(CommandSender sender, RPGItem item) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         if (sender instanceof Player) {
             Player player = (Player) sender;
             String title = "RPGItems - " + item.getDisplay();
@@ -472,12 +474,12 @@ public class Handler implements CommandHandler {
             if (item.hasRecipe) {
                 ItemStack blank = new ItemStack(Material.WALL_SIGN);
                 ItemMeta meta = blank.getItemMeta();
-                meta.setDisplayName(ChatColor.RED + "Do not change. Use the empty slots");
+                meta.setDisplayName(ChatColor.RED + Locale.get("message.recipe.1", locale));
                 ArrayList<String> lore = new ArrayList<String>();
-                lore.add(ChatColor.WHITE + "Place items in the empty spaces");
-                lore.add(ChatColor.WHITE + "in the shape of the crafting");
-                lore.add(ChatColor.WHITE + "recipe that you want the item to");
-                lore.add(ChatColor.WHITE + "have");
+                lore.add(ChatColor.WHITE + Locale.get("message.recipe.2", locale));
+                lore.add(ChatColor.WHITE + Locale.get("message.recipe.3", locale));
+                lore.add(ChatColor.WHITE + Locale.get("message.recipe.4", locale));
+                lore.add(ChatColor.WHITE + Locale.get("message.recipe.5", locale));
                 meta.setLore(lore);
                 blank.setItemMeta(meta);
                 for (int i = 0; i < 27; i++) {
@@ -497,19 +499,19 @@ public class Handler implements CommandHandler {
             player.openInventory(recipeInventory);
             Events.recipeWindows.put(player.getName(), item.getID());
         } else {
-            sender.sendMessage(ChatColor.RED + "This command can only be used by players");
+            sender.sendMessage(ChatColor.RED + Locale.get("message.error.only.player", locale));
         }
     }
     
     @CommandString("rpgitem $n[] drop $e[org.bukkit.entity.EntityType]")
-    @CommandDocumentation("Gets the chance that @[Item]# will drop from @[EntityType]#. 0% means it doesn't drop")
+    @CommandDocumentation("$command.rpgitem.drop")
     @CommandGroup("item_drop")
     public void getItemDropChance(CommandSender sender, RPGItem item, EntityType type) {
         sender.sendMessage(String.format(ChatColor.AQUA + "The chance that '%s" + ChatColor.AQUA + "' will drop from '%s' is %.2f%%", item.getDisplay(), type.toString().toLowerCase(), item.dropChances.get(type.toString())));
     }
 
     @CommandString("rpgitem $n[] drop $e[org.bukkit.entity.EntityType] $chance:f[]")
-    @CommandDocumentation("Sets the chance that @[Item]# will drop from @[EntityType]# to @[Chance]#%. 0% prevents it from dropping")
+    @CommandDocumentation("$command.rpgitem.drop.set")
     @CommandGroup("item_drop")
     public void setItemDropChance(CommandSender sender, RPGItem item, EntityType type, double chance) {
         chance = Math.min(chance, 100.0);

@@ -1,0 +1,3 @@
+[submodule "src/main/resources/locale"]
+	path = src/main/resources/locale
+	url = https://github.com/thinkofdeath/RPG-Items-Locales.git

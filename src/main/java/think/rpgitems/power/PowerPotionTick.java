@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import think.rpgitems.data.Locale;
 import think.rpgitems.power.types.PowerTick;
 
 public class PowerPotionTick extends Power implements PowerTick {
@@ -40,7 +41,7 @@ public class PowerPotionTick extends Power implements PowerTick {
 
     @Override
     public String displayText(String locale) {
-        return ChatColor.GREEN + String.format("Gives %s %d while in use", effect.getName().toLowerCase().replaceAll("_", " "), amplifier + 1);
+        return ChatColor.GREEN + String.format(Locale.get("power.potiontick", locale), effect.getName().toLowerCase().replaceAll("_", " "), amplifier + 1);
     }
 
 }
