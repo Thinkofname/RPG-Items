@@ -58,8 +58,13 @@ public class Locale extends BukkitRunnable {
     private Locale(Plugin plugin) {
         this.plugin = plugin;
         lastUpdate = plugin.getConfig().getLong("lastLocaleUpdate", 0);
-        dataFolder = plugin.getDataFolder();
         version = plugin.getDescription().getVersion();
+        if (!plugin.getConfig().getString("pluginVersion", "0.0").equals(version)) {
+            lastUpdate = 0;
+            plugin.getConfig().set("pluginVersion", version);
+            plugin.saveConfig();
+        }
+        dataFolder = plugin.getDataFolder();
         reloadLocales(plugin);
         if (!plugin.getConfig().contains("localeDownload")) {
             plugin.getConfig().set("localeDownload", true);
