@@ -70,9 +70,6 @@ public class Locale extends BukkitRunnable {
             plugin.getConfig().set("localeDownload", true);
             plugin.saveConfig();
         }
-        if (!plugin.getConfig().getBoolean("localeDownload", true)) {
-            cancel();
-        }
     }
     
     private final static String localeUpdateURL = "http://thinkofdeath.planetofhosting.net/index.php?page=localeget&lastupdate=";
@@ -84,6 +81,9 @@ public class Locale extends BukkitRunnable {
 
     @Override
     public void run() {
+        if (!plugin.getConfig().getBoolean("localeDownload", true)) {
+            cancel();
+        }
         try {
             URL updateURL = new URL(localeUpdateURL + lastUpdate);
             lastUpdate = System.currentTimeMillis();
