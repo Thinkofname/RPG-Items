@@ -304,7 +304,7 @@ public class Handler implements CommandHandler {
             item.setDataValue((short) data);
         }
         for (String locales : Locale.getLocales()) {
-            item.setLocaleMeta(locales, meta);
+            item.setLocaleMeta(locales, meta.clone());
         }
         item.rebuild();
         sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.item.set", locale), item.getName(), item.getItem(), item.item.getDurability()));
@@ -331,7 +331,7 @@ public class Handler implements CommandHandler {
             item.setDataValue((short) dam);
         }
         for (String locales : Locale.getLocales()) {
-            item.setLocaleMeta(locales, meta);
+            item.setLocaleMeta(locales, meta.clone());
         }
         item.rebuild();
         sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.item.set", locale), item.getName(), item.getItem(), item.item.getDurability()));

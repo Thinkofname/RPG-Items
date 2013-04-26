@@ -310,9 +310,9 @@ public class RPGItem {
     }
 
     public void rebuild() {
-        localeMeta.clear();
         for (String locale : Locale.getLocales()) {
-            localeMeta.put(locale, item.getItemMeta().clone());
+            if (!localeMeta.containsKey(locale))
+                localeMeta.put(locale, getLocaleMeta("en_GB").clone());
         }
         for (String locale : Locale.getLocales()) {
             List<String> lines = getTooltipLines(locale);
