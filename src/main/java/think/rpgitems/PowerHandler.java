@@ -405,7 +405,7 @@ public class PowerHandler implements CommandHandler {
     }
 
     @CommandString("rpgitem $n[] power tntcannon $cooldown:i[]")
-    @CommandDocumentation("$command.rpgitem.tntcannon,full")
+    @CommandDocumentation("$command.rpgitem.tntcannon.full")
     @CommandGroup("item_power_tntcannon")
     public void tntcannon(CommandSender sender, RPGItem item, int cooldown) {
         String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
