@@ -81,7 +81,7 @@ public class PowerHandler implements CommandHandler {
     }
 
     @CommandString("rpgitem $n[] power command $cooldown:i[] $o[left,right] $display:s[] $command:s[] $permission:s[]")
-    @CommandDocumentation("$command.rpgitem.COMMAND_FULL")
+    @CommandDocumentation("$command.rpgitem.command.full")
     @CommandGroup("item_power_command_a")
     public void command(CommandSender sender, RPGItem item, int cooldown, String mouse, String displayText, String command, String permission) {
         String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
