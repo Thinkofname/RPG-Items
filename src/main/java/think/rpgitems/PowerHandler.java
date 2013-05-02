@@ -267,7 +267,7 @@ public class PowerHandler implements CommandHandler {
         sender.sendMessage(ChatColor.AQUA + Locale.get("message.power.ok", locale));
     }
 
-    @CommandString("rpgitem $n[] power lightning $CHANCE:i[]")
+    @CommandString("rpgitem $n[] power lightning $chance:i[]")
     @CommandDocumentation("$command.rpgitem.lightning.full")
     @CommandGroup("item_power_lightning")
     public void lightning(CommandSender sender, RPGItem item, int chance) {
