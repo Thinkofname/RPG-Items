@@ -272,7 +272,7 @@ public class RPGItem {
             shapedRecipe.shape(new String[] { shape.substring(0, 3), shape.substring(3, 6), shape.substring(6, 9) });
             for (Entry<ItemStack, Character> e : iMap.entrySet()) {
                 if (e.getKey() != null) {
-                    shapedRecipe.setIngredient(e.getValue(), e.getKey().getData());
+                    shapedRecipe.setIngredient(e.getValue(), e.getKey().getType(), e.getKey().getDurability());
                 }
             }
             Bukkit.addRecipe(shapedRecipe);

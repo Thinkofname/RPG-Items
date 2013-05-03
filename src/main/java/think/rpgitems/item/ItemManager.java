@@ -72,6 +72,7 @@ public class ItemManager {
             }
             currentPos = itemStorage.getInt("pos", 0);
             ConfigurationSection section = itemStorage.getConfigurationSection("items");
+            if (section == null) return;
             for (String key : section.getKeys(false)) {
                 RPGItem item = new RPGItem(section.getConfigurationSection(key));
                 itemById.put(item.getID(), item);
