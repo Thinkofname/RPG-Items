@@ -21,6 +21,8 @@ public class RPGMetadata extends TIntObjectHashMap<Object> {
 
     private final static String METADATA_PREFIX = ChatColor.COLOR_CHAR + "c" + ChatColor.COLOR_CHAR + "a" + ChatColor.COLOR_CHAR + "f" + ChatColor.COLOR_CHAR + "e";
 
+    public static final int DURABILITY = 0;
+    
     public static boolean hasRPGMetadata(ItemStack item) {
         if (!item.hasItemMeta())
             return false;

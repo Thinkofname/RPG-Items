@@ -533,4 +533,13 @@ public class Handler implements CommandHandler {
         ItemManager.save(Plugin.plugin);
         sender.sendMessage(String.format(ChatColor.AQUA + "The chance that '%s" + ChatColor.AQUA + "' will drop from '%s' was set to %.2f%%", item.getDisplay(), typeS.toLowerCase(), item.dropChances.get(typeS)));
     }
+    
+    @CommandString("rpgitem $n[] durability $durability:i[]")
+    @CommandDocumentation("None")
+    @CommandGroup("item_durability")
+    public void setItemDurability(CommandSender sender, RPGItem item, int newValue) {
+        item.setMaxDurability(newValue);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage("Durability changed");
+    }
 }

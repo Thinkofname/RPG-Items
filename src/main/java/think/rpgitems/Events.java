@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -58,6 +59,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import think.rpgitems.data.Locale;
+import think.rpgitems.data.RPGMetadata;
 import think.rpgitems.item.ItemManager;
 import think.rpgitems.item.LocaleInventory;
 import think.rpgitems.item.RPGItem;
@@ -185,6 +187,11 @@ public class Events implements Listener {
             ItemMeta meta = rItem.getLocaleMeta(locale);
             if (!(meta instanceof LeatherArmorMeta) && rItem.getItem().isBlock())
                 item.setDurability(rItem.getDataValue());
+            RPGMetadata rpgMeta = RPGMetadata.parseLoreline(item.getItemMeta().getLore().get(0));
+            List<String> lore = meta.getLore();
+            lore.set(0, meta.getLore().get(0) + rpgMeta.toMCString());
+            rItem.addExtra(rpgMeta, item, lore);
+            meta.setLore(lore);
             item.setItemMeta(meta);
         }
         for (ItemStack item : player.getInventory().getArmorContents()) {
@@ -195,6 +202,11 @@ public class Events implements Listener {
             ItemMeta meta = rItem.getLocaleMeta(locale);
             if (!(meta instanceof LeatherArmorMeta) && rItem.getItem().isBlock())
                 item.setDurability(rItem.getDataValue());
+            RPGMetadata rpgMeta = RPGMetadata.parseLoreline(item.getItemMeta().getLore().get(0));
+            List<String> lore = meta.getLore();
+            lore.set(0, meta.getLore().get(0) + rpgMeta.toMCString());
+            rItem.addExtra(rpgMeta, item, lore);
+            meta.setLore(lore);
             item.setItemMeta(meta);
         }
     }
@@ -210,6 +222,11 @@ public class Events implements Listener {
         ItemMeta meta = rItem.getLocaleMeta(locale);
         if (!(meta instanceof LeatherArmorMeta) && rItem.getItem().isBlock())
             item.setDurability(rItem.getDataValue());
+        RPGMetadata rpgMeta = RPGMetadata.parseLoreline(item.getItemMeta().getLore().get(0));
+        List<String> lore = meta.getLore();
+        lore.set(0, meta.getLore().get(0) + rpgMeta.toMCString());
+        rItem.addExtra(rpgMeta, item, lore);
+        meta.setLore(lore);
         item.setItemMeta(meta);
         e.getItem().setItemStack(item);
 
@@ -290,6 +307,11 @@ public class Events implements Listener {
                     ItemMeta meta = rItem.getLocaleMeta(locale);
                     if (!(meta instanceof LeatherArmorMeta) && rItem.getItem().isBlock())
                         item.setDurability(rItem.getDataValue());
+                    RPGMetadata rpgMeta = RPGMetadata.parseLoreline(item.getItemMeta().getLore().get(0));
+                    List<String> lore = meta.getLore();
+                    lore.set(0, meta.getLore().get(0) + rpgMeta.toMCString());
+                    rItem.addExtra(rpgMeta, item, lore);
+                    meta.setLore(lore);
                     item.setItemMeta(meta);
                 }
             } catch (ArrayIndexOutOfBoundsException ex) {

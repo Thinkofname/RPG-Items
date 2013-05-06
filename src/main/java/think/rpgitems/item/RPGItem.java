@@ -48,6 +48,7 @@ import think.rpgitems.Events;
 import think.rpgitems.Plugin;
 import think.rpgitems.data.Font;
 import think.rpgitems.data.Locale;
+import think.rpgitems.data.RPGMetadata;
 import think.rpgitems.power.Power;
 import think.rpgitems.power.types.PowerHit;
 import think.rpgitems.power.types.PowerLeftClick;
@@ -57,9 +58,9 @@ import think.rpgitems.power.types.PowerTick;
 
 public class RPGItem {
     private ItemStack item;
-    
+
     private HashMap<String, ItemMeta> localeMeta = new HashMap<String, ItemMeta>();
-    
+
     private int id;
     private String name;
     private String encodedID;
@@ -90,16 +91,17 @@ public class RPGItem {
     // Drops
     public TObjectDoubleHashMap<String> dropChances = new TObjectDoubleHashMap<String>();
 
+    private int tooltipWidth = 150;
+
+    // Durability
+    private int maxDurability;
+    private boolean hasBar = false;
+
     public RPGItem(String name, int id) {
         this.name = name;
         this.id = id;
         encodedID = getMCEncodedID(id);
         item = new ItemStack(Material.WOOD_SWORD);
-        
-        ItemMeta meta = item.getItemMeta();
-        for (String locale : Locale.getLocales()) {
-            localeMeta.put(locale, meta.clone());
-        }
 
         displayName = item.getType().toString();
         rebuild();
@@ -185,6 +187,10 @@ public class RPGItem {
                 dropChances.put(key, chance);
             }
         }
+        if (item.getType().getMaxDurability() != 0) {
+            hasBar = true;
+        }
+        maxDurability = s.getInt("maxDurability", item.getType().getMaxDurability());
 
         rebuild();
     }
@@ -207,7 +213,7 @@ public class RPGItem {
         s.set("description", descriptionConv);
         s.set("item", item.getType().toString());
         s.set("ignoreWorldGuard", ignoreWorldGuard);
-        
+
         ItemMeta meta = localeMeta.get("en_GB");
         if (meta instanceof LeatherArmorMeta) {
             s.set("item_colour", ((LeatherArmorMeta) meta).getColor().asRGB());
@@ -234,6 +240,8 @@ public class RPGItem {
         for (String key : dropChances.keySet()) {
             drops.set(key, dropChances.get(key));
         }
+
+        s.set("maxDurability", maxDurability);
     }
 
     public void resetRecipe(boolean removeOld) {
@@ -312,7 +320,7 @@ public class RPGItem {
     public void rebuild() {
         for (String locale : Locale.getLocales()) {
             if (!localeMeta.containsKey(locale))
-                localeMeta.put(locale, getLocaleMeta("en_GB").clone());
+                localeMeta.put(locale, getLocaleMeta("en_GB"));
         }
         for (String locale : Locale.getLocales()) {
             List<String> lines = getTooltipLines(locale);
@@ -320,7 +328,8 @@ public class RPGItem {
             meta.setDisplayName(lines.get(0));
             lines.remove(0);
             meta.setLore(lines);
-            //item.setItemMeta(meta);
+            setLocaleMeta(locale, meta);
+            // item.setItemMeta(meta);
         }
 
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -338,6 +347,11 @@ public class RPGItem {
                 if (!(meta instanceof LeatherArmorMeta)) {
                     item.setDurability(this.item.getDurability());
                 }
+                RPGMetadata rpgMeta = RPGMetadata.parseLoreline(item.getItemMeta().getLore().get(0));
+                List<String> lore = meta.getLore();
+                lore.set(0, meta.getLore().get(0) + rpgMeta.toMCString());
+                addExtra(rpgMeta, item, lore);
+                meta.setLore(lore);
                 item.setItemMeta(meta);
             }
             for (ItemStack item : player.getInventory().getArmorContents()) {
@@ -351,10 +365,39 @@ public class RPGItem {
                 if (!(meta instanceof LeatherArmorMeta)) {
                     item.setDurability(this.item.getDurability());
                 }
+                RPGMetadata rpgMeta = RPGMetadata.parseLoreline(item.getItemMeta().getLore().get(0));
+                List<String> lore = meta.getLore();
+                lore.set(0, meta.getLore().get(0) + rpgMeta.toMCString());
+                addExtra(rpgMeta, item, lore);
+                meta.setLore(lore);
                 item.setItemMeta(meta);
+
             }
         }
         resetRecipe(true);
+    }
+
+    public void addExtra(RPGMetadata rpgMeta, ItemStack item, List<String> lore) {
+        if (maxDurability != 0) {
+            if (!rpgMeta.containsKey(RPGMetadata.DURABILITY)) {
+                rpgMeta.put(RPGMetadata.DURABILITY, Short.valueOf((short) maxDurability));
+            }
+            int durability = ((Short) rpgMeta.get(RPGMetadata.DURABILITY)).intValue();
+            
+            if (!hasBar) {
+                StringBuilder out = new StringBuilder();
+                char boxChar = '\u25A0';
+                int boxCount = tooltipWidth / 4;
+                int mid = (int) ((double)boxCount * ((double) durability / (double) maxDurability));
+                for (int i = 0; i < boxCount; i++) {
+                    out.append(i < mid ? ChatColor.GREEN : i == mid ? ChatColor.YELLOW : ChatColor.RED);
+                    out.append(boxChar);
+                }
+                lore.add(out.toString());
+            } else {
+                item.setDurability((short) (item.getType().getMaxDurability() - ((short) ((double)item.getType().getMaxDurability() * ((double) durability / (double) maxDurability)))));
+            }
+        }
     }
 
     public List<String> getTooltipLines(String locale) {
@@ -395,6 +438,9 @@ public class RPGItem {
             if (dWidth > width)
                 width = dWidth;
         }
+        
+
+        tooltipWidth = width;
 
         output.add(ChatColor.WHITE + hand + StringUtils.repeat(" ", (width - getStringWidth(ChatColor.stripColor(hand + type))) / 4) + type);
         if (damageStr != null) {
@@ -457,21 +503,27 @@ public class RPGItem {
 
     public ItemStack toItemStack(String locale) {
         ItemStack rStack = item.clone();
-        rStack.setItemMeta(getLocaleMeta(locale));
+        RPGMetadata rpgMeta = new RPGMetadata();
+        ItemMeta meta = getLocaleMeta(locale);
+        List<String> lore = meta.getLore();
+        lore.set(0, meta.getLore().get(0) + rpgMeta.toMCString());
+        addExtra(rpgMeta, rStack, lore);
+        meta.setLore(lore);
+        rStack.setItemMeta(meta);
         return rStack;
     }
-    
+
     public ItemMeta getLocaleMeta(String locale) {
         ItemMeta meta = localeMeta.get(locale);
         if (meta == null)
             meta = localeMeta.get("en_GB");
-        return meta;
+        return meta.clone();
     }
-    
+
     public void setLocaleMeta(String locale, ItemMeta meta) {
         localeMeta.put(locale, meta);
     }
-    
+
     public String getName() {
         return name;
     }
@@ -630,21 +682,24 @@ public class RPGItem {
     }
 
     public void setItem(Material mat, boolean update) {
+        if (maxDurability == item.getType().getMaxDurability()) {
+            maxDurability = mat.getMaxDurability();
+        }
         item.setType(mat);
         if (update)
             rebuild();
     }
-    
+
     public void setDataValue(short value, boolean update) {
         item.setDurability(value);
-        if (update) 
+        if (update)
             rebuild();
     }
-    
+
     public void setDataValue(short value) {
         item.setDurability(value);
     }
-    
+
     public short getDataValue() {
         return item.getDurability();
     }
@@ -653,10 +708,18 @@ public class RPGItem {
         return item.getType();
     }
 
+    public void setMaxDurability(int newVal) {
+        setMaxDurability(newVal, true);
+    }
+
+    public void setMaxDurability(int newVal, boolean update) {
+        maxDurability = newVal;
+        if (update)
+            rebuild();
+    }
+
     public void give(Player player) {
-        ItemStack i = item.clone();
-        i.setItemMeta(getLocaleMeta(Locale.getPlayerLocale(player)));
-        player.getInventory().addItem(i);
+        player.getInventory().addItem(toItemStack(Locale.getPlayerLocale(player)));
     }
 
     public void addPower(Power power) {
