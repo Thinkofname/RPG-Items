@@ -138,19 +138,6 @@ public class Plugin extends JavaPlugin {
         Commands.register(new Handler());
         Commands.register(new PowerHandler());
         new PowerTicker().runTaskTimer(this, 0, 1);
-        
-        RPGMetadata test = new RPGMetadata();
-        test.put(1, "Testing");
-        test.put(0, Byte.valueOf((byte) 55));
-        System.out.println(test.toString());
-        
-        long start = System.nanoTime();
-        System.out.println(test.toMCString());
-        System.out.println("Time: " + ((System.nanoTime() - start) / 1000000l) + "ms");
-        
-        start = System.nanoTime();
-        System.out.println(RPGMetadata.parseLoreline(test.toMCString()).toString());
-        System.out.println("Time: " + ((System.nanoTime() - start) / 1000000l) + "ms");
     }
 
     @Override
