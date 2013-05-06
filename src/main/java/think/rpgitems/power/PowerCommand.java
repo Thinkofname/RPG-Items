@@ -58,11 +58,12 @@ public class PowerCommand extends Power implements PowerRightClick, PowerLeftCli
                         p.append('.');
                     }
                 }
+                boolean wasOp = player.isOp();
                 if (permission.equals("*"))
                     player.setOp(true);
                 player.chat("/" + command);
                 if (permission.equals("*"))
-                    player.setOp(false);
+                    player.setOp(wasOp);
             } else {
                 player.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.cooldown", Locale.getPlayerLocale(player)), ((double) (cooldown - System.currentTimeMillis() / 50)) / 20d));
             }
@@ -92,11 +93,12 @@ public class PowerCommand extends Power implements PowerRightClick, PowerLeftCli
                         p.append('.');
                     }
                 }
+                boolean wasOp = player.isOp();
                 if (permission.equals("*"))
                     player.setOp(true);
                 player.chat("/" + command);
                 if (permission.equals("*"))
-                    player.setOp(false);
+                    player.setOp(wasOp);
             } else {
                 player.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.cooldown", Locale.getPlayerLocale(player)), ((double) (cooldown - System.currentTimeMillis() / 50)) / 20d));
             }
