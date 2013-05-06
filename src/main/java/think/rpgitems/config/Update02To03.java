@@ -145,7 +145,8 @@ public class Update02To03 implements Updater {
                 for (String locales : Locale.getLocales()) {
                     newItem.setLocaleMeta(locales, meta);
                 }
-                newItem.item = item;
+                newItem.setItem(item.getType(), false);
+                newItem.setDataValue(item.getDurability(), false);
                 newItem.setArmour(armour, false);
                 newItem.setDamage(damageMin, damageMax);
                 newItem.setQuality(quality, false);

@@ -56,7 +56,7 @@ import think.rpgitems.power.types.PowerRightClick;
 import think.rpgitems.power.types.PowerTick;
 
 public class RPGItem {
-    public ItemStack item;
+    private ItemStack item;
     
     private HashMap<String, ItemMeta> localeMeta = new HashMap<String, ItemMeta>();
     
@@ -455,6 +455,12 @@ public class RPGItem {
         return output;
     }
 
+    public ItemStack toItemStack(String locale) {
+        ItemStack rStack = item.clone();
+        rStack.setItemMeta(getLocaleMeta(locale));
+        return rStack;
+    }
+    
     public ItemMeta getLocaleMeta(String locale) {
         ItemMeta meta = localeMeta.get(locale);
         if (meta == null)
@@ -628,9 +634,19 @@ public class RPGItem {
         if (update)
             rebuild();
     }
-
+    
+    public void setDataValue(short value, boolean update) {
+        item.setDurability(value);
+        if (update) 
+            rebuild();
+    }
+    
     public void setDataValue(short value) {
         item.setDurability(value);
+    }
+    
+    public short getDataValue() {
+        return item.getDurability();
     }
 
     public Material getItem() {

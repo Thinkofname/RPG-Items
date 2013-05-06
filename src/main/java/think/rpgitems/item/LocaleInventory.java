@@ -43,10 +43,10 @@ public class LocaleInventory extends InventoryView {
             RPGItem rItem = ItemManager.toRPGItem(item);
             if (rItem == null)
                 continue;
-            item.setType(rItem.item.getType());
+            item.setType(rItem.getItem());
             ItemMeta meta = rItem.getLocaleMeta(locale);
-            if (!(meta instanceof LeatherArmorMeta) && rItem.item.getType().isBlock())
-                item.setDurability(rItem.item.getDurability());
+            if (!(meta instanceof LeatherArmorMeta) && rItem.getItem().isBlock())
+                item.setDurability(rItem.getDataValue());
             item.setItemMeta(meta);
         }
         fake.setContents(fake.getContents());

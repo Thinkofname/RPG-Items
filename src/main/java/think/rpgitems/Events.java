@@ -87,8 +87,7 @@ public class Events implements Listener {
                 }
                 double chance = item.dropChances.get(type);
                 if (random.nextDouble() < chance / 100d) {
-                    item.item.setItemMeta(item.getLocaleMeta("en_GB"));
-                    e.getDrops().add(item.item);
+                    e.getDrops().add(item.toItemStack("en_GB"));
                 }
             }
         }
@@ -182,20 +181,20 @@ public class Events implements Listener {
             RPGItem rItem = ItemManager.toRPGItem(item);
             if (rItem == null)
                 continue;
-            item.setType(rItem.item.getType());
+            item.setType(rItem.getItem());
             ItemMeta meta = rItem.getLocaleMeta(locale);
-            if (!(meta instanceof LeatherArmorMeta) && rItem.item.getType().isBlock())
-                item.setDurability(rItem.item.getDurability());
+            if (!(meta instanceof LeatherArmorMeta) && rItem.getItem().isBlock())
+                item.setDurability(rItem.getDataValue());
             item.setItemMeta(meta);
         }
         for (ItemStack item : player.getInventory().getArmorContents()) {
             RPGItem rItem = ItemManager.toRPGItem(item);
             if (rItem == null)
                 continue;
-            item.setType(rItem.item.getType());
+            item.setType(rItem.getItem());
             ItemMeta meta = rItem.getLocaleMeta(locale);
-            if (!(meta instanceof LeatherArmorMeta) && rItem.item.getType().isBlock())
-                item.setDurability(rItem.item.getDurability());
+            if (!(meta instanceof LeatherArmorMeta) && rItem.getItem().isBlock())
+                item.setDurability(rItem.getDataValue());
             item.setItemMeta(meta);
         }
     }
@@ -207,10 +206,10 @@ public class Events implements Listener {
         if (rItem == null)
             return;
         String locale = Locale.getPlayerLocale(e.getPlayer());
-        item.setType(rItem.item.getType());
+        item.setType(rItem.getItem());
         ItemMeta meta = rItem.getLocaleMeta(locale);
-        if (!(meta instanceof LeatherArmorMeta) && rItem.item.getType().isBlock())
-            item.setDurability(rItem.item.getDurability());
+        if (!(meta instanceof LeatherArmorMeta) && rItem.getItem().isBlock())
+            item.setDurability(rItem.getDataValue());
         item.setItemMeta(meta);
         e.getItem().setItemStack(item);
 
@@ -287,10 +286,10 @@ public class Events implements Listener {
                     RPGItem rItem = ItemManager.toRPGItem(item);
                     if (rItem == null)
                         continue;
-                    item.setType(rItem.item.getType());
+                    item.setType(rItem.getItem());
                     ItemMeta meta = rItem.getLocaleMeta(locale);
-                    if (!(meta instanceof LeatherArmorMeta) && rItem.item.getType().isBlock())
-                        item.setDurability(rItem.item.getDurability());
+                    if (!(meta instanceof LeatherArmorMeta) && rItem.getItem().isBlock())
+                        item.setDurability(rItem.getDataValue());
                     item.setItemMeta(meta);
                 }
             } catch (ArrayIndexOutOfBoundsException ex) {
@@ -304,7 +303,7 @@ public class Events implements Listener {
         }
     }
 
-    Random random = new Random();
+    private Random random = new Random();
     
     private int playerDamager(EntityDamageByEntityEvent e, int damage) {
         Player player = (Player) e.getDamager();

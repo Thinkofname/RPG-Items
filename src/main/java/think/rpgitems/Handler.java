@@ -287,7 +287,7 @@ public class Handler implements CommandHandler {
     public void setItemItem(CommandSender sender, RPGItem item, Material material) {
         String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         item.setItem(material);
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.item.set", locale), item.getName(), item.getItem(), item.item.getDurability()));
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.item.set", locale), item.getName(), item.getItem(), item.getDataValue()));
         ItemManager.save(Plugin.plugin);
     }
 
@@ -297,7 +297,7 @@ public class Handler implements CommandHandler {
     public void setItemItem(CommandSender sender, RPGItem item, Material material, int data) {
         String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         item.setItem(material, false);
-        ItemMeta meta = item.item.getItemMeta();
+        ItemMeta meta = item.getLocaleMeta(locale);
         if (meta instanceof LeatherArmorMeta) {
             ((LeatherArmorMeta) meta).setColor(Color.fromRGB(data));
         } else {
@@ -307,7 +307,7 @@ public class Handler implements CommandHandler {
             item.setLocaleMeta(locales, meta.clone());
         }
         item.rebuild();
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.item.set", locale), item.getName(), item.getItem(), item.item.getDurability()));
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.item.set", locale), item.getName(), item.getItem(), item.getDataValue()));
         ItemManager.save(Plugin.plugin);
     }
 
@@ -324,7 +324,7 @@ public class Handler implements CommandHandler {
             return;
         }
         item.setItem(material, false);
-        ItemMeta meta = item.item.getItemMeta();
+        ItemMeta meta = item.getLocaleMeta(locale);
         if (meta instanceof LeatherArmorMeta) {
             ((LeatherArmorMeta) meta).setColor(Color.fromRGB(dam));
         } else {
@@ -334,7 +334,7 @@ public class Handler implements CommandHandler {
             item.setLocaleMeta(locales, meta.clone());
         }
         item.rebuild();
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.item.set", locale), item.getName(), item.getItem(), item.item.getDurability()));
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.item.set", locale), item.getName(), item.getItem(), item.getDataValue()));
         ItemManager.save(Plugin.plugin);
     }
 
@@ -349,7 +349,7 @@ public class Handler implements CommandHandler {
             return;
         }
         item.setItem(mat);
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.item.set", locale), item.getName(), item.getItem(), item.item.getDurability()));
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.item.set", locale), item.getName(), item.getItem(), item.getDataValue()));
         ItemManager.save(Plugin.plugin);
     }
 
@@ -364,7 +364,7 @@ public class Handler implements CommandHandler {
             return;
         }
         item.setItem(mat, false);
-        ItemMeta meta = item.item.getItemMeta();
+        ItemMeta meta = item.getLocaleMeta(locale);
         if (meta instanceof LeatherArmorMeta) {
             ((LeatherArmorMeta) meta).setColor(Color.fromRGB(data));
         } else {
@@ -374,7 +374,7 @@ public class Handler implements CommandHandler {
             item.setLocaleMeta(locales, meta);
         }
         item.rebuild();
-        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.item.set", locale), item.getName(), item.getItem(), item.item.getDurability()));
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.item.set", locale), item.getName(), item.getItem(), item.getDataValue()));
         ItemManager.save(Plugin.plugin);
     }
 
