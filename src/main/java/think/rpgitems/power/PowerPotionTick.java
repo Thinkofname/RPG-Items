@@ -16,7 +16,7 @@ public class PowerPotionTick extends Power implements PowerTick {
 
     @Override
     public void tick(Player player) {
-        player.addPotionEffect(new PotionEffect(effect, 4, amplifier, true), true);
+        player.addPotionEffect(new PotionEffect(effect, 20, amplifier, true), false);
         
     }
 
