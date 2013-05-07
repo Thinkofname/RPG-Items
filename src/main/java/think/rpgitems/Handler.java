@@ -542,4 +542,22 @@ public class Handler implements CommandHandler {
         ItemManager.save(Plugin.plugin);
         sender.sendMessage("Durability changed");
     }
+    
+    @CommandString("rpgitem $n[] durability infinite")
+    @CommandDocumentation("None")
+    @CommandGroup("item_durability")
+    public void setItemDurabilityInfinite(CommandSender sender, RPGItem item) {
+        item.setMaxDurability(-1);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage("Durability changed");
+    }
+    
+    @CommandString("rpgitem $n[] durability togglebar")
+    @CommandDocumentation("None")
+    @CommandGroup("item_durability")
+    public void toggleItemDurabilityBar(CommandSender sender, RPGItem item) {
+        item.toggleBar();
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage("Durability bar toggled");
+    }
 }

@@ -96,6 +96,7 @@ public class RPGItem {
     // Durability
     private int maxDurability;
     private boolean hasBar = false;
+    private boolean forceBar = false;
 
     public RPGItem(String name, int id) {
         this.name = name;
@@ -191,6 +192,7 @@ public class RPGItem {
             hasBar = true;
         }
         maxDurability = s.getInt("maxDurability", item.getType().getMaxDurability());
+        forceBar = s.getBoolean("forceBar", false);
 
         rebuild();
     }
@@ -242,6 +244,7 @@ public class RPGItem {
         }
 
         s.set("maxDurability", maxDurability);
+        s.set("forceBar", forceBar);
     }
 
     public void resetRecipe(boolean removeOld) {
@@ -337,32 +340,41 @@ public class RPGItem {
             String locale = Locale.getPlayerLocale(player);
             while (it.hasNext()) {
                 ItemStack item = it.next();
-                updateItem(item, locale);
+                if (ItemManager.toRPGItem(item) != null)
+                    updateItem(item, locale, false);
             }
             for (ItemStack item : player.getInventory().getArmorContents()) {
-                updateItem(item, locale);
+                if (ItemManager.toRPGItem(item) != null)
+                    updateItem(item, locale, false);
 
             }
         }
         resetRecipe(true);
     }
-    
+
     public static RPGMetadata getMetadata(ItemStack item) {
         return RPGMetadata.parseLoreline(item.getItemMeta().getLore().get(0));
     }
-    
+
     public static void updateItem(ItemStack item, String locale) {
-        if (ItemManager.toRPGItem(item) != null)
-            updateItem(item, locale, getMetadata(item));
+        updateItem(item, locale, getMetadata(item));
     }
-    
+
     public static void updateItem(ItemStack item, String locale, RPGMetadata rpgMeta) {
+        updateItem(item, locale, rpgMeta, false);
+    }
+
+    public static void updateItem(ItemStack item, String locale, boolean updateDurability) {
+        updateItem(item, locale, getMetadata(item), false);
+    }
+
+    public static void updateItem(ItemStack item, String locale, RPGMetadata rpgMeta, boolean updateDurability) {
         RPGItem rItem = ItemManager.toRPGItem(item);
         if (rItem == null)
             return;
         item.setType(rItem.item.getType());
         ItemMeta meta = rItem.getLocaleMeta(locale);
-        if (!(meta instanceof LeatherArmorMeta)) {
+        if (!(meta instanceof LeatherArmorMeta) && updateDurability) {
             item.setDurability(rItem.item.getDurability());
         }
         List<String> lore = meta.getLore();
@@ -373,25 +385,28 @@ public class RPGItem {
     }
 
     public void addExtra(RPGMetadata rpgMeta, ItemStack item, List<String> lore) {
-        if (maxDurability != 0) {
+        if (maxDurability != -1) {
             if (!rpgMeta.containsKey(RPGMetadata.DURABILITY)) {
                 rpgMeta.put(RPGMetadata.DURABILITY, Integer.valueOf(maxDurability));
             }
             int durability = ((Number) rpgMeta.get(RPGMetadata.DURABILITY)).intValue();
-            
-            if (!hasBar) {
+
+            if (!hasBar || forceBar) {
                 StringBuilder out = new StringBuilder();
                 char boxChar = '\u25A0';
                 int boxCount = tooltipWidth / 4;
-                int mid = (int) ((double)boxCount * ((double) durability / (double) maxDurability));
+                int mid = (int) ((double) boxCount * ((double) durability / (double) maxDurability));
                 for (int i = 0; i < boxCount; i++) {
                     out.append(i < mid ? ChatColor.GREEN : i == mid ? ChatColor.YELLOW : ChatColor.RED);
                     out.append(boxChar);
                 }
                 lore.add(out.toString());
-            } else {
-                item.setDurability((short) (item.getType().getMaxDurability() - ((short) ((double)item.getType().getMaxDurability() * ((double) durability / (double) maxDurability)))));
             }
+            if (hasBar) {
+                item.setDurability((short) (item.getType().getMaxDurability() - ((short) ((double) item.getType().getMaxDurability() * ((double) durability / (double) maxDurability)))));
+            }
+        } else if (maxDurability == -1) {
+            item.setDurability((short) 0);
         }
     }
 
@@ -433,7 +448,6 @@ public class RPGItem {
             if (dWidth > width)
                 width = dWidth;
         }
-        
 
         tooltipWidth = width;
 
@@ -712,7 +726,7 @@ public class RPGItem {
         if (update)
             rebuild();
     }
-    
+
     public int getMaxDurability() {
         return maxDurability;
     }
@@ -787,6 +801,11 @@ public class RPGItem {
         description.add(ChatColor.translateAlternateColorCodes('&', str));
         if (update)
             rebuild();
+    }
+
+    public void toggleBar() {
+        forceBar = !forceBar;
+        rebuild();
     }
 
 }

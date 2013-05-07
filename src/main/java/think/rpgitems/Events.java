@@ -39,6 +39,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -72,6 +73,27 @@ public class Events implements Listener {
     public static TObjectIntHashMap<String> recipeWindows = new TObjectIntHashMap<String>();
     public static HashMap<String, Set<Integer>> drops = new HashMap<String, Set<Integer>>();
     public static boolean useLocaleInv = false;
+    
+    @EventHandler(ignoreCancelled = true) 
+    public void onBlockBreak(BlockBreakEvent e) {
+        Player player = e.getPlayer();
+        ItemStack item = player.getItemInHand();
+        RPGItem rItem;
+        if ((rItem = ItemManager.toRPGItem(item)) != null) {
+            RPGMetadata meta = RPGItem.getMetadata(item);
+            if (rItem.getMaxDurability() != 0) {
+                int durability = ((Number) meta.get(RPGMetadata.DURABILITY)).intValue();
+                durability--;
+                if (durability <= 0) {
+                    player.setItemInHand(null);
+                }
+                meta.put(RPGMetadata.DURABILITY, Integer.valueOf(durability));
+            }
+            RPGItem.updateItem(item, Locale.getPlayerLocale(player), meta);
+            player.updateInventory();
+        }
+            
+    }
     
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e) {
@@ -116,6 +138,7 @@ public class Events implements Listener {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @EventHandler
     public void onProjectileFire(ProjectileLaunchEvent e) {
         LivingEntity shooter = e.getEntity().getShooter();
@@ -127,6 +150,17 @@ public class Events implements Listener {
                 return;
             if (!WorldGuard.canPvP(player.getLocation()) && !rItem.ignoreWorldGuard)
                 return;
+            RPGMetadata meta = RPGItem.getMetadata(item);
+            if (rItem.getMaxDurability() != 0) {
+                int durability = ((Number) meta.get(RPGMetadata.DURABILITY)).intValue();
+                durability--;
+                if (durability <= 0) {
+                    player.setItemInHand(null);
+                }
+                meta.put(RPGMetadata.DURABILITY, Integer.valueOf(durability));
+            }
+            RPGItem.updateItem(item, Locale.getPlayerLocale(player), meta);
+            player.updateInventory();
             rpgProjectiles.put(e.getEntity().getEntityId(), rItem.getID());
         }
     }
@@ -193,7 +227,8 @@ public class Events implements Listener {
     public void onPlayerPickup(PlayerPickupItemEvent e) {
         ItemStack item = e.getItem().getItemStack();
         String locale = Locale.getPlayerLocale(e.getPlayer());
-        RPGItem.updateItem(item, locale);
+        if (ItemManager.toRPGItem(item) != null)
+            RPGItem.updateItem(item, locale);
         e.getItem().setItemStack(item);
 
     }
@@ -304,11 +339,11 @@ public class Events implements Listener {
             durability--;
             if (durability <= 0) {
                 player.setItemInHand(null);
-                player.updateInventory();
             }
             meta.put(RPGMetadata.DURABILITY, Integer.valueOf(durability));
         }
         RPGItem.updateItem(item, Locale.getPlayerLocale(player), meta);
+        player.updateInventory();
         return damage;
     }
     
@@ -341,6 +376,7 @@ public class Events implements Listener {
             if (pRItem.getArmour() > 0) {
                 damage -= Math.round(((double) damage) * (((double) pRItem.getArmour()) / 100d));
             RPGItem.updateItem(pArmour, locale);
+            p.updateInventory();
             }
         }
         return damage;
