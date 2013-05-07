@@ -317,7 +317,7 @@ public class Events implements Listener {
             } catch (ArrayIndexOutOfBoundsException ex) {
                 // Fix for the bug with anvils in craftbukkit
             } 
-        } else if (useLocaleInv) {
+        } else { // Always is "true"
             LocaleInventory localeInv = new LocaleInventory((Player) e.getPlayer(), e.getView());
             e.setCancelled(true);
             e.getPlayer().openInventory(localeInv);
