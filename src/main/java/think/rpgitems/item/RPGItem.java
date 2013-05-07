@@ -337,52 +337,47 @@ public class RPGItem {
             String locale = Locale.getPlayerLocale(player);
             while (it.hasNext()) {
                 ItemStack item = it.next();
-                RPGItem rItem = ItemManager.toRPGItem(item);
-                if (rItem == null)
-                    continue;
-                if (rItem.getID() != getID())
-                    continue;
-                item.setType(this.item.getType());
-                ItemMeta meta = getLocaleMeta(locale);
-                if (!(meta instanceof LeatherArmorMeta)) {
-                    item.setDurability(this.item.getDurability());
-                }
-                RPGMetadata rpgMeta = RPGMetadata.parseLoreline(item.getItemMeta().getLore().get(0));
-                List<String> lore = meta.getLore();
-                lore.set(0, meta.getLore().get(0) + rpgMeta.toMCString());
-                addExtra(rpgMeta, item, lore);
-                meta.setLore(lore);
-                item.setItemMeta(meta);
+                updateItem(item, locale);
             }
             for (ItemStack item : player.getInventory().getArmorContents()) {
-                RPGItem rItem = ItemManager.toRPGItem(item);
-                if (rItem == null)
-                    continue;
-                if (rItem.getID() != getID())
-                    continue;
-                item.setType(this.item.getType());
-                ItemMeta meta = getLocaleMeta(locale);
-                if (!(meta instanceof LeatherArmorMeta)) {
-                    item.setDurability(this.item.getDurability());
-                }
-                RPGMetadata rpgMeta = RPGMetadata.parseLoreline(item.getItemMeta().getLore().get(0));
-                List<String> lore = meta.getLore();
-                lore.set(0, meta.getLore().get(0) + rpgMeta.toMCString());
-                addExtra(rpgMeta, item, lore);
-                meta.setLore(lore);
-                item.setItemMeta(meta);
+                updateItem(item, locale);
 
             }
         }
         resetRecipe(true);
     }
+    
+    public static RPGMetadata getMetadata(ItemStack item) {
+        return RPGMetadata.parseLoreline(item.getItemMeta().getLore().get(0));
+    }
+    
+    public static void updateItem(ItemStack item, String locale) {
+        if (ItemManager.toRPGItem(item) != null)
+            updateItem(item, locale, getMetadata(item));
+    }
+    
+    public static void updateItem(ItemStack item, String locale, RPGMetadata rpgMeta) {
+        RPGItem rItem = ItemManager.toRPGItem(item);
+        if (rItem == null)
+            return;
+        item.setType(rItem.item.getType());
+        ItemMeta meta = rItem.getLocaleMeta(locale);
+        if (!(meta instanceof LeatherArmorMeta)) {
+            item.setDurability(rItem.item.getDurability());
+        }
+        List<String> lore = meta.getLore();
+        rItem.addExtra(rpgMeta, item, lore);
+        lore.set(0, meta.getLore().get(0) + rpgMeta.toMCString());
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+    }
 
     public void addExtra(RPGMetadata rpgMeta, ItemStack item, List<String> lore) {
         if (maxDurability != 0) {
             if (!rpgMeta.containsKey(RPGMetadata.DURABILITY)) {
-                rpgMeta.put(RPGMetadata.DURABILITY, Short.valueOf((short) maxDurability));
+                rpgMeta.put(RPGMetadata.DURABILITY, Integer.valueOf(maxDurability));
             }
-            int durability = ((Short) rpgMeta.get(RPGMetadata.DURABILITY)).intValue();
+            int durability = ((Number) rpgMeta.get(RPGMetadata.DURABILITY)).intValue();
             
             if (!hasBar) {
                 StringBuilder out = new StringBuilder();
@@ -716,6 +711,10 @@ public class RPGItem {
         maxDurability = newVal;
         if (update)
             rebuild();
+    }
+    
+    public int getMaxDurability() {
+        return maxDurability;
     }
 
     public void give(Player player) {

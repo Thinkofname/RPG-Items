@@ -72,7 +72,7 @@ public class Events implements Listener {
     public static TObjectIntHashMap<String> recipeWindows = new TObjectIntHashMap<String>();
     public static HashMap<String, Set<Integer>> drops = new HashMap<String, Set<Integer>>();
     public static boolean useLocaleInv = false;
-
+    
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e) {
         String type = e.getEntity().getType().toString();
@@ -145,6 +145,7 @@ public class Events implements Listener {
             if (!WorldGuard.canPvP(player.getLocation()) && !rItem.ignoreWorldGuard)
                 return;
             rItem.rightClick(player);
+            RPGItem.updateItem(item, Locale.getPlayerLocale(player));
         } else if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
 
             ItemStack item = player.getItemInHand();
@@ -157,6 +158,7 @@ public class Events implements Listener {
             if (!WorldGuard.canPvP(player.getLocation()) && !rItem.ignoreWorldGuard)
                 return;
             rItem.leftClick(player);
+            RPGItem.updateItem(item, Locale.getPlayerLocale(player));
         }
 
     }
@@ -180,54 +182,18 @@ public class Events implements Listener {
         String locale = Locale.getPlayerLocale(player);
         for (int i = 0; i < in.getSize(); i++) {
             ItemStack item = in.getItem(i);
-            RPGItem rItem = ItemManager.toRPGItem(item);
-            if (rItem == null)
-                continue;
-            item.setType(rItem.getItem());
-            ItemMeta meta = rItem.getLocaleMeta(locale);
-            if (!(meta instanceof LeatherArmorMeta) && rItem.getItem().isBlock())
-                item.setDurability(rItem.getDataValue());
-            RPGMetadata rpgMeta = RPGMetadata.parseLoreline(item.getItemMeta().getLore().get(0));
-            List<String> lore = meta.getLore();
-            lore.set(0, meta.getLore().get(0) + rpgMeta.toMCString());
-            rItem.addExtra(rpgMeta, item, lore);
-            meta.setLore(lore);
-            item.setItemMeta(meta);
+            RPGItem.updateItem(item, locale);
         }
         for (ItemStack item : player.getInventory().getArmorContents()) {
-            RPGItem rItem = ItemManager.toRPGItem(item);
-            if (rItem == null)
-                continue;
-            item.setType(rItem.getItem());
-            ItemMeta meta = rItem.getLocaleMeta(locale);
-            if (!(meta instanceof LeatherArmorMeta) && rItem.getItem().isBlock())
-                item.setDurability(rItem.getDataValue());
-            RPGMetadata rpgMeta = RPGMetadata.parseLoreline(item.getItemMeta().getLore().get(0));
-            List<String> lore = meta.getLore();
-            lore.set(0, meta.getLore().get(0) + rpgMeta.toMCString());
-            rItem.addExtra(rpgMeta, item, lore);
-            meta.setLore(lore);
-            item.setItemMeta(meta);
+            RPGItem.updateItem(item, locale);
         }
     }
 
     @EventHandler
     public void onPlayerPickup(PlayerPickupItemEvent e) {
         ItemStack item = e.getItem().getItemStack();
-        RPGItem rItem = ItemManager.toRPGItem(item);
-        if (rItem == null)
-            return;
         String locale = Locale.getPlayerLocale(e.getPlayer());
-        item.setType(rItem.getItem());
-        ItemMeta meta = rItem.getLocaleMeta(locale);
-        if (!(meta instanceof LeatherArmorMeta) && rItem.getItem().isBlock())
-            item.setDurability(rItem.getDataValue());
-        RPGMetadata rpgMeta = RPGMetadata.parseLoreline(item.getItemMeta().getLore().get(0));
-        List<String> lore = meta.getLore();
-        lore.set(0, meta.getLore().get(0) + rpgMeta.toMCString());
-        rItem.addExtra(rpgMeta, item, lore);
-        meta.setLore(lore);
-        item.setItemMeta(meta);
+        RPGItem.updateItem(item, locale);
         e.getItem().setItemStack(item);
 
     }
@@ -300,19 +266,7 @@ public class Events implements Listener {
             try {
                 while (it.hasNext()) {
                     ItemStack item = it.next();
-                    RPGItem rItem = ItemManager.toRPGItem(item);
-                    if (rItem == null)
-                        continue;
-                    item.setType(rItem.getItem());
-                    ItemMeta meta = rItem.getLocaleMeta(locale);
-                    if (!(meta instanceof LeatherArmorMeta) && rItem.getItem().isBlock())
-                        item.setDurability(rItem.getDataValue());
-                    RPGMetadata rpgMeta = RPGMetadata.parseLoreline(item.getItemMeta().getLore().get(0));
-                    List<String> lore = meta.getLore();
-                    lore.set(0, meta.getLore().get(0) + rpgMeta.toMCString());
-                    rItem.addExtra(rpgMeta, item, lore);
-                    meta.setLore(lore);
-                    item.setItemMeta(meta);
+                    RPGItem.updateItem(item, locale);
                 }
             } catch (ArrayIndexOutOfBoundsException ex) {
                 // Fix for the bug with anvils in craftbukkit
@@ -327,6 +281,7 @@ public class Events implements Listener {
 
     private Random random = new Random();
     
+    @SuppressWarnings("deprecation")
     private int playerDamager(EntityDamageByEntityEvent e, int damage) {
         Player player = (Player) e.getDamager();
         ItemStack item = player.getItemInHand();
@@ -343,6 +298,17 @@ public class Events implements Listener {
             LivingEntity le = (LivingEntity) e.getEntity();
             rItem.hit(player, le);
         }
+        RPGMetadata meta = RPGItem.getMetadata(item);
+        if (rItem.getMaxDurability() != 0) {
+            int durability = ((Number) meta.get(RPGMetadata.DURABILITY)).intValue();
+            durability--;
+            if (durability <= 0) {
+                player.setItemInHand(null);
+                player.updateInventory();
+            }
+            meta.put(RPGMetadata.DURABILITY, Integer.valueOf(durability));
+        }
+        RPGItem.updateItem(item, Locale.getPlayerLocale(player), meta);
         return damage;
     }
     
@@ -365,6 +331,7 @@ public class Events implements Listener {
         Player p = (Player) e.getEntity();
         if (e.isCancelled() || !WorldGuard.canPvP(p.getLocation()))
             return damage;
+        String locale = Locale.getPlayerLocale(p);
         for (ItemStack pArmour : p.getInventory().getArmorContents()) {
             RPGItem pRItem = ItemManager.toRPGItem(pArmour);
             if (pRItem == null)
@@ -373,6 +340,7 @@ public class Events implements Listener {
                 return damage;
             if (pRItem.getArmour() > 0) {
                 damage -= Math.round(((double) damage) * (((double) pRItem.getArmour()) / 100d));
+            RPGItem.updateItem(pArmour, locale);
             }
         }
         return damage;
