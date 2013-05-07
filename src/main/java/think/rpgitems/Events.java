@@ -67,11 +67,11 @@ import think.rpgitems.support.WorldGuard;
 
 public class Events implements Listener {
 
-    public static TIntByteHashMap removeArrows = new TIntByteHashMap();
-    public static TIntIntHashMap rpgProjectiles = new TIntIntHashMap();
-    public static TObjectIntHashMap<String> recipeWindows = new TObjectIntHashMap<String>();
-    public static HashMap<String, Set<Integer>> drops = new HashMap<String, Set<Integer>>();
-    public static boolean useLocaleInv = false;
+    private static TIntByteHashMap removeArrows = new TIntByteHashMap();
+    private static TIntIntHashMap rpgProjectiles = new TIntIntHashMap();
+    private static TObjectIntHashMap<String> recipeWindows = new TObjectIntHashMap<String>();
+    private static HashMap<String, Set<Integer>> drops = new HashMap<String, Set<Integer>>();
+    private static boolean useLocaleInv = false;
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e) {
@@ -317,7 +317,7 @@ public class Events implements Listener {
             } catch (ArrayIndexOutOfBoundsException ex) {
                 // Fix for the bug with anvils in craftbukkit
             } 
-        } else if (useLocaleInv) {
+        } else { // Always is "true"
             LocaleInventory localeInv = new LocaleInventory((Player) e.getPlayer(), e.getView());
             e.setCancelled(true);
             e.getPlayer().openInventory(localeInv);
