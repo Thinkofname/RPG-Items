@@ -67,11 +67,11 @@ import think.rpgitems.support.WorldGuard;
 
 public class Events implements Listener {
 
-    private static TIntByteHashMap removeArrows = new TIntByteHashMap();
-    private static TIntIntHashMap rpgProjectiles = new TIntIntHashMap();
-    private static TObjectIntHashMap<String> recipeWindows = new TObjectIntHashMap<String>();
-    private static HashMap<String, Set<Integer>> drops = new HashMap<String, Set<Integer>>();
-    private static boolean useLocaleInv = false;
+    public static TIntByteHashMap removeArrows = new TIntByteHashMap();
+    public static TIntIntHashMap rpgProjectiles = new TIntIntHashMap();
+    public static TObjectIntHashMap<String> recipeWindows = new TObjectIntHashMap<String>();
+    public static HashMap<String, Set<Integer>> drops = new HashMap<String, Set<Integer>>();
+    public static boolean useLocaleInv = false;
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e) {
