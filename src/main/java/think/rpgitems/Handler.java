@@ -535,29 +535,33 @@ public class Handler implements CommandHandler {
     }
     
     @CommandString("rpgitem $n[] durability $durability:i[]")
-    @CommandDocumentation("None")
+    @CommandDocumentation("$command.rpgitem.durability")
     @CommandGroup("item_durability")
     public void setItemDurability(CommandSender sender, RPGItem item, int newValue) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         item.setMaxDurability(newValue);
         ItemManager.save(Plugin.plugin);
-        sender.sendMessage("Durability changed");
+        sender.sendMessage(Locale.get("message.durability.change", locale));
     }
     
     @CommandString("rpgitem $n[] durability infinite")
-    @CommandDocumentation("None")
+    @CommandDocumentation("$command.rpgitem.durability.infinite")
     @CommandGroup("item_durability")
     public void setItemDurabilityInfinite(CommandSender sender, RPGItem item) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         item.setMaxDurability(-1);
         ItemManager.save(Plugin.plugin);
         sender.sendMessage("Durability changed");
+        sender.sendMessage(Locale.get("message.durability.change", locale));
     }
     
     @CommandString("rpgitem $n[] durability togglebar")
-    @CommandDocumentation("None")
+    @CommandDocumentation("$command.rpgitem.durability.togglebar")
     @CommandGroup("item_durability")
     public void toggleItemDurabilityBar(CommandSender sender, RPGItem item) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         item.toggleBar();
         ItemManager.save(Plugin.plugin);
-        sender.sendMessage("Durability bar toggled");
+        sender.sendMessage(Locale.get("message.durability.toggle", locale));
     }
 }
