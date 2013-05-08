@@ -194,6 +194,10 @@ public class RPGItem {
         maxDurability = s.getInt("maxDurability", item.getType().getMaxDurability());
         forceBar = s.getBoolean("forceBar", false);
 
+        if (maxDurability == 0) {
+            maxDurability = -1;
+        }
+        
         rebuild();
     }
 

@@ -73,15 +73,15 @@ public class Events implements Listener {
     public static TObjectIntHashMap<String> recipeWindows = new TObjectIntHashMap<String>();
     public static HashMap<String, Set<Integer>> drops = new HashMap<String, Set<Integer>>();
     public static boolean useLocaleInv = false;
-    
-    @EventHandler(ignoreCancelled = true) 
+
+    @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent e) {
         Player player = e.getPlayer();
         ItemStack item = player.getItemInHand();
         RPGItem rItem;
         if ((rItem = ItemManager.toRPGItem(item)) != null) {
             RPGMetadata meta = RPGItem.getMetadata(item);
-            if (rItem.getMaxDurability() != 0) {
+            if (rItem.getMaxDurability() != -1) {
                 int durability = ((Number) meta.get(RPGMetadata.DURABILITY)).intValue();
                 durability--;
                 if (durability <= 0) {
@@ -92,9 +92,9 @@ public class Events implements Listener {
             RPGItem.updateItem(item, Locale.getPlayerLocale(player), meta);
             player.updateInventory();
         }
-            
+
     }
-    
+
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e) {
         String type = e.getEntity().getType().toString();
@@ -151,7 +151,7 @@ public class Events implements Listener {
             if (!WorldGuard.canPvP(player.getLocation()) && !rItem.ignoreWorldGuard)
                 return;
             RPGMetadata meta = RPGItem.getMetadata(item);
-            if (rItem.getMaxDurability() != 0) {
+            if (rItem.getMaxDurability() != -1) {
                 int durability = ((Number) meta.get(RPGMetadata.DURABILITY)).intValue();
                 durability--;
                 if (durability <= 0) {
@@ -216,10 +216,12 @@ public class Events implements Listener {
         String locale = Locale.getPlayerLocale(player);
         for (int i = 0; i < in.getSize(); i++) {
             ItemStack item = in.getItem(i);
-            RPGItem.updateItem(item, locale);
+            if (ItemManager.toRPGItem(item) != null)
+                RPGItem.updateItem(item, locale);
         }
         for (ItemStack item : player.getInventory().getArmorContents()) {
-            RPGItem.updateItem(item, locale);
+            if (ItemManager.toRPGItem(item) != null)
+                RPGItem.updateItem(item, locale);
         }
     }
 
@@ -232,9 +234,8 @@ public class Events implements Listener {
         e.getItem().setItemStack(item);
 
     }
-    
-    private HashSet<LocaleInventory> localeInventories = new HashSet<LocaleInventory>();
 
+    private HashSet<LocaleInventory> localeInventories = new HashSet<LocaleInventory>();
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent e) {
@@ -261,7 +262,7 @@ public class Events implements Listener {
             ((LocaleInventory) e.getView()).getView().close();
         }
     }
-    
+
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onInventoryClick(InventoryClickEvent e) {
         if (useLocaleInv && e.getView() instanceof LocaleInventory) {
@@ -271,8 +272,8 @@ public class Events implements Listener {
             if (clickEvent.isCancelled()) {
                 e.setCancelled(true);
             } else {
-                switch(clickEvent.getResult()) {
-                case DEFAULT: //Can't really do this with current events
+                switch (clickEvent.getResult()) {
+                case DEFAULT: // Can't really do this with current events
                 case ALLOW:
                     System.out.println("ok...");
                     System.out.println(inv.getView().getItem(e.getRawSlot()));
@@ -289,23 +290,24 @@ public class Events implements Listener {
             }
         }
     }
-    
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onInventoryOpen(final InventoryOpenEvent e) {
-        if (e.getView() instanceof LocaleInventory) return;
+        if (e.getView() instanceof LocaleInventory)
+            return;
         if (e.getInventory().getType() != InventoryType.CHEST || !useLocaleInv) {
             Inventory in = e.getInventory();
-            Iterator<ItemStack> it = in.iterator(); 
-            String locale = Locale.getPlayerLocale((Player) e.getPlayer());        
+            Iterator<ItemStack> it = in.iterator();
+            String locale = Locale.getPlayerLocale((Player) e.getPlayer());
             try {
                 while (it.hasNext()) {
                     ItemStack item = it.next();
-                    RPGItem.updateItem(item, locale);
+                    if (ItemManager.toRPGItem(item) != null)
+                        RPGItem.updateItem(item, locale);
                 }
             } catch (ArrayIndexOutOfBoundsException ex) {
                 // Fix for the bug with anvils in craftbukkit
-            } 
+            }
         } else if (useLocaleInv) {
             LocaleInventory localeInv = new LocaleInventory((Player) e.getPlayer(), e.getView());
             e.setCancelled(true);
@@ -315,7 +317,7 @@ public class Events implements Listener {
     }
 
     private Random random = new Random();
-    
+
     @SuppressWarnings("deprecation")
     private int playerDamager(EntityDamageByEntityEvent e, int damage) {
         Player player = (Player) e.getDamager();
@@ -334,7 +336,7 @@ public class Events implements Listener {
             rItem.hit(player, le);
         }
         RPGMetadata meta = RPGItem.getMetadata(item);
-        if (rItem.getMaxDurability() != 0) {
+        if (rItem.getMaxDurability() != -1) {
             int durability = ((Number) meta.get(RPGMetadata.DURABILITY)).intValue();
             durability--;
             if (durability <= 0) {
@@ -346,7 +348,7 @@ public class Events implements Listener {
         player.updateInventory();
         return damage;
     }
-    
+
     private int projectileDamager(EntityDamageByEntityEvent e, int damage) {
         Projectile entity = (Projectile) e.getDamager();
         if (rpgProjectiles.contains(entity.getEntityId())) {
@@ -361,13 +363,15 @@ public class Events implements Listener {
         }
         return damage;
     }
-    
+
     private int playerHit(EntityDamageByEntityEvent e, int damage) {
         Player p = (Player) e.getEntity();
         if (e.isCancelled() || !WorldGuard.canPvP(p.getLocation()))
             return damage;
         String locale = Locale.getPlayerLocale(p);
-        for (ItemStack pArmour : p.getInventory().getArmorContents()) {
+        ItemStack[] armour = p.getInventory().getArmorContents();
+        for (int i = 0; i < armour.length; i++) {
+            ItemStack pArmour = armour[i];
             RPGItem pRItem = ItemManager.toRPGItem(pArmour);
             if (pRItem == null)
                 continue;
@@ -375,10 +379,20 @@ public class Events implements Listener {
                 return damage;
             if (pRItem.getArmour() > 0) {
                 damage -= Math.round(((double) damage) * (((double) pRItem.getArmour()) / 100d));
-            RPGItem.updateItem(pArmour, locale);
-            p.updateInventory();
             }
+            RPGMetadata meta = RPGItem.getMetadata(pArmour);
+            if (pRItem.getMaxDurability() != -1) {
+                int durability = ((Number) meta.get(RPGMetadata.DURABILITY)).intValue();
+                durability--;
+                if (durability <= 0) {
+                    armour[i] = null;
+                }
+                meta.put(RPGMetadata.DURABILITY, Integer.valueOf(durability));
+            }
+            RPGItem.updateItem(pArmour, locale, meta);
         }
+        p.getInventory().setArmorContents(armour);
+        p.updateInventory();
         return damage;
     }
 
