@@ -416,44 +416,6 @@ public class PowerHandler implements CommandHandler {
         ItemManager.save(Plugin.plugin);
         sender.sendMessage(ChatColor.AQUA + Locale.get("message.power.ok", locale));
     }
-
-    @CommandString("rpgitem $n[] power unbreakable")
-    @CommandDocumentation("$command.rpgitem.unbreakable")
-    @CommandGroup("item_power_unbreakable")
-    public void unbreakable(CommandSender sender, RPGItem item) {
-        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
-        PowerUnbreakable pow = new PowerUnbreakable();
-        pow.item = item;
-        item.addPower(pow);
-        ItemManager.save(Plugin.plugin);
-        sender.sendMessage(ChatColor.AQUA + Locale.get("message.power.ok", locale));
-    }
-
-    @CommandString("rpgitem $n[] power unbreaking")
-    @CommandDocumentation("$command.rpgitem.unbreaking")
-    @CommandGroup("item_power_unbreaking")
-    public void unbreaking(CommandSender sender, RPGItem item) {
-        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
-        PowerUnbreaking pow = new PowerUnbreaking();
-        pow.item = item;
-        pow.level = 1;
-        item.addPower(pow);
-        ItemManager.save(Plugin.plugin);
-        sender.sendMessage(ChatColor.AQUA + Locale.get("message.power.ok", locale));
-    }
-
-    @CommandString("rpgitem $n[] power unbreaking $level:i[]")
-    @CommandDocumentation("$command.rpgitem.unbreaking.full")
-    @CommandGroup("item_power_unbreaking")
-    public void unbreaking(CommandSender sender, RPGItem item, int level) {
-        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
-        PowerUnbreaking pow = new PowerUnbreaking();
-        pow.item = item;
-        pow.level = level;
-        item.addPower(pow);
-        ItemManager.save(Plugin.plugin);
-        sender.sendMessage(ChatColor.AQUA + Locale.get("message.power.ok", locale));
-    }
     
     @CommandString("rpgitem $n[] power skyhook $m[] $distance:i[]")
     @CommandDocumentation("$command.rpgitem.skyhook")
