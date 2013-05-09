@@ -105,6 +105,9 @@ public class RPGItem {
         item = new ItemStack(Material.WOOD_SWORD);
 
         displayName = item.getType().toString();
+        
+        localeMeta.put("en_GB", item.getItemMeta());
+        
         rebuild();
     }
 
