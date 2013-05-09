@@ -413,7 +413,7 @@ public class RPGItem {
                 item.setDurability((short) (item.getType().getMaxDurability() - ((short) ((double) item.getType().getMaxDurability() * ((double) durability / (double) maxDurability)))));
             }
         } else if (maxDurability == -1) {
-            item.setDurability((short) 0);
+            item.setDurability(hasBar ? (short)0 : this.item.getDurability());
         }
     }
 
