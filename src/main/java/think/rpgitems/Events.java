@@ -82,7 +82,7 @@ public class Events implements Listener {
         if ((rItem = ItemManager.toRPGItem(item)) != null) {
             RPGMetadata meta = RPGItem.getMetadata(item);
             if (rItem.getMaxDurability() != -1) {
-                int durability = ((Number) meta.get(RPGMetadata.DURABILITY)).intValue();
+                int durability = meta.containsKey(RPGMetadata.DURABILITY) ? ((Number) meta.get(RPGMetadata.DURABILITY)).intValue() : rItem.getMaxDurability();
                 durability--;
                 if (durability <= 0) {
                     player.setItemInHand(null);
@@ -152,7 +152,7 @@ public class Events implements Listener {
                 return;
             RPGMetadata meta = RPGItem.getMetadata(item);
             if (rItem.getMaxDurability() != -1) {
-                int durability = ((Number) meta.get(RPGMetadata.DURABILITY)).intValue();
+                int durability = meta.containsKey(RPGMetadata.DURABILITY) ? ((Number) meta.get(RPGMetadata.DURABILITY)).intValue() : rItem.getMaxDurability();
                 durability--;
                 if (durability <= 0) {
                     player.setItemInHand(null);
@@ -337,7 +337,7 @@ public class Events implements Listener {
         }
         RPGMetadata meta = RPGItem.getMetadata(item);
         if (rItem.getMaxDurability() != -1) {
-            int durability = ((Number) meta.get(RPGMetadata.DURABILITY)).intValue();
+            int durability = meta.containsKey(RPGMetadata.DURABILITY) ? ((Number) meta.get(RPGMetadata.DURABILITY)).intValue() : rItem.getMaxDurability();
             durability--;
             if (durability <= 0) {
                 player.setItemInHand(null);
@@ -382,7 +382,7 @@ public class Events implements Listener {
             }
             RPGMetadata meta = RPGItem.getMetadata(pArmour);
             if (pRItem.getMaxDurability() != -1) {
-                int durability = ((Number) meta.get(RPGMetadata.DURABILITY)).intValue();
+                int durability = meta.containsKey(RPGMetadata.DURABILITY) ? ((Number) meta.get(RPGMetadata.DURABILITY)).intValue() : pRItem.getMaxDurability();
                 durability--;
                 if (durability <= 0) {
                     armour[i] = null;
