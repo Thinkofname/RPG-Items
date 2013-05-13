@@ -132,7 +132,6 @@ public class Events implements Listener {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @EventHandler
     public void onProjectileFire(ProjectileLaunchEvent e) {
         LivingEntity shooter = e.getEntity().getShooter();
@@ -312,7 +311,6 @@ public class Events implements Listener {
 
     private Random random = new Random();
 
-    @SuppressWarnings("deprecation")
     private int playerDamager(EntityDamageByEntityEvent e, int damage) {
         Player player = (Player) e.getDamager();
         ItemStack item = player.getItemInHand();
@@ -402,5 +400,13 @@ public class Events implements Listener {
             damage = playerHit(e, damage);
         }
         e.setDamage(damage);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onItemEnchant (PrepareItemEnchantEvent e) {
+        RPGItem rpgItem = ItemManager.toRPGItem(e.getItem());
+
+        if (rpgItem != null && !rpgItem.isEnchantSupport())
+            e.setCancelled(true);
     }
 }
