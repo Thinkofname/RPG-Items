@@ -35,6 +35,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -60,6 +61,7 @@ import think.rpgitems.item.LocaleInventory;
 import think.rpgitems.item.RPGItem;
 import think.rpgitems.support.WorldGuard;
 
+@SuppressWarnings("deprecation")
 public class Events implements Listener {
 
     public static TIntByteHashMap removeArrows = new TIntByteHashMap();
@@ -403,7 +405,7 @@ public class Events implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGH)
-    public void onItemEnchant (PrepareItemEnchantEvent e) {
+    public void onItemEnchant(PrepareItemEnchantEvent e) {
         RPGItem rpgItem = ItemManager.toRPGItem(e.getItem());
 
         if (rpgItem != null && !rpgItem.isEnchantSupport())
