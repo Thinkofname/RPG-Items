@@ -18,14 +18,8 @@ package think.rpgitems.item;
 
 import gnu.trove.map.hash.TObjectDoubleHashMap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -35,6 +29,7 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -72,6 +67,7 @@ public class RPGItem {
     private String loreText = "";
     private String type = Plugin.plugin.getConfig().getString("defaults.sword", "Sword");
     private String hand = Plugin.plugin.getConfig().getString("defaults.hand", "One handed");
+    private static boolean enchantmentSupport = Plugin.plugin.getConfig().getBoolean("support.enchantments", false);
     public boolean ignoreWorldGuard = false;
 
     public List<String> description = new ArrayList<String>();
@@ -111,7 +107,6 @@ public class RPGItem {
         rebuild();
     }
 
-    @SuppressWarnings("unchecked")
     public RPGItem(ConfigurationSection s) {
 
         name = s.getString("name");
@@ -287,7 +282,7 @@ public class RPGItem {
                 out.append(iMap.get(m));
             }
             String shape = out.toString();
-            shapedRecipe.shape(new String[] { shape.substring(0, 3), shape.substring(3, 6), shape.substring(6, 9) });
+            shapedRecipe.shape(shape.substring(0, 3), shape.substring(3, 6), shape.substring(6, 9));
             for (Entry<ItemStack, Character> e : iMap.entrySet()) {
                 if (e.getKey() != null) {
                     shapedRecipe.setIngredient(e.getValue(), e.getKey().getType(), e.getKey().getDurability());
@@ -388,13 +383,16 @@ public class RPGItem {
         rItem.addExtra(rpgMeta, item, lore);
         lore.set(0, meta.getLore().get(0) + rpgMeta.toMCString());
         meta.setLore(lore);
+        Map<Enchantment, Integer> enchantments = null;
+        if (enchantmentSupport) enchantments = item.getEnchantments();
         item.setItemMeta(meta);
+        if (enchantmentSupport) item.addEnchantments(enchantments);
     }
 
     public void addExtra(RPGMetadata rpgMeta, ItemStack item, List<String> lore) {
         if (maxDurability != -1) {
             if (!rpgMeta.containsKey(RPGMetadata.DURABILITY)) {
-                rpgMeta.put(RPGMetadata.DURABILITY, Integer.valueOf(maxDurability));
+                rpgMeta.put(RPGMetadata.DURABILITY, maxDurability);
             }
             int durability = ((Number) rpgMeta.get(RPGMetadata.DURABILITY)).intValue();
 
@@ -412,7 +410,7 @@ public class RPGItem {
             if (hasBar) {
                 item.setDurability((short) (item.getType().getMaxDurability() - ((short) ((double) item.getType().getMaxDurability() * ((double) durability / (double) maxDurability)))));
             }
-        } else if (maxDurability == -1) {
+        } else {
             item.setDurability(hasBar ? (short)0 : this.item.getDurability());
         }
     }
@@ -428,7 +426,7 @@ public class RPGItem {
         dWidth = getStringWidth(ChatColor.stripColor(hand + "     " + type));
         if (dWidth > width)
             width = dWidth;
-        String damageStr = null;
+        String damageStr;
         if (damageMin == 0 && damageMax == 0 && armour != 0) {
             damageStr = armour + "% " + Plugin.plugin.getConfig().getString("defaults.armour", "Armour");
         } else if (armour == 0 && damageMin == 0 && damageMax == 0) {
@@ -455,6 +453,7 @@ public class RPGItem {
             if (dWidth > width)
                 width = dWidth;
         }
+
 
         tooltipWidth = width;
 
@@ -736,6 +735,10 @@ public class RPGItem {
 
     public int getMaxDurability() {
         return maxDurability;
+    }
+
+    public boolean isEnchantSupport() {
+        return enchantmentSupport;
     }
 
     public void give(Player player) {

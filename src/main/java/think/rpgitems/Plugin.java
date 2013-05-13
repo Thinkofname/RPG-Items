@@ -16,12 +16,7 @@
  */
 package think.rpgitems;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -121,7 +116,7 @@ public class Plugin extends JavaPlugin {
                     return ItemManager.itemByName.size();
                 }
             });
-            Graph graph = metrics.createGraph("Power usage");
+            Metrics.Graph graph = metrics.createGraph("Power usage");
             for (String powerName : Power.powers.keySet()) {
                 graph.addPlotter(new Metrics.Plotter(powerName) {
 
@@ -133,7 +128,7 @@ public class Plugin extends JavaPlugin {
             }
             metrics.addGraph(graph);
             metrics.start();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         Commands.register(new Handler());
         Commands.register(new PowerHandler());
@@ -150,15 +145,14 @@ public class Plugin extends JavaPlugin {
                 f.createNewFile();
             out = new FileOutputStream(f);
             out.write(config.saveToString().getBytes("UTF-8"));
-        } catch (FileNotFoundException e) {
-        } catch (UnsupportedEncodingException e) {
-        } catch (IOException e) {
+        } catch (FileNotFoundException ignored) {
+        } catch (UnsupportedEncodingException ignored) {
+        } catch (IOException ignored) {
         } finally {
             try {
                 if (out != null)
                     out.close();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -177,15 +171,14 @@ public class Plugin extends JavaPlugin {
             in.read(data);
             String str = new String(data, "UTF-8");
             config.loadFromString(str);
-        } catch (FileNotFoundException e) {
-        } catch (IOException e) {
-        } catch (InvalidConfigurationException e) {
+        } catch (FileNotFoundException ignored) {
+        } catch (IOException ignored) {
+        } catch (InvalidConfigurationException ignored) {
         } finally {
             try {
                 if (in != null)
                     in.close();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }

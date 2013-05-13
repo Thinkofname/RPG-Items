@@ -20,13 +20,7 @@ import gnu.trove.map.hash.TIntByteHashMap;
 import gnu.trove.map.hash.TIntIntHashMap;
 import gnu.trove.map.hash.TObjectIntHashMap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -41,6 +35,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -66,6 +61,7 @@ import think.rpgitems.item.LocaleInventory;
 import think.rpgitems.item.RPGItem;
 import think.rpgitems.support.WorldGuard;
 
+@SuppressWarnings("deprecation")
 public class Events implements Listener {
 
     public static TIntByteHashMap removeArrows = new TIntByteHashMap();
@@ -87,7 +83,7 @@ public class Events implements Listener {
                 if (durability <= 0) {
                     player.setItemInHand(null);
                 }
-                meta.put(RPGMetadata.DURABILITY, Integer.valueOf(durability));
+                meta.put(RPGMetadata.DURABILITY, durability);
             }
             RPGItem.updateItem(item, Locale.getPlayerLocale(player), meta);
             player.updateInventory();
@@ -138,7 +134,6 @@ public class Events implements Listener {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @EventHandler
     public void onProjectileFire(ProjectileLaunchEvent e) {
         LivingEntity shooter = e.getEntity().getShooter();
@@ -157,7 +152,7 @@ public class Events implements Listener {
                 if (durability <= 0) {
                     player.setItemInHand(null);
                 }
-                meta.put(RPGMetadata.DURABILITY, Integer.valueOf(durability));
+                meta.put(RPGMetadata.DURABILITY, durability);
             }
             RPGItem.updateItem(item, Locale.getPlayerLocale(player), meta);
             player.updateInventory();
@@ -308,7 +303,7 @@ public class Events implements Listener {
             } catch (ArrayIndexOutOfBoundsException ex) {
                 // Fix for the bug with anvils in craftbukkit
             }
-        } else if (useLocaleInv) {
+        } else {
             LocaleInventory localeInv = new LocaleInventory((Player) e.getPlayer(), e.getView());
             e.setCancelled(true);
             e.getPlayer().openInventory(localeInv);
@@ -318,7 +313,6 @@ public class Events implements Listener {
 
     private Random random = new Random();
 
-    @SuppressWarnings("deprecation")
     private int playerDamager(EntityDamageByEntityEvent e, int damage) {
         Player player = (Player) e.getDamager();
         ItemStack item = player.getItemInHand();
@@ -342,7 +336,7 @@ public class Events implements Listener {
             if (durability <= 0) {
                 player.setItemInHand(null);
             }
-            meta.put(RPGMetadata.DURABILITY, Integer.valueOf(durability));
+            meta.put(RPGMetadata.DURABILITY, durability);
         }
         RPGItem.updateItem(item, Locale.getPlayerLocale(player), meta);
         player.updateInventory();
@@ -387,7 +381,7 @@ public class Events implements Listener {
                 if (durability <= 0) {
                     armour[i] = null;
                 }
-                meta.put(RPGMetadata.DURABILITY, Integer.valueOf(durability));
+                meta.put(RPGMetadata.DURABILITY, durability);
             }
             RPGItem.updateItem(pArmour, locale, meta);
         }
@@ -408,5 +402,13 @@ public class Events implements Listener {
             damage = playerHit(e, damage);
         }
         e.setDamage(damage);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onItemEnchant(PrepareItemEnchantEvent e) {
+        RPGItem rpgItem = ItemManager.toRPGItem(e.getItem());
+
+        if (rpgItem != null && !rpgItem.isEnchantSupport())
+            e.setCancelled(true);
     }
 }
