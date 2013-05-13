@@ -20,13 +20,7 @@ import gnu.trove.map.hash.TIntByteHashMap;
 import gnu.trove.map.hash.TIntIntHashMap;
 import gnu.trove.map.hash.TObjectIntHashMap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -87,7 +81,7 @@ public class Events implements Listener {
                 if (durability <= 0) {
                     player.setItemInHand(null);
                 }
-                meta.put(RPGMetadata.DURABILITY, Integer.valueOf(durability));
+                meta.put(RPGMetadata.DURABILITY, durability);
             }
             RPGItem.updateItem(item, Locale.getPlayerLocale(player), meta);
             player.updateInventory();
@@ -157,7 +151,7 @@ public class Events implements Listener {
                 if (durability <= 0) {
                     player.setItemInHand(null);
                 }
-                meta.put(RPGMetadata.DURABILITY, Integer.valueOf(durability));
+                meta.put(RPGMetadata.DURABILITY, durability);
             }
             RPGItem.updateItem(item, Locale.getPlayerLocale(player), meta);
             player.updateInventory();
@@ -308,7 +302,7 @@ public class Events implements Listener {
             } catch (ArrayIndexOutOfBoundsException ex) {
                 // Fix for the bug with anvils in craftbukkit
             }
-        } else if (useLocaleInv) {
+        } else {
             LocaleInventory localeInv = new LocaleInventory((Player) e.getPlayer(), e.getView());
             e.setCancelled(true);
             e.getPlayer().openInventory(localeInv);
@@ -342,7 +336,7 @@ public class Events implements Listener {
             if (durability <= 0) {
                 player.setItemInHand(null);
             }
-            meta.put(RPGMetadata.DURABILITY, Integer.valueOf(durability));
+            meta.put(RPGMetadata.DURABILITY, durability);
         }
         RPGItem.updateItem(item, Locale.getPlayerLocale(player), meta);
         player.updateInventory();
@@ -387,7 +381,7 @@ public class Events implements Listener {
                 if (durability <= 0) {
                     armour[i] = null;
                 }
-                meta.put(RPGMetadata.DURABILITY, Integer.valueOf(durability));
+                meta.put(RPGMetadata.DURABILITY, durability);
             }
             RPGItem.updateItem(pArmour, locale, meta);
         }
