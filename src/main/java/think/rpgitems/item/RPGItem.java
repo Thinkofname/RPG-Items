@@ -392,7 +392,7 @@ public class RPGItem {
     }
 
     public void addExtra(RPGMetadata rpgMeta, ItemStack item, List<String> lore) {
-        if (maxDurability != -1) {
+        if (maxDurability > 0) {
             if (!rpgMeta.containsKey(RPGMetadata.DURABILITY)) {
                 rpgMeta.put(RPGMetadata.DURABILITY, Integer.valueOf(maxDurability));
             }
@@ -412,7 +412,7 @@ public class RPGItem {
             if (hasBar) {
                 item.setDurability((short) (item.getType().getMaxDurability() - ((short) ((double) item.getType().getMaxDurability() * ((double) durability / (double) maxDurability)))));
             }
-        } else if (maxDurability == -1) {
+        } else if (maxDurability <= 0) {
             item.setDurability(hasBar ? (short)0 : this.item.getDurability());
         }
     }
@@ -735,7 +735,7 @@ public class RPGItem {
     }
 
     public int getMaxDurability() {
-        return maxDurability;
+        return maxDurability <= 0 ? -1 : maxDurability;
     }
 
     public void give(Player player) {
