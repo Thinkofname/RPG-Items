@@ -551,7 +551,6 @@ public class Handler implements CommandHandler {
         String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         item.setMaxDurability(-1);
         ItemManager.save(Plugin.plugin);
-        sender.sendMessage("Durability changed");
         sender.sendMessage(Locale.get("message.durability.change", locale));
     }
     
