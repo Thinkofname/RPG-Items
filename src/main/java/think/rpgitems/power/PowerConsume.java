@@ -31,7 +31,8 @@ public class PowerConsume extends Power implements PowerRightClick {
         ItemStack item = player.getInventory().getItemInHand();
         int count = item.getAmount() - 1;
         if (count == 0) {
-            player.getInventory().setItemInHand(null);
+            item.setAmount(0);
+            player.setItemInHand(null);
         } else {
             item.setAmount(count);
         }

@@ -179,9 +179,12 @@ public class Events implements Listener {
             if (!WorldGuard.canPvP(player.getLocation()) && !rItem.ignoreWorldGuard)
                 return;
             rItem.rightClick(player);
-            RPGItem.updateItem(item, Locale.getPlayerLocale(player));
+            if (player.getItemInHand().getTypeId() != 0)
+                RPGItem.updateItem(item, Locale.getPlayerLocale(player));
+            else 
+                player.setItemInHand(null);
+            player.updateInventory();
         } else if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
-
             ItemStack item = player.getItemInHand();
             if (item.getType() == Material.BOW || item.getType() == Material.SNOW_BALL || item.getType() == Material.EGG || item.getType() == Material.POTION)
                 return;
