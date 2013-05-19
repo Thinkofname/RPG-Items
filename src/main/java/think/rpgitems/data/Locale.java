@@ -72,8 +72,8 @@ public class Locale extends BukkitRunnable {
         }
     }
     
-    private final static String localeUpdateURL = "http://198.199.127.128/index.php?page=localeget&lastupdate=";
-    private final static String localeDownloadURL = "http://198.199.127.128/locale/%s/%s.lang";
+    private final static String localeUpdateURL = "http://198.199.127.128/rpgitems/index.php?page=localeget&lastupdate=";
+    private final static String localeDownloadURL = "http://198.199.127.128/rpgitems/locale/%s/%s.lang";
     
     public static Set<String> getLocales() {
         return localeStrings.keySet();

@@ -364,7 +364,7 @@ public class Handler implements CommandHandler {
             return;
         }
         item.setItem(mat, false);
-        ItemMeta meta = item.getLocaleMeta(locale);
+        ItemMeta meta = item.toItemStack(locale).getItemMeta();
         if (meta instanceof LeatherArmorMeta) {
             ((LeatherArmorMeta) meta).setColor(Color.fromRGB(data));
         } else {
