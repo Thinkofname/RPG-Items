@@ -1,5 +1,8 @@
 ---
-layout: defaulttitle: en_GBpermalink: en_GB.html---
+layout: default
+title: en_GB
+permalink: en_GB.html
+---
 ## Commands /rpgitem 
 
 ### /rpgitem <span style='color:#000000'>help</span> <span style='color:#006EFF'>Terms</span><span style='color:#0000ff'>[String]</span> 
