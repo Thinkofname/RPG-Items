@@ -18,16 +18,20 @@ package think.rpgitems.commands;
 
 import gnu.trove.map.hash.TCharObjectHashMap;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -471,7 +475,9 @@ abstract public class Commands {
 
     public static void searchHelp(CommandSender sender, String terms) {
         if (terms.equalsIgnoreCase("_genhelp")) {
-            generateHelp();
+            for (String locale : Locale.getLocales()) {
+                generateHelp(locale);
+            }
             return;
         }
         String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
@@ -588,40 +594,74 @@ abstract public class Commands {
         }
     }
 
-    public static void generateHelp() {
-        BufferedWriter w = null;
+    private static HashMap<String, String> getMap() {
+        HashMap<String, String> langMap = new HashMap<String, String>();
+        BufferedReader r = null;
         try {
-            File out = new File(Plugin.plugin.getDataFolder(), "help.txt");
+            r = new BufferedReader(new InputStreamReader(Plugin.plugin.getResource("languages.txt"), "UTF-8"));
+            String line = null;
+            while ((line = r.readLine()) != null) {
+                String []args = line.split("=");
+                langMap.put(args[0], args[1]);
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            try {
+                r.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        return langMap;        
+    }
+    
+    public static void generateHelp(String locale) {
+        BufferedWriter w = null;
+        
+        HashMap<String, String> langMap = getMap();
+        
+        try {
+            File out = new File(Plugin.plugin.getDataFolder(), Calendar.getInstance().get(Calendar.YEAR) + "-" + Calendar.getInstance().get(Calendar.MONTH) + "-" + Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "-" + locale + ".md");
             if (out.exists()) {
                 out.delete();
             }
             w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(out), "UTF-8"));
+            w.write("---\n");
+            w.write("layout: locale\n");
+            w.write("title: " + langMap.get(locale) + "\n");
+            w.write("permalink: " + locale + ".html\n");
+            w.write("---\n");
             for (Entry<String, ArrayList<CommandDef>> command : commands.entrySet()) {
-                w.write(String.format("== **Commands /%s** ==", command.getKey()));
-                w.write("\n\n\\\\\n");
+                w.write(String.format("## Commands /%s ", command.getKey()));
+                w.write("\n\n");
                 for (CommandDef c : command.getValue()) {
                     StringBuilder buf = new StringBuilder();
-                    buf.append("=== **/");
+                    buf.append("### /");
                     buf.append(command.getKey()).append(" ");
                     for (CommandArgument a : c.arguments) {
                         if (a.name.length() != 0) {
-                            buf.append("<<color 006EFF>>");
-                            buf.append(Locale.get("command.info." + a.name, "en_GB"));
-                            buf.append("<</color>>");
+                            buf.append("<span style='color:#006EFF'>");
+                            buf.append(Locale.get("command.info." + a.name, locale));
+                            buf.append("</span>");
                         }
                         if (a.isConst())
-                            buf.append("<<color 000000>>");
+                            buf.append("<span style='color:#b5e853'>");
                         else
-                            buf.append("<<color 0000ff>>");
-                        buf.append(a.printable("en_GB"));
-                        buf.append("<</color>> ");
+                            buf.append("<span style='color:#1BE0BF'>");
+                        buf.append(a.printable(locale));
+                        buf.append("</span> ");
                     }
-                    buf.append("**===\n");
+                    buf.append("\n");
                     String docStr = c.documentation;
                     if (docStr.charAt(0) == '$') {
                         if (docStr.contains("+")) {
                             String[] dArgs = docStr.split("\\+");
-                            docStr = Locale.get(dArgs[0].substring(1), "en_GB");
+                            docStr = Locale.get(dArgs[0].substring(1), locale);
                             if (dArgs[1].equalsIgnoreCase("PotionEffectType")) {
                                 StringBuilder out2 = new StringBuilder();
                                 for (PotionEffectType type : PotionEffectType.values()) {
@@ -631,10 +671,10 @@ abstract public class Commands {
                                 docStr += out2.toString();
                             }
                         } else {
-                            docStr = Locale.get(docStr.substring(1), "en_GB");
+                            docStr = Locale.get(docStr.substring(1), locale);
                         }
                     }
-                    docStr = docStr.replaceAll("@", "<<color 0000ff>>").replaceAll("#", "<</color>>");
+                    docStr = docStr.replaceAll("#", "</span>").replaceAll("@", "<span style='color:#0000ff'>");
                     StringBuilder docBuf = new StringBuilder();
                     char[] chars = docStr.toCharArray();
                     for (int i = 0; i < chars.length; i++) {
@@ -643,7 +683,7 @@ abstract public class Commands {
                             i++;
                             l = chars[i];
                             if (l != 'r') {
-                                docBuf.append("<<color ");
+                                docBuf.append("<span style='color:#");
                             }
                             switch (l) {
                             case '0':
@@ -695,20 +735,20 @@ abstract public class Commands {
                                 docBuf.append("ffffff");
                                 break;
                             case 'r':
-                                docBuf.append("<</color");
+                                docBuf.append("'></span'");
                                 break;
                             }
-                            docBuf.append(">>");
+                            docBuf.append("'>");
                         } else {
                             docBuf.append(l);
                         }
                     }
                     buf.append(docBuf.toString());
-                    buf.append("\n\\\\\n");
+                    buf.append("\n\n");
                     w.write(buf.toString());
                 }
             }
-            w.write("\n\n\\\\\\\\");
+            w.write("\n\n");
             w.write("Generated at: ");
             SimpleDateFormat sdf = new SimpleDateFormat();
             sdf.setTimeZone(new SimpleTimeZone(0, "GMT"));
