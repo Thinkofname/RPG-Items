@@ -35,7 +35,7 @@ title: Netherrack Server
         <h1>RPG-Items</h1>
 
 <p>Select your locale for help</p> <br/>
-    {% for post in site.posts %}
+    {% for post in site.posts reversed %}
     <a href=".{{ post.url }}">{{ post.title }}</a>
     <br/>
     {% endfor %}
