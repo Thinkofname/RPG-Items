@@ -586,6 +586,7 @@ public class RPGItem {
         for (String s : lines) {
             sender.sendMessage(s);
         }
+        sender.sendMessage(String.format(Locale.get("message.print.durability", locale), maxDurability));
     }
 
     public void setDisplay(String str) {
