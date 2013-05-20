@@ -77,22 +77,22 @@ public class Handler implements CommandHandler {
             sender.sendMessage(ChatColor.RED + Locale.get("message.create.fail", locale));
         }
     }
-    
+
     @CommandString("rpgitem option giveperms")
-    @CommandDocumentation("Toggles give requiring permissions")
+    @CommandDocumentation("$command.rpgitem.giveperms")
     @CommandGroup("option_giveperms")
     public void givePerms(CommandSender sender) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         Plugin.plugin.getConfig().set("give-perms", !Plugin.plugin.getConfig().getBoolean("give-perms", false));
         if (Plugin.plugin.getConfig().getBoolean("give-perms", false)) {
-            sender.sendMessage(ChatColor.AQUA + "Give now requires permissions");
+            sender.sendMessage(ChatColor.AQUA + Locale.get("message.giveperms.true", locale));
         } else {
-            sender.sendMessage(ChatColor.AQUA + "Give now does not require permissions");            
+            sender.sendMessage(ChatColor.AQUA + Locale.get("message.giveperms.false", locale));
         }
         Plugin.plugin.saveConfig();
     }
 
-    @CommandString(value = "rpgitem $n[] give",
-                    handlePermissions = true)
+    @CommandString(value = "rpgitem $n[] give", handlePermissions = true)
     @CommandDocumentation("$command.rpgitem.give")
     @CommandGroup("item_give")
     public void giveItem(CommandSender sender, RPGItem item) {
@@ -100,9 +100,9 @@ public class Handler implements CommandHandler {
         if (sender instanceof Player) {
             if ((!Plugin.plugin.getConfig().getBoolean("give-perms", false) && sender.hasPermission("rpgitem")) || (Plugin.plugin.getConfig().getBoolean("give-perms", false) && sender.hasPermission("rpgitem.give." + item.getName()))) {
                 item.give((Player) sender);
-                sender.sendMessage(ChatColor.AQUA + "You were given " + item.getDisplay());
+                sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.give.ok", locale), item.getDisplay()));
             } else {
-                sender.sendMessage(ChatColor.RED + "You do not have permission");
+                sender.sendMessage(ChatColor.RED + Locale.get("message.error.permission", locale));
             }
         } else {
             sender.sendMessage(ChatColor.RED + Locale.get("message.give.console", locale));
@@ -113,9 +113,10 @@ public class Handler implements CommandHandler {
     @CommandDocumentation("$command.rpgitem.give.player")
     @CommandGroup("item_give")
     public void giveItemPlayer(CommandSender sender, RPGItem item, Player player) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         item.give(player);
-        sender.sendMessage(ChatColor.AQUA + "Gave " + item.getDisplay() + ChatColor.AQUA + " to " + player.getName());
-        player.sendMessage(ChatColor.AQUA + "You were given " + item.getDisplay());
+        sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.give.to", locale), item.getDisplay() + ChatColor.AQUA, player.getName()));
+        player.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.give.ok", locale), item.getDisplay()));
     }
 
     @CommandString("rpgitem $n[] give $p[] $count:i[]")
@@ -163,12 +164,12 @@ public class Handler implements CommandHandler {
         sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.quality.get", locale), item.getName(), item.getQuality().toString().toLowerCase()));
     }
 
-    @CommandString("rpgitem $n[] quality $quality:o[trash,common,uncommon,rare,epic,legendary]")
+    @CommandString("rpgitem $n[] quality $e[think.rpgitems.item.Quality]")
     @CommandDocumentation("$command.rpgitem.quality.set")
     @CommandGroup("item_quality")
-    public void setItemQuality(CommandSender sender, RPGItem item, String quality) {
+    public void setItemQuality(CommandSender sender, RPGItem item, Quality quality) {
         String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
-        item.setQuality(Quality.valueOf(quality.toUpperCase()));
+        item.setQuality(quality);
         sender.sendMessage(ChatColor.AQUA + String.format(Locale.get("message.quality.set", locale), item.getName(), item.getQuality().toString().toLowerCase()));
         ItemManager.save(Plugin.plugin);
     }
@@ -448,7 +449,7 @@ public class Handler implements CommandHandler {
             sender.sendMessage(ChatColor.AQUA + Locale.get("message.worldguard.override.disabled", locale));
         }
     }
-    
+
     @CommandString("rpgitem $n[] removerecipe")
     @CommandDocumentation("$command.rpgitem.removerecipe")
     @CommandGroup("item_recipe")
@@ -458,7 +459,7 @@ public class Handler implements CommandHandler {
         item.resetRecipe(true);
         sender.sendMessage(ChatColor.AQUA + Locale.get("message.recipe.removed", locale));
     }
-    
+
     @CommandString("rpgitem $n[] recipe")
     @CommandDocumentation("$command.rpgitem.recipe")
     @CommandGroup("item_recipe")
@@ -502,18 +503,20 @@ public class Handler implements CommandHandler {
             sender.sendMessage(ChatColor.RED + Locale.get("message.error.only.player", locale));
         }
     }
-    
+
     @CommandString("rpgitem $n[] drop $e[org.bukkit.entity.EntityType]")
     @CommandDocumentation("$command.rpgitem.drop")
     @CommandGroup("item_drop")
     public void getItemDropChance(CommandSender sender, RPGItem item, EntityType type) {
-        sender.sendMessage(String.format(ChatColor.AQUA + "The chance that '%s" + ChatColor.AQUA + "' will drop from '%s' is %.2f%%", item.getDisplay(), type.toString().toLowerCase(), item.dropChances.get(type.toString())));
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
+        sender.sendMessage(String.format(ChatColor.AQUA + Locale.get("message.drop.get", locale), item.getDisplay() + ChatColor.AQUA, type.toString().toLowerCase(), item.dropChances.get(type.toString())));
     }
 
     @CommandString("rpgitem $n[] drop $e[org.bukkit.entity.EntityType] $chance:f[]")
     @CommandDocumentation("$command.rpgitem.drop.set")
     @CommandGroup("item_drop")
     public void setItemDropChance(CommandSender sender, RPGItem item, EntityType type, double chance) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
         chance = Math.min(chance, 100.0);
         String typeS = type.toString();
         if (chance > 0) {
@@ -531,9 +534,9 @@ public class Handler implements CommandHandler {
             }
         }
         ItemManager.save(Plugin.plugin);
-        sender.sendMessage(String.format(ChatColor.AQUA + "The chance that '%s" + ChatColor.AQUA + "' will drop from '%s' was set to %.2f%%", item.getDisplay(), typeS.toLowerCase(), item.dropChances.get(typeS)));
+        sender.sendMessage(String.format(ChatColor.AQUA + Locale.get("message.drop.set", locale), item.getDisplay() + ChatColor.AQUA, typeS.toLowerCase(), item.dropChances.get(typeS)));
     }
-    
+
     @CommandString("rpgitem $n[] durability $durability:i[]")
     @CommandDocumentation("$command.rpgitem.durability")
     @CommandGroup("item_durability")
@@ -543,7 +546,7 @@ public class Handler implements CommandHandler {
         ItemManager.save(Plugin.plugin);
         sender.sendMessage(Locale.get("message.durability.change", locale));
     }
-    
+
     @CommandString("rpgitem $n[] durability infinite")
     @CommandDocumentation("$command.rpgitem.durability.infinite")
     @CommandGroup("item_durability")
@@ -553,7 +556,7 @@ public class Handler implements CommandHandler {
         ItemManager.save(Plugin.plugin);
         sender.sendMessage(Locale.get("message.durability.change", locale));
     }
-    
+
     @CommandString("rpgitem $n[] durability togglebar")
     @CommandDocumentation("$command.rpgitem.durability.togglebar")
     @CommandGroup("item_durability")
@@ -563,4 +566,6 @@ public class Handler implements CommandHandler {
         ItemManager.save(Plugin.plugin);
         sender.sendMessage(Locale.get("message.durability.toggle", locale));
     }
+    
+    
 }
