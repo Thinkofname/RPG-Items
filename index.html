@@ -30,7 +30,11 @@
       <section id="main_content">
         <h1>RPG-Items</h1>
 
-<p>Feel free to submit a pull request if you add/fix stuff</p>
+<p>Feel free to submit a pull request if you add/fix stuff</p> <br/>
+    {% for post in site.posts %}
+    <a href="{{ post.url }}">{{ post.title }}</a>
+    <br/>
+    {% endfor %}
       </section>
     </div>
 
