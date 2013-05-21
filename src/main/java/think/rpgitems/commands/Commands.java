@@ -596,6 +596,7 @@ abstract public class Commands {
 
     private static HashMap<String, String> getMap() {
         HashMap<String, String> langMap = new HashMap<String, String>();
+        langMap.put("en_US", "English (US)");
         BufferedReader r = null;
         try {
             r = new BufferedReader(new InputStreamReader(Plugin.plugin.getResource("languages.txt"), "UTF-8"));
@@ -674,7 +675,7 @@ abstract public class Commands {
                             docStr = Locale.get(docStr.substring(1), locale);
                         }
                     }
-                    docStr = docStr.replaceAll("#", "</span>").replaceAll("@", "<span style='color:#0000ff'>");
+                    docStr = docStr.replaceAll("#", "</span>").replaceAll("@", "<span style='color:#0000ff'>").replaceAll("`", "`` ` ``");
                     StringBuilder docBuf = new StringBuilder();
                     char[] chars = docStr.toCharArray();
                     for (int i = 0; i < chars.length; i++) {
