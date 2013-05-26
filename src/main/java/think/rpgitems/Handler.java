@@ -324,7 +324,7 @@ public class Handler implements CommandHandler {
             sender.sendMessage(ChatColor.RED + "Failed to parse " + hexColour);
             return;
         }
-        item.setItem(material, false);
+        item.setItem(material, true);
         ItemMeta meta = item.getLocaleMeta(locale);
         if (meta instanceof LeatherArmorMeta) {
             ((LeatherArmorMeta) meta).setColor(Color.fromRGB(dam));
@@ -364,7 +364,7 @@ public class Handler implements CommandHandler {
             sender.sendMessage(ChatColor.RED + Locale.get("message.item.cant.find", locale));
             return;
         }
-        item.setItem(mat, false);
+        item.setItem(mat, true);
         ItemMeta meta = item.toItemStack(locale).getItemMeta();
         if (meta instanceof LeatherArmorMeta) {
             ((LeatherArmorMeta) meta).setColor(Color.fromRGB(data));
