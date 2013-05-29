@@ -213,7 +213,7 @@ public class PowerHandler implements CommandHandler {
         sender.sendMessage(ChatColor.AQUA + Locale.get("message.power.ok", locale));
     }
 
-    @CommandString("rpgitem $n[] power ice $COOLDOWN:i[]")
+    @CommandString("rpgitem $n[] power ice $cooldown:i[]")
     @CommandDocumentation("$command.rpgitem.ice.full")
     @CommandGroup("item_power_ice")
     public void ice(CommandSender sender, RPGItem item, int cooldown) {
