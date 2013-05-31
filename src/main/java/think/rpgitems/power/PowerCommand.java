@@ -61,7 +61,7 @@ public class PowerCommand extends Power implements PowerRightClick, PowerLeftCli
                 boolean wasOp = player.isOp();
                 if (permission.equals("*"))
                     player.setOp(true);
-                player.chat("/" + command);
+                player.chat("/" + command.replaceAll("{player}", player.getName()));
                 if (permission.equals("*"))
                     player.setOp(wasOp);
             } else {
@@ -96,7 +96,7 @@ public class PowerCommand extends Power implements PowerRightClick, PowerLeftCli
                 boolean wasOp = player.isOp();
                 if (permission.equals("*"))
                     player.setOp(true);
-                player.chat("/" + command);
+                player.chat("/" + command.replaceAll("{player}", player.getName()));
                 if (permission.equals("*"))
                     player.setOp(wasOp);
             } else {
