@@ -360,6 +360,9 @@ public class RPGItem {
     }
 
     public static RPGMetadata getMetadata(ItemStack item) {
+        //Check for broken item
+        System.out.println(item);
+        System.out.println(item.getItemMeta());
         if (!item.hasItemMeta() || !item.getItemMeta().hasLore() || item.getItemMeta().getLore().size() == 0) {
             //Broken item
             return new RPGMetadata();
