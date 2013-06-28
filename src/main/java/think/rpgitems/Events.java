@@ -232,10 +232,10 @@ public class Events implements Listener {
     public void onPlayerPickup(PlayerPickupItemEvent e) {
         ItemStack item = e.getItem().getItemStack();
         String locale = Locale.getPlayerLocale(e.getPlayer());
-        if (ItemManager.toRPGItem(item) != null)
+        if (ItemManager.toRPGItem(item) != null) {
             RPGItem.updateItem(item, locale);
-        e.getItem().setItemStack(item);
-
+            e.getItem().setItemStack(item);
+        }
     }
 
     private HashSet<LocaleInventory> localeInventories = new HashSet<LocaleInventory>();
