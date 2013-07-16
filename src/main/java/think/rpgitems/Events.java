@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -55,8 +54,6 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import think.rpgitems.data.Locale;
@@ -401,7 +398,7 @@ public class Events implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onDamage(EntityDamageByEntityEvent e) {
-        int damage = e.getDamage();
+        int damage = (int) e.getDamage();
         if (e.getDamager() instanceof Player) {
             damage = playerDamager(e, damage);
         } else if (e.getDamager() instanceof Projectile) {

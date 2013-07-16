@@ -39,7 +39,6 @@ import think.rpgitems.commands.Commands;
 import think.rpgitems.config.ConfigUpdater;
 import think.rpgitems.data.Font;
 import think.rpgitems.data.Locale;
-import think.rpgitems.data.RPGMetadata;
 import think.rpgitems.item.ItemManager;
 import think.rpgitems.power.Power;
 import think.rpgitems.power.PowerArrow;
