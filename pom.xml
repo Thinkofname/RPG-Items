@@ -27,7 +27,7 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.5.2-R0.2-SNAPSHOT</version>
+			<version>LATEST</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.trove4j</groupId>

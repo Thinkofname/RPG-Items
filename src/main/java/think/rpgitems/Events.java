@@ -401,7 +401,7 @@ public class Events implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onDamage(EntityDamageByEntityEvent e) {
-        int damage = e.getDamage();
+        int damage = (int) e.getDamage();
         if (e.getDamager() instanceof Player) {
             damage = playerDamager(e, damage);
         } else if (e.getDamager() instanceof Projectile) {
