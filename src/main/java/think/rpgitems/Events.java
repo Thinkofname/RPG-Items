@@ -57,6 +57,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import think.rpgitems.data.Locale;
@@ -141,7 +142,7 @@ public class Events implements Listener {
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onProjectileFire(ProjectileLaunchEvent e) {
-        LivingEntity shooter = e.getEntity().getShooter();
+        ProjectileSource shooter = e.getEntity().getShooter();
         if (shooter instanceof Player) {
             Player player = (Player) shooter;
             ItemStack item = player.getItemInHand();
@@ -401,7 +402,7 @@ public class Events implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onDamage(EntityDamageByEntityEvent e) {
-        int damage = e.getDamage();
+        int damage = (int) e.getDamage();
         if (e.getDamager() instanceof Player) {
             damage = playerDamager(e, damage);
         } else if (e.getDamager() instanceof Projectile) {
