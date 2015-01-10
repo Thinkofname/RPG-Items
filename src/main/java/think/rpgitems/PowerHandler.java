@@ -31,6 +31,7 @@ import think.rpgitems.power.PowerTNTCannon;
 import think.rpgitems.power.PowerTeleport;
 import think.rpgitems.power.PowerUnbreakable;
 import think.rpgitems.power.PowerUnbreaking;
+import think.rpgitems.power.PowerSnowball;
 
 public class PowerHandler implements CommandHandler {
 
@@ -444,6 +445,31 @@ public class PowerHandler implements CommandHandler {
             sender.sendMessage(ChatColor.RED + String.format(Locale.get("message.error.effect", locale), effect));
             return;
         }
+        item.addPower(pow);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage(ChatColor.AQUA + Locale.get("message.power.ok", locale));
+    }
+    @CommandString("rpgitem $n[] power snowball")
+    @CommandDocumentation("$command.rpgitem.snowball")
+    @CommandGroup("item_power_snowball")
+    public void snowbal(CommandSender sender, RPGItem item) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
+        PowerSnowball pow = new PowerSnowball();
+        pow.cooldownTime = 20;
+        pow.item = item;
+        item.addPower(pow);
+        ItemManager.save(Plugin.plugin);
+        sender.sendMessage(ChatColor.AQUA + Locale.get("message.power.ok", locale));
+    }
+
+    @CommandString("rpgitem $n[] power snowball $cooldown:i[]")
+    @CommandDocumentation("$command.rpgitem.snowball.full")
+    @CommandGroup("item_power_snowball")
+    public void snowball(CommandSender sender, RPGItem item, int cooldown) {
+        String locale = sender instanceof Player ? Locale.getPlayerLocale((Player) sender) : "en_GB";
+        PowerSnowball pow = new PowerSnowball();
+        pow.item = item;
+        pow.cooldownTime = cooldown;
         item.addPower(pow);
         ItemManager.save(Plugin.plugin);
         sender.sendMessage(ChatColor.AQUA + Locale.get("message.power.ok", locale));
