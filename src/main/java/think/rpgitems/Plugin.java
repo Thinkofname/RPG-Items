@@ -63,6 +63,7 @@ import think.rpgitems.power.PowerTicker;
 import think.rpgitems.power.PowerUnbreakable;
 import think.rpgitems.power.PowerUnbreaking;
 import think.rpgitems.support.WorldGuard;
+import think.rpgitems.power.PowerSnowball;
 
 @SuppressWarnings("deprecation")
 public class Plugin extends JavaPlugin {
@@ -95,6 +96,7 @@ public class Plugin extends JavaPlugin {
         Power.powers.put("rumble", PowerRumble.class);
         Power.powers.put("skyhook", PowerSkyHook.class);
         Power.powers.put("potiontick", PowerPotionTick.class);
+        Power.powers.put("snowball", PowerSnowball.class);
     }
 
     @Override
